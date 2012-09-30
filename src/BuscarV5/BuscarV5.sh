@@ -32,7 +32,7 @@ fi
 # determinar la cantidad de archivos en la carpeta de aceptados
 CANT_ARCHIVOS=$(find "$ACEPDIR" -type f | wc -l)
 
-STR_CICLO=$(grep -e "SECUENCIA2=" $CONFDIR/InstalaV5.conf)
+STR_CICLO=$(grep -e "SECUENCIA2=" < "$CONFDIR/InstalaV5.conf")
 # Calculo la longitud del numero, entre los separadores '='
 # y luego corto el string a un auxiliar para extraer el numero
 LONG=$(expr length "$STR_CICLO")
@@ -83,7 +83,7 @@ for archivo in $(find "$ACEPDIR" -type f -print); do
 		
 		# Encontrar los patrones con el codigo de sistema
 		#echo "DEBUG: el codigo es $COD_SIS"
-		CANT_PATRONES=$(grep -e "$COD_SIS" "$MAEDIR/patrones" | wc -l)
+		CANT_PATRONES=$(grep -e "$COD_SIS" < "$MAEDIR/patrones" | wc -l)
 		TOTAL_HALLAZGOS="0"
 		if [ $CANT_PATRONES -eq 0 ]; then
 			# TODO: grabar en el log esto:
@@ -91,7 +91,7 @@ for archivo in $(find "$ACEPDIR" -type f -print); do
 			ARCHS_SIN_PATRON=$( echo "$ARCHS_SIN_PATRON + 1" | bc)
 		else
 			# Si se encontraron patrones, los proceso:
-			for expr_reg in $( grep -e "$COD_SIS" "$MAEDIR/patrones" | cut -d, -f2 )
+			for expr_reg in $( grep -e "$COD_SIS" < "$MAEDIR/patrones" | cut -d, -f2 )
 			do
 				# Comienzo a aplicar la expresion regular del mismo codigo
 				# de sistema a las lineas del archivo:

@@ -7,6 +7,10 @@ PROCDIR=./Procesados
 MAEDIR=./ArchivosMaestros
 RECHDIR=./Rechazados
 
+# Mover todos los archivos de la carpeta de procesados al comienzo
+mv ./Procesados/* ./Aceptados/
+mv ./Rechazados/* ./Aceptados/
+
 export BINDIR
 export ACEPDIR
 export CONFDIR
