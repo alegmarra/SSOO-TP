@@ -17,8 +17,8 @@
 $BINDIR/IniciarV5.sh -inicializado > /dev/null
 INICIALIZADO=$?
 if [ $INICIALIZADO -eq 0 ]; then
-	echo "El sistema no fue inicializado.\nDebe inicializarlo antes\
-con el comando $BINDIR/IniciarV5."
+	echo "El sistema no fue inicializado.
+Debe inicializarlo antes con el comando $BINDIR/IniciarV5."
 	return 1
 fi
 
@@ -72,14 +72,15 @@ for archivo in $(find "$ACEPDIR" -type f -print); do
 	if [ -f "$PROCDIR/$NOMBRE" ]; then
 		# El archivo esta duplicado
 		echo "Archivo duplicado: $NOMBRE"
-		$BINDIR/MoverV5.sh "$archivo" "$PROCDIR"
+		$BINDIR/MoverV5.sh "$archivo" "$RECHDIR"
 		# TODO: escribirlo en el log
 	else
 		# Determinar el codigo de sistema:
-		POSICION=$(expr index "$NOMBRE" "_")
+		POSICION=$(expr index "$NOMBRE" "_") # El separado es "_"
 		LONGITUD=$(expr length "$NOMBRE")
 		LONG_COD=$(echo "$POSICION - 1" | bc)
 		COD_SIS=$(expr substr "$NOMBRE" 1 $LONG_COD)
+		
 		# Encontrar los patrones con el codigo de sistema
 		#echo "DEBUG: el codigo es $COD_SIS"
 		CANT_PATRONES=$(grep -e "$COD_SIS" "$MAEDIR/patrones" | wc -l)
@@ -92,7 +93,7 @@ for archivo in $(find "$ACEPDIR" -type f -print); do
 			# Si se encontraron patrones, los proceso:
 			for expr_reg in $( grep -e "$COD_SIS" "$MAEDIR/patrones" | cut -d, -f2 )
 			do
-				# Comienzo a aplicar la expresion regular  del mismo codigo
+				# Comienzo a aplicar la expresion regular del mismo codigo
 				# de sistema a las lineas del archivo:
 				echo "DEBUG: re a aplicar: $expr_reg en $archivo"
 				CANT_HALLAZGOS="0"
