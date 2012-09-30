@@ -35,7 +35,7 @@ CANT_ARCHIVOS=$(find "$ACEPDIR" -type f | wc -l)
 STR_CICLO=$(grep -e "SECUENCIA2=" $CONFDIR/InstalaV5.conf)
 # Calculo la longitud del numero, entre los separadores '='
 # y luego corto el string a un auxiliar para extraer el numero
-LONG=$(expr length STR_CICLO)
+LONG=$(expr length "$STR_CICLO")
 AUX_STR_CICLO=$(expr substr "$STR_CICLO" 12 $LONG)
 POS_SEPARADOR=$(expr index "$AUX_STR_CICLO" "=")
 LONG_NUMERO=$( echo "$POS_SEPARADOR-1" | bc) # $POS_SEPARADOR -= 1
