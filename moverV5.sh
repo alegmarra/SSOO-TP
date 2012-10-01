@@ -50,18 +50,20 @@ destino=$2
 if argumentosValidos $origen $destino; then
 	
 	mv -n $origen $destino
-	
+
 	if [ -e $origen ]; then
-		numCopia=(obtenerSecuenciador $destino)
-		origenNext=$origen $numCopia
+		
+		obtenerSecuenciador $destino
+		numCopia=$?
+		origenNext=$origen""$numCopia
 
 		mv $origen $origenNext
 				
 		mv $origenNext $destino
 	fi
 
-	if [ -e $origen || -e $origenNext ]; then
-		return 1
+	if [[ -e $origen || -e $origenNext ]]; then
+		exit 1
 	fi	
 fi
 
