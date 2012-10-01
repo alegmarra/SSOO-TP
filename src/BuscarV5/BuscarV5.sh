@@ -12,10 +12,15 @@
 # 1 - El ambiente no está inicializado
 # 2 - Otra busqueda se esta ejecutando
 
+# Caracteres de tipo de contexto:
+CONTEXTO_LINEA="l"
+CONTEXTO_CARACTER="c"
+SEP_DETALLADOS="+-#-+"
+
 # Verificar si la inicializacion de ambiente
 # se realizo anteriormente:
 $BINDIR/IniciarV5.sh -inicializado > /dev/null
-INICIALIZADO=$?
+INICIALIZADO=$? # atrapo el codigo de retorno de IniciarV5
 if [ $INICIALIZADO -eq 0 ]; then
 	echo "El sistema no fue inicializado.
 Debe inicializarlo antes con el comando $BINDIR/IniciarV5."
@@ -38,7 +43,7 @@ STR_CICLO=$(grep -e "SECUENCIA2=" < "$CONFDIR/InstalaV5.conf")
 LONG=$(expr length "$STR_CICLO")
 AUX_STR_CICLO=$(expr substr "$STR_CICLO" 12 $LONG)
 POS_SEPARADOR=$(expr index "$AUX_STR_CICLO" "=")
-LONG_NUMERO=$( echo "$POS_SEPARADOR-1" | bc) # $POS_SEPARADOR -= 1
+LONG_NUMERO=$(echo "$POS_SEPARADOR-1" | bc) # $POS_SEPARADOR -= 1
 CICLO=$(expr substr "$AUX_STR_CICLO" 1 $LONG_NUMERO) # Corto el string auxiliar y saco el numero solo
 
 # Incremento el secuenciador
@@ -47,8 +52,8 @@ CICLO=$(echo "$CICLO + 1" | bc)
 # TODO: grabar en el log esto:
 echo "Inicio BuscarV5 - Ciclo Nro: $CICLO - Cantidad de archivos: $CANT_ARCHIVOS"
 
-CANT_ARCHS_CON_HALLAZGOS="0"
 TOTAL_ARCHIVOS=$(find "$ACEPDIR" -type f -print | wc -l)
+CANT_ARCHS_CON_HALLAZGOS="0"
 ARCHS_SIN_PATRON="0"
 for archivo in $(find "$ACEPDIR" -type f -print); do
 	# TODO: grabar esto en el log:
@@ -58,7 +63,7 @@ for archivo in $(find "$ACEPDIR" -type f -print); do
 	# en tal caso rechazarlo.
 	
 	# Primero, extraigo el nombre, "rebanando" la ruta por las "/":
-	RUTA=$archivo
+	RUTA="$archivo"
 	while expr index "$RUTA" "/" > /dev/null
 	do
 		POSICION=$(expr index "$RUTA" "/")
@@ -66,7 +71,7 @@ for archivo in $(find "$ACEPDIR" -type f -print); do
 		INICIO=$(echo "$POSICION + 1" | bc)
 		RUTA=$(expr substr "$RUTA" $INICIO $LONGITUD)
 	done
-	NOMBRE=$RUTA
+	NOMBRE="$RUTA"
 	
 	# Comprobar si el archivo esta en la carpeta de procesados
 	if [ -f "$PROCDIR/$NOMBRE" ]; then
@@ -76,13 +81,12 @@ for archivo in $(find "$ACEPDIR" -type f -print); do
 		# TODO: escribirlo en el log
 	else
 		# Determinar el codigo de sistema:
-		POSICION=$(expr index "$NOMBRE" "_") # El separado es "_"
+		POSICION=$(expr index "$NOMBRE" "_") # El separador es "_"
 		LONGITUD=$(expr length "$NOMBRE")
 		LONG_COD=$(echo "$POSICION - 1" | bc)
 		COD_SIS=$(expr substr "$NOMBRE" 1 $LONG_COD)
 		
 		# Encontrar los patrones con el codigo de sistema
-		#echo "DEBUG: el codigo es $COD_SIS"
 		CANT_PATRONES=$(grep -e "$COD_SIS" < "$MAEDIR/patrones" | wc -l)
 		TOTAL_HALLAZGOS="0"
 		if [ $CANT_PATRONES -eq 0 ]; then
@@ -91,29 +95,51 @@ for archivo in $(find "$ACEPDIR" -type f -print); do
 			ARCHS_SIN_PATRON=$( echo "$ARCHS_SIN_PATRON + 1" | bc)
 		else
 			# Si se encontraron patrones, los proceso:
-			for expr_reg in $( grep -e "$COD_SIS" < "$MAEDIR/patrones" | cut -d, -f2 )
+			for linea_patron in $( grep -e "$COD_SIS" < "$MAEDIR/patrones")
 			do
+				EXPR_REG=$( echo "$linea_patron" | cut -d, -f2 )
 				# Comienzo a aplicar la expresion regular del mismo codigo
 				# de sistema a las lineas del archivo:
-				echo "DEBUG: re a aplicar: $expr_reg en $archivo"
+				#~ echo "DEBUG: re a aplicar: $EXPR_REG en $archivo"
 				CANT_HALLAZGOS="0"
+				PAT_ID=$( echo "$linea_patron" | cut -d, -f1 )
+				NUM_LINEA="0"
 				while read linea # lectura linea a linea del archivo
 				do
-					#echo "DEBUG: leido: $linea"
-					if echo "$linea" | grep -e "$expr_reg" > /dev/null
+					NUM_LINEA=$(echo "$NUM_LINEA + 1" | bc)
+					if echo "$linea" | grep -e "$EXPR_REG" > /dev/null
 					then
 						# Se encontro una coincidencia:
 						CANT_HALLAZGOS=$(echo "$CANT_HALLAZGOS + 1" | bc)
 						TOTAL_HALLAZGOS=$(echo "$TOTAL_HALLAZGOS + 1" | bc)
-						echo "DEBUG: encontrado $CANT_HALLAZGOS en: $linea"
-						# TODO: recordar de alguna forma la coincidencia para despues
-						# grabar el registro.
+						
+						# Armar el registro para grabarlo, excepto el resultado,
+						# que depende del contexto:
+						REG="$CICLO$SEP_DETALLADOS$NOMBRE$SEP_DETALLADOS"
+						REG="$REG$NUM_LINEA$SEP_DETALLADOS"
+						
+						# Determinar los DESDE y HASTA:
+						DESDE=$(echo "$linea_patron" | cut -d, -f5)
+						HASTA=$(echo "$linea_patron" | cut -d, -f6)
+						
+						# Determino el tipo de contexto:
+						TIPO_CONTEXTO=$(echo "$linea_patron" | cut -d, -f4)
+						#~ echo "DEBUG: tipo contexto $TIPO_CONTEXTO"
+						if [ $TIPO_CONTEXTO = $CONTEXTO_CARACTER ]; then
+							RESULTADO=$( expr substr "$linea" $DESDE $HASTA )
+							# Grabacion del registro en los resultados
+							REG="$REG$RESULTADO"
+							echo "$REG" >> "$PROCDIR/resultados.$PAT_ID"
+							#~ echo "DEBUG: grabando registro $REG"
+						fi
+						if [ $TIPO_CONTEXTO = $CONTEXTO_LINEA ]; then
+							echo "DEBUG: Contexto linea"
+						fi
 					fi
-				done < $archivo
+				done < "$archivo"
 				if [ $CANT_HALLAZGOS -eq 0 ]; then
 					# No se encontraron hallazgos
 					echo "DEBUG: no hay hallazgos para $expr_reg en $archivo"
-					
 				fi
 			done
 		fi
