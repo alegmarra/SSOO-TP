@@ -9,21 +9,36 @@
 
 
 # Validación de directorios
-# Si el origen o el destino pasados no existen se retorna con error
-
-directorioValido () {
+argumentosValidos () {
  
-	if [ ! -d "$1" ]; then
-		echo "Directorio inexistente '$1'"
-		#@TODO log del error
+	if [ $1 == $2 ]; then 
 		return 1
+	else 
+		if [ ! -e $1 ]; then
+			if [ ! -d $1 ]; then
+				return 1
+			fi
+		fi	
+	
+		if [ ! -d $2 ]; then
+			return 1 
+		fi
 	fi
+
 	return 0
+}
+
+
+obtenerSecuenciador () {
+
+	return 4
+
 }
 
 #MAIN
 
-if [ $# -lt 3 ]; then
+
+if [ $# -lt 2 ]; then
 	echo "Faltan parámetros"
 	# @TODO Logeo de error?
 	exit 1
@@ -32,9 +47,21 @@ fi
 origen=$1
 destino=$2
 
-if directorioValido $origen && directorioValido $destino; then
+if argumentosValidos $origen $destino; then
+	
+	mv -n $origen $destino
+	
+	if [ -e $origen ]; then
+		numCopia=(obtenerSecuenciador $destino)
+		origenNext=$origen $numCopia
 
+		mv $origen $origenNext
+				
+		mv $origenNext $destino
+	fi
 
-else
-	echo "NOT OK"
-fi	
+	if [ -e $origen || -e $origenNext ]; then
+		return 1
+	fi	
+fi
+
