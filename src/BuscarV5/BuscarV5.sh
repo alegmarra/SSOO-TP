@@ -139,7 +139,7 @@ for archivo in $(find "$ACEPDIR" -type f -print); do
 				done < "$archivo"
 				if [ $CANT_HALLAZGOS -eq 0 ]; then
 					# No se encontraron hallazgos
-					echo "DEBUG: no hay hallazgos para $expr_reg en $archivo"
+					echo "DEBUG: no hay hallazgos para $EXPR_REG en $archivo"
 				fi
 			done
 		fi
