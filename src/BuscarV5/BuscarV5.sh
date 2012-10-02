@@ -12,10 +12,14 @@
 # 1 - El ambiente no está inicializado
 # 2 - Otra busqueda se esta ejecutando
 
-# Caracteres de tipo de contexto:
+# Separadores de tipo de contexto:
 CONTEXTO_LINEA="linea"
 CONTEXTO_CARACTER="caracter"
 SEP_DETALLADOS="+-#-+"
+
+#-------------------------------
+# Funciones auxiliares
+#-------------------------------
 
 # Funcion que recorta el ultimo caracter de su primer parametro
 # Uso: para recortar VAR:
@@ -28,7 +32,7 @@ chomp () {
 }
 
 # Funcion que elimina el primer y ultimo caracter de su primer parametro
-# Uso: 
+# Uso:
 # VAR=`recortar_comillas $VAR`
 recortar_comillas () {
 	LONG=`expr length "$1"`
@@ -37,6 +41,10 @@ recortar_comillas () {
 	RES=`expr substr "$AUX" 1 $LONG`
 	echo "$RES"
 }
+
+#-------------------------------
+# Programa principal
+#-------------------------------
 
 # Verificar si la inicializacion de ambiente
 # se realizo anteriormente:
@@ -64,8 +72,8 @@ STR_CICLO=`grep -e "SECUENCIA2=" < "$CONFDIR/InstalaV5.conf"`
 LONG=`expr length "$STR_CICLO"`
 AUX_STR_CICLO=`expr substr "$STR_CICLO" 12 $LONG`
 POS_SEPARADOR=`expr index "$AUX_STR_CICLO" "="`
-LONG_NUMERO=`expr $POS_SEPARADOR - 1` # $POS_SEPARADOR -= 1
-CICLO=`expr substr "$AUX_STR_CICLO" 1 $LONG_NUMERO` # Corto el string auxiliar y saco el numero solo
+LONG_NUMERO=`expr $POS_SEPARADOR - 1`  # $POS_SEPARADOR -= 1
+CICLO=`expr substr "$AUX_STR_CICLO" 1 $LONG_NUMERO`  # Corto el string auxiliar y saco el numero solo
 
 # Incremento el secuenciador
 CICLO=`expr $CICLO + 1`
@@ -80,10 +88,10 @@ for archivo in `find "$ACEPDIR" -type f -print`
 do
 	# TODO: grabar esto en el log:
 	echo "Archivo a procesar: $archivo"
-	
+
 	# Analizar si el archivo esta duplicado en PROCDIR,
 	# en tal caso rechazarlo.
-	
+
 	# Primero, extraigo el nombre, "rebanando" la ruta por las "/":
 	RUTA="$archivo"
 	while expr index "$RUTA" "/" > /dev/null
@@ -94,7 +102,7 @@ do
 		RUTA=`expr substr "$RUTA" $INICIO $LONGITUD`
 	done
 	NOMBRE="$RUTA"
-	
+
 	# Comprobar si el archivo esta en la carpeta de procesados
 	if [ -f "$PROCDIR/$NOMBRE" ]; then
 		# El archivo esta duplicado
@@ -107,7 +115,7 @@ do
 		LONGITUD=`expr length "$NOMBRE"`
 		LONG_COD=`expr $POSICION - 1`
 		COD_SIS=`expr substr "$NOMBRE" 1 $LONG_COD`
-		
+
 		# Encontrar los patrones con el codigo de sistema
 		CANT_PATRONES=`grep -e "$COD_SIS" < "$MAEDIR/patrones" | wc -l`
 		TOTAL_HALLAZGOS="0"
@@ -117,7 +125,7 @@ do
 			ARCHS_SIN_PATRON=`expr $ARCHS_SIN_PATRON + 1`
 		else
 			# Si se encontraron patrones, los proceso:
-			while read linea_patron #in ` grep -e "$COD_SIS" < "$MAEDIR/patrones"`
+			while read linea_patron
 			do
 				if echo "$linea_patron" | grep -e "$COD_SIS" > /dev/null
 				then
@@ -138,18 +146,17 @@ do
 							# Se encontro una coincidencia:
 							CANT_HALLAZGOS=`expr $CANT_HALLAZGOS + 1`
 							TOTAL_HALLAZGOS=`expr $TOTAL_HALLAZGOS + 1`
-							
-							
+
 							# Armar el registro para grabarlo, excepto el resultado,
 							# que depende del contexto:
 							REG="$CICLO$SEP_DETALLADOS$NOMBRE$SEP_DETALLADOS"
 							REG="$REG$NUM_LINEA$SEP_DETALLADOS"
-							
+
 							# Determinar los DESDE y HASTA:
 							DESDE=`echo "$linea_patron" | cut -d, -f5`
 							HASTA=`echo -n "$linea_patron"| cut -d, -f6`
 							HASTA=`chomp $HASTA`
-							
+
 							# Determino el tipo de contexto:
 							TIPO_CONTEXTO=`echo "$linea_patron" | cut -d, -f4`
 							if [ "$TIPO_CONTEXTO" = "$CONTEXTO_CARACTER" ]; then
@@ -175,7 +182,7 @@ do
 		if [ $TOTAL_HALLAZGOS -gt 0 ]; then
 			CANT_ARCHS_CON_HALLAZGOS=`expr $CANT_ARCHS_CON_HALLAZGOS + 1`
 		fi
-		$BINDIR/MoverV5.sh "$archivo" "$PROCDIR"		
+		$BINDIR/MoverV5.sh "$archivo" "$PROCDIR"
 	fi
 done
 # FIN DE TODOS LOS ARCHIVOS
