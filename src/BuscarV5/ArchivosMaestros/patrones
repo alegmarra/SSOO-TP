@@ -1,6 +1,7 @@
-1,dieguit4*,4001,c,2,15
-2,juan*,4002,c,3,15
-3,mauro*,4003,c,2,16
-4,ricardo*,4004,c,2,15
-5,sergio*,4005,c,1,12
-6,carlitos,4002,c,2,13
+1,'^Stored procedure invocation error\.',soapp1,linea,2,3
+2,'^####<\.',soapp1,caracter,6,32
+3,'BEA-',soapp1,linea,1,1
+4,'^BINDING.JCA-11811\.',soapp1,linea,1,1
+5,'Caused by',soapp1,linea,1,1
+6,'real time',sasapp,caracter,85,97
+7,'cpu time',sasapp,caracter,85,97
