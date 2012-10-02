@@ -132,13 +132,15 @@ do
 					# El registro del patron corresponde al archivo del mismo codigo
 					# de sistema.
 					EXPR_REG=`echo "$linea_patron" | cut -d, -f2`
+					# Elimino las comillas que envuelven a la expresion regular
+					# en la linea del archivo de patrones:
 					EXPR_REG=`recortar_comillas "$EXPR_REG"`
 					# Comienzo a aplicar la expresion regular del mismo codigo
 					# de sistema a las lineas del archivo:
 					CANT_HALLAZGOS="0"
 					PAT_ID=`echo "$linea_patron" | cut -d, -f1`
 					NUM_LINEA="0"
-					while read linea # lectura linea a linea del archivo
+					while read linea # lectura linea a linea del archivo de entrada de datos
 					do
 						NUM_LINEA=`expr $NUM_LINEA + 1`
 						if echo "$linea" | grep -e "$EXPR_REG" > /dev/null
@@ -155,7 +157,10 @@ do
 							# Determinar los DESDE y HASTA:
 							DESDE=`echo "$linea_patron" | cut -d, -f5`
 							HASTA=`echo -n "$linea_patron"| cut -d, -f6`
-							HASTA=`chomp $HASTA`
+							# Como el campo HASTA esta al final de la linea del
+							# archivo de patrones, debo sacar el ultimo caracter
+							# que es el de fin de linea:
+							HASTA=`chomp "$HASTA"`
 
 							# Determino el tipo de contexto:
 							TIPO_CONTEXTO=`echo "$linea_patron" | cut -d, -f4`
@@ -167,13 +172,16 @@ do
 								echo "$REG" >> "$PROCDIR/resultados.$PAT_ID"
 							fi
 							if [ "$TIPO_CONTEXTO" = "$CONTEXTO_LINEA" ]; then
+								# TODO: completar el contexto linea
 								echo "Contexto linea"
 							fi
 						fi
 					done < "$archivo"
 					if [ $CANT_HALLAZGOS -eq 0 ]; then
 						# No se encontraron hallazgos
-						echo "No hay hallazgos para $EXPR_REG en $NOMBRE"
+						# TODO: grabar en rglobales.pat_id:
+						# ciclo,archivo,re,ctx,desde,hasta,cant de hallazgos
+						echo
 					fi
 				fi
 			done < "$MAEDIR/patrones"
@@ -186,8 +194,8 @@ do
 	fi
 done
 # FIN DE TODOS LOS ARCHIVOS
-# TODO: Grabar en el log esto:
 ARCHS_SIN_HALLAZGOS=`expr $TOTAL_ARCHIVOS - $CANT_ARCHS_CON_HALLAZGOS`
+# TODO: Grabar en el log esto:
 echo "Fin del ciclo: $CICLO
 Cantidad de archivos con hallazgos: $CANT_ARCHS_CON_HALLAZGOS
 Cantidad de archivos sin hallazgos: $ARCHS_SIN_HALLAZGOS
