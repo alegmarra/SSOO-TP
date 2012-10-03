@@ -156,10 +156,6 @@ do
 							CANT_HALLAZGOS=`expr $CANT_HALLAZGOS + 1`
 							TOTAL_HALLAZGOS=`expr $TOTAL_HALLAZGOS + 1`
 
-							# Armar el registro para grabarlo, excepto el resultado,
-							# que depende del contexto:
-							REG="$CICLO$SEP_DETALLADOS$NOMBRE$SEP_DETALLADOS"
-
 							# Determinar los DESDE y HASTA:
 							DESDE=`echo "$linea_patron" | cut -d, -f5`
 							HASTA=`echo -n "$linea_patron"| cut -d, -f6`
@@ -174,6 +170,7 @@ do
 								LONG_RES=`echo "$HASTA - $DESDE + 1" | bc`
 								RESULTADO=`expr substr "$linea" $DESDE $LONG_RES`
 								# Grabacion del registro en los resultados
+								REG="$CICLO$SEP_DETALLADOS$NOMBRE$SEP_DETALLADOS"
 								REG="$REG$NUM_LINEA$SEP_DETALLADOS"
 								REG="$REG$RESULTADO"
 								echo "$REG" >> "$PROCDIR/resultados.$PAT_ID"
@@ -187,6 +184,7 @@ do
 								while [ $I -lt $CANT_LINEAS ]; do
 									RESULTADO=`obtener_linea "$archivo" $LINEA_ACTUAL`
 									# Grabacion del registro en los resultados
+									REG="$CICLO$SEP_DETALLADOS$NOMBRE$SEP_DETALLADOS"
 									REG="$REG$LINEA_ACTUAL$SEP_DETALLADOS"
 									REG="$REG$RESULTADO"
 									echo "$REG" >> "$PROCDIR/resultados.$PAT_ID"
