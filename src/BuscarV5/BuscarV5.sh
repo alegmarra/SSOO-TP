@@ -13,9 +13,10 @@
 # 2 - Otra busqueda se esta ejecutando
 
 # Separadores de tipo de contexto:
-CONTEXTO_LINEA="linea"
-CONTEXTO_CARACTER="caracter"
-SEP_DETALLADOS="+-#-+"
+CONTEXTO_LINEA='linea'
+CONTEXTO_CARACTER='caracter'
+SEP_DETALLADOS='+-#-+'
+SEP_GLOBALES=','
 
 #-------------------------------
 # Funciones auxiliares
@@ -42,7 +43,7 @@ recortar_comillas () {
 	echo "$RES"
 }
 
-# Imprime una linea de un archivo.
+# Funcion que imprime alguna linea de un archivo.
 # Uso: LINEA85=`obtener_linea archivo 85`
 obtener_linea () {
 	RES=`head -n $2 "$1" | tail -n 1`
@@ -70,24 +71,16 @@ then
     exit 2
 fi
 
-# determinar la cantidad de archivos en la carpeta de aceptados
+# Determinar la cantidad de archivos en la carpeta de aceptados
 CANT_ARCHIVOS=`find "$ACEPDIR" -type f | wc -l`
 
-STR_CICLO=`grep -e "SECUENCIA2=" < "$CONFDIR/InstalaV5.conf"`
-# Calculo la longitud del numero, entre los separadores '='
-# y luego corto el string a un auxiliar para extraer el numero
-LONG=`expr length "$STR_CICLO"`
-AUX_STR_CICLO=`expr substr "$STR_CICLO" 12 $LONG`
-POS_SEPARADOR=`expr index "$AUX_STR_CICLO" "="`
-LONG_NUMERO=`expr $POS_SEPARADOR - 1`  # $POS_SEPARADOR -= 1
-CICLO=`expr substr "$AUX_STR_CICLO" 1 $LONG_NUMERO`  # Corto el string auxiliar y saco el numero solo
-
-# Incremento el secuenciador
-CICLO=`expr $CICLO + 1`
+# Determinar el numero de ciclo:
+CICLO=`grep -e "SECUENCIA2=" < "$CONFDIR/InstalaV5.conf" | cut -d= -f2`
 
 # TODO: grabar en el log esto:
 echo "Inicio BuscarV5 - Ciclo Nro: $CICLO - Cantidad de archivos: $CANT_ARCHIVOS"
 
+# COMIENZO A PROCESAR LOS ARCHIVOS
 TOTAL_ARCHIVOS=`find "$ACEPDIR" -type f -print | wc -l`
 CANT_ARCHS_CON_HALLAZGOS="0"
 ARCHS_SIN_PATRON="0"
@@ -99,34 +92,27 @@ do
 	# Analizar si el archivo esta duplicado en PROCDIR,
 	# en tal caso rechazarlo.
 
-	# Primero, extraigo el nombre, "rebanando" la ruta por las "/":
-	RUTA="$archivo"
-	while expr index "$RUTA" "/" > /dev/null
-	do
-		POSICION=`expr index "$RUTA" "/"`
-		LONGITUD=`expr length "$RUTA"`
-		INICIO=`expr $POSICION + 1`
-		RUTA=`expr substr "$RUTA" $INICIO $LONGITUD`
-	done
-	NOMBRE="$RUTA"
+	# Extraigo el nombre del archivo:
+	NOMBRE=`basename "$archivo"`
 
 	# Comprobar si el archivo esta en la carpeta de procesados
 	if [ -f "$PROCDIR/$NOMBRE" ]; then
 		# El archivo esta duplicado
+		# TODO: escribir esto en el log:
 		echo "Archivo duplicado: $NOMBRE"
 		$BINDIR/MoverV5.sh "$archivo" "$RECHDIR"
-		# TODO: escribirlo en el log
 	else
-		# Determinar el codigo de sistema:
-		POSICION=`expr index "$NOMBRE" "_"` # El separador es "_"
-		LONGITUD=`expr length "$NOMBRE"`
-		LONG_COD=`expr $POSICION - 1`
-		COD_SIS=`expr substr "$NOMBRE" 1 $LONG_COD`
+		# El archivo no fue procesado. Determinar el codigo de sistema:
+		COD_SIS=`echo "$NOMBRE" | cut -d_ -f1`
 
+		# Contador de todos los hallazgos de todos los patrones
+		# aplicables al archivo
+		TOTAL_HALLAZGOS='0'  
+		
 		# Encontrar los patrones con el codigo de sistema
 		CANT_PATRONES=`grep -e "$COD_SIS" < "$MAEDIR/patrones" | wc -l`
-		TOTAL_HALLAZGOS="0"
 		if [ $CANT_PATRONES -eq 0 ]; then
+			# No hay patrones aplicables al archivo
 			# TODO: grabar en el log esto:
 			echo "No hay patrones aplicables al archivo"
 			ARCHS_SIN_PATRON=`expr $ARCHS_SIN_PATRON + 1`
@@ -138,37 +124,42 @@ do
 				then
 					# El registro del patron corresponde al archivo del mismo codigo
 					# de sistema.
+					
+					# Determinar el identificador de patron
+					PAT_ID=`echo "$linea_patron" | cut -d, -f1`
+					
+					# Determinar le expresion regular
 					EXPR_REG=`echo "$linea_patron" | cut -d, -f2`
 					# Elimino las comillas que envuelven a la expresion regular
 					# en la linea del archivo de patrones:
 					EXPR_REG=`recortar_comillas "$EXPR_REG"`
+
+					# Determino el tipo de contexto:
+					TIPO_CONTEXTO=`echo "$linea_patron" | cut -d, -f4`
+
+					# Determinar los DESDE y HASTA:
+					DESDE=`echo "$linea_patron" | cut -d, -f5`
+					HASTA=`echo -n "$linea_patron"| cut -d, -f6`
+					# Como el campo HASTA esta al final de la linea del
+					# archivo de patrones, debo sacar el ultimo caracter
+					# que es el de fin de linea ('\n'):
+					HASTA=`chomp "$HASTA"`
+					
 					# Comienzo a aplicar la expresion regular del mismo codigo
 					# de sistema a las lineas del archivo:
-					CANT_HALLAZGOS='0'
-					PAT_ID=`echo "$linea_patron" | cut -d, -f1`
-					NUM_LINEA='0'
+					CANT_HALLAZGOS='0'					
+					NUM_LINEA='1'
 					while read linea # lectura linea a linea del archivo de entrada de datos
 					do
-						NUM_LINEA=`expr $NUM_LINEA + 1`  # NUM_LINEA++
 						if echo "$linea" | grep -e "$EXPR_REG" > /dev/null
 						then
 							# Se encontro una coincidencia:
 							CANT_HALLAZGOS=`expr $CANT_HALLAZGOS + 1`
-							TOTAL_HALLAZGOS=`expr $TOTAL_HALLAZGOS + 1`
-
-							# Determinar los DESDE y HASTA:
-							DESDE=`echo "$linea_patron" | cut -d, -f5`
-							HASTA=`echo -n "$linea_patron"| cut -d, -f6`
-							# Como el campo HASTA esta al final de la linea del
-							# archivo de patrones, debo sacar el ultimo caracter
-							# que es el de fin de linea:
-							HASTA=`chomp "$HASTA"`
-
-							# Determino el tipo de contexto:
-							TIPO_CONTEXTO=`echo "$linea_patron" | cut -d, -f4`
 							if [ "$TIPO_CONTEXTO" = "$CONTEXTO_CARACTER" ]; then
+								# Recorto un sector de la linea del archivo:
 								LONG_RES=`echo "$HASTA - $DESDE + 1" | bc`
 								RESULTADO=`expr substr "$linea" $DESDE $LONG_RES`
+								
 								# Grabacion del registro en los resultados
 								REG="$CICLO$SEP_DETALLADOS$NOMBRE$SEP_DETALLADOS"
 								REG="$REG$NUM_LINEA$SEP_DETALLADOS"
@@ -182,8 +173,10 @@ do
 								CANT_LINEAS=`echo "$HASTA - $DESDE + 1" | bc`
 								LINEA_ACTUAL=$NUM_LINEA
 								while [ $I -lt $CANT_LINEAS ]; do
+									# Extraigo una linea entera del archivo:
 									RESULTADO=`obtener_linea "$archivo" $LINEA_ACTUAL`
-									# Grabacion del registro en los resultados
+									
+									# Grabacion del registro en los resultados:
 									REG="$CICLO$SEP_DETALLADOS$NOMBRE$SEP_DETALLADOS"
 									REG="$REG$LINEA_ACTUAL$SEP_DETALLADOS"
 									REG="$REG$RESULTADO"
@@ -193,13 +186,19 @@ do
 								done
 							fi
 						fi
+						NUM_LINEA=`expr $NUM_LINEA + 1`  # NUM_LINEA++
 					done < "$archivo"
-					if [ $CANT_HALLAZGOS -eq 0 ]; then
-						# No se encontraron hallazgos
-						# TODO: grabar en rglobales.pat_id:
-						# ciclo,archivo,re,ctx,desde,hasta,cant de hallazgos
-						echo
-					fi
+					# FIN DE PATRON PARA ESE ARCHIVO
+					# Grabar el archivo de resultados globales del patron:
+					REG="$CICLO$SEP_GLOBALES$NOMBRE$SEP_GLOBALES"
+					REG="$REG$EXPR_REG$SEP_GLOBALES"
+					REG="$REG$TIPO_CONTEXTO$SEP_GLOBALES"
+					REG="$REG$DESDE$SEP_GLOBALES"
+					REG="$REG$HASTA$SEP_GLOBALES"
+					REG="$REG$CANT_HALLAZGOS"
+					echo "$REG" >> "$PROCDIR/rglobales.$PAT_ID"
+					
+					TOTAL_HALLAZGOS=`expr $TOTAL_HALLAZGOS + $CANT_HALLAZGOS`
 				fi
 			done < "$MAEDIR/patrones"
 		fi
@@ -217,5 +216,9 @@ echo "Fin del ciclo: $CICLO
 Cantidad de archivos con hallazgos: $CANT_ARCHS_CON_HALLAZGOS
 Cantidad de archivos sin hallazgos: $ARCHS_SIN_HALLAZGOS
 Cantidad de archivos sin patron aplicable: $ARCHS_SIN_PATRON"
+
+# Incremento el secuenciador
+CICLO=`expr $CICLO + 1`
+# TODO: actualizar en el archivo de configuraciones el ciclo.
 
 exit 0
