@@ -109,8 +109,11 @@ reemplazar_en_linea () {
 	echo "$RES"
 }
 
-encontrar_numero_de_linea () { # archivo linea
-	LINEA=`grep -n -e "$2" < "$1"`
+# Funcion que devuelve el numero una linea determinada en un archivo
+# Uso: encontrar_numero_de_linea archivo linea
+# Ej: encontrar_numero_de_linea InstalaV5.conf "SECUENCIA2=5=javier=20120307 21:34"
+encontrar_numero_de_linea () {
+	LINEA=`grep -n -e "^$2$" < "$1"`
 	POS_DOS_PUNTOS=`expr index "$LINEA" :`
 	LONG_NUMERO=`expr $POS_DOS_PUNTOS - 1`
 	NUMERO=`expr substr "$LINEA" 1 $LONG_NUMERO`
