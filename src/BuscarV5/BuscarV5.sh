@@ -12,11 +12,12 @@
 # 1 - El ambiente no está inicializado
 # 2 - Otra busqueda se esta ejecutando
 
-# Separadores de tipo de contexto:
+# Tipos de contexto y separadores de campo segun tipo de informe:
 CONTEXTO_LINEA='linea'
 CONTEXTO_CARACTER='caracter'
 SEP_DETALLADOS='+-#-+'
 SEP_GLOBALES=','
+
 
 #-------------------------------
 # Funciones auxiliares
@@ -33,6 +34,7 @@ chomp () {
 }
 
 # Funcion que elimina el primer y ultimo caracter de su primer parametro
+# (Tambien podria llamarse "doble chomp")
 # Uso: Para convertir 'texto' -> texto
 # VAR=`recortar_comillas $VAR`
 recortar_comillas () {
@@ -48,6 +50,71 @@ recortar_comillas () {
 obtener_linea () {
 	RES=`head -n $2 "$1" | tail -n 1`
 	echo "$RES"
+}
+
+# Funcion que reemplaza una linea por otra en un archivo.
+# Uso: reemplazar_linea nombre_archivo numero_linea nueva_linea
+# Ej: reemplazar_linea InstalaV5.conf 4 "ID = 35, jejeje"
+reemplazar_linea () {
+	TOTAL_LINEAS=`cat "$1" | wc -l`
+	LINEA_ANTERIOR=`expr $2 - 1`
+	I='0'
+	ARCH_TEMP="$1.temp$I"
+	while [ -e "$ARCH_TEMP" ]; do
+		I=`expr $I + 1`
+		ARCH_TEMP="$1.temp$I"
+	done
+	head -n $LINEA_ANTERIOR "$1" > "$ARCH_TEMP"
+	echo "$3" >> "$ARCH_TEMP"
+	LINEAS_POSTERIORES=`expr $TOTAL_LINEAS - $2`
+	tail -n $LINEAS_POSTERIORES "$1" >> "$ARCH_TEMP"
+	cat "$ARCH_TEMP" > "$1"
+	rm "$ARCH_TEMP"
+}
+
+# Funcion que reemplaza un sector de una linea separada por algun caracter
+# por otro string
+# Uso: reemplazar_en_linea linea_original caracter_separador numero_de_campo reemplazo
+# Ej: reemplazar_en_linea "hola,que,tal,javier" , 4 daniel
+# Salida: hola,que,tal,daniel
+reemplazar_en_linea () {
+	CAMPO='1'
+	LINEA="$1"
+	RES=''
+	while [ `expr index "$LINEA" "$2"` -gt 0 ]; do
+		POS_DELIMITADOR=`expr index "$LINEA" "$2"`
+		LONG_PORCION=`expr $POS_DELIMITADOR - 1`
+		if [ $CAMPO -eq $3 ]; then
+			PORCION="$4"
+		else
+			PORCION=`expr substr "$LINEA" 1 $LONG_PORCION`
+		fi
+		# Evitar la presencia del separador al comienzo del resultado
+		if [ $CAMPO -eq 1 ]; then
+			RES="$PORCION"
+		else
+			RES="$RES$2$PORCION"
+		fi
+		LONG_LINEA=`expr length "$LINEA"`
+		SIGUIENTE_DEL_DELIMITADOR=`expr $POS_DELIMITADOR + 1`
+		LINEA=`expr substr "$LINEA" $SIGUIENTE_DEL_DELIMITADOR $LONG_LINEA`
+		CAMPO=`expr $CAMPO + 1`
+	done
+	# Anexo lo que quedo de la linea
+	if [ $CAMPO -gt 0 ]; then
+		RES="$RES$2$LINEA"
+	else
+		RES="$LINEA"
+	fi
+	echo "$RES"
+}
+
+encontrar_numero_de_linea () { # archivo linea
+	LINEA=`grep -n -e "$2" < "$1"`
+	POS_DOS_PUNTOS=`expr index "$LINEA" :`
+	LONG_NUMERO=`expr $POS_DOS_PUNTOS - 1`
+	NUMERO=`expr substr "$LINEA" 1 $LONG_NUMERO`
+	echo "$NUMERO"
 }
 
 #-------------------------------
@@ -74,11 +141,12 @@ fi
 # Determinar la cantidad de archivos en la carpeta de aceptados
 CANT_ARCHIVOS=`find "$ACEPDIR" -type f | wc -l`
 
-# Determinar el numero de ciclo:
-CICLO=`grep -e "SECUENCIA2=" < "$CONFDIR/InstalaV5.conf" | cut -d= -f2`
+# Determinar el numero de ciclo e incrementarlo para usarlo:
+CICLO=`grep -e "SECUENCIA2" < "$CONFDIR/InstalaV5.conf" | cut -d= -f2`
+CICLO=`expr $CICLO + 1`
 
 # TODO: grabar en el log esto:
-echo "Inicio BuscarV5 - Ciclo Nro: $CICLO - Cantidad de archivos: $CANT_ARCHIVOS"
+echo "[LOG] Inicio BuscarV5 - Ciclo Nro: $CICLO - Cantidad de archivos: $CANT_ARCHIVOS"
 
 # COMIENZO A PROCESAR LOS ARCHIVOS
 TOTAL_ARCHIVOS=`find "$ACEPDIR" -type f -print | wc -l`
@@ -87,7 +155,7 @@ ARCHS_SIN_PATRON="0"
 for archivo in `find "$ACEPDIR" -type f -print`
 do
 	# TODO: grabar esto en el log:
-	echo "Archivo a procesar: $archivo"
+	echo "[LOG] Archivo a procesar: $archivo"
 
 	# Analizar si el archivo esta duplicado en PROCDIR,
 	# en tal caso rechazarlo.
@@ -96,10 +164,10 @@ do
 	NOMBRE=`basename "$archivo"`
 
 	# Comprobar si el archivo esta en la carpeta de procesados
-	if [ -f "$PROCDIR/$NOMBRE" ]; then
+	if [ -e "$PROCDIR/$NOMBRE" ]; then
 		# El archivo esta duplicado
 		# TODO: escribir esto en el log:
-		echo "Archivo duplicado: $NOMBRE"
+		echo "[LOG] Archivo duplicado: $NOMBRE"
 		$BINDIR/MoverV5.sh "$archivo" "$RECHDIR"
 	else
 		# El archivo no fue procesado. Determinar el codigo de sistema:
@@ -107,14 +175,14 @@ do
 
 		# Contador de todos los hallazgos de todos los patrones
 		# aplicables al archivo
-		TOTAL_HALLAZGOS='0'  
-		
+		TOTAL_HALLAZGOS='0'
+
 		# Encontrar los patrones con el codigo de sistema
-		CANT_PATRONES=`grep -e "$COD_SIS" < "$MAEDIR/patrones" | wc -l`
+		CANT_PATRONES=`grep -c -e "$COD_SIS" < "$MAEDIR/patrones"`  # | wc -l`
 		if [ $CANT_PATRONES -eq 0 ]; then
 			# No hay patrones aplicables al archivo
 			# TODO: grabar en el log esto:
-			echo "No hay patrones aplicables al archivo"
+			echo "[LOG] No hay patrones aplicables al archivo"
 			ARCHS_SIN_PATRON=`expr $ARCHS_SIN_PATRON + 1`
 		else
 			# Si se encontraron patrones, los proceso:
@@ -124,10 +192,10 @@ do
 				then
 					# El registro del patron corresponde al archivo del mismo codigo
 					# de sistema.
-					
+
 					# Determinar el identificador de patron
 					PAT_ID=`echo "$linea_patron" | cut -d, -f1`
-					
+
 					# Determinar le expresion regular
 					EXPR_REG=`echo "$linea_patron" | cut -d, -f2`
 					# Elimino las comillas que envuelven a la expresion regular
@@ -144,10 +212,10 @@ do
 					# archivo de patrones, debo sacar el ultimo caracter
 					# que es el de fin de linea ('\n'):
 					HASTA=`chomp "$HASTA"`
-					
+
 					# Comienzo a aplicar la expresion regular del mismo codigo
 					# de sistema a las lineas del archivo:
-					CANT_HALLAZGOS='0'					
+					CANT_HALLAZGOS='0'
 					NUM_LINEA='1'
 					while read linea # lectura linea a linea del archivo de entrada de datos
 					do
@@ -159,7 +227,7 @@ do
 								# Recorto un sector de la linea del archivo:
 								LONG_RES=`echo "$HASTA - $DESDE + 1" | bc`
 								RESULTADO=`expr substr "$linea" $DESDE $LONG_RES`
-								
+
 								# Grabacion del registro en los resultados
 								REG="$CICLO$SEP_DETALLADOS$NOMBRE$SEP_DETALLADOS"
 								REG="$REG$NUM_LINEA$SEP_DETALLADOS"
@@ -175,9 +243,10 @@ do
 								while [ $I -lt $CANT_LINEAS ]; do
 									# Extraigo una linea entera del archivo:
 									RESULTADO=`obtener_linea "$archivo" $LINEA_ACTUAL`
-									
+
 									# Grabacion del registro en los resultados:
-									REG="$CICLO$SEP_DETALLADOS$NOMBRE$SEP_DETALLADOS"
+									REG="$CICLO$SEP_DETALLADOS"
+									REG="$REG$NOMBRE$SEP_DETALLADOS"
 									REG="$REG$LINEA_ACTUAL$SEP_DETALLADOS"
 									REG="$REG$RESULTADO"
 									echo "$REG" >> "$PROCDIR/resultados.$PAT_ID"
@@ -197,7 +266,7 @@ do
 					REG="$REG$HASTA$SEP_GLOBALES"
 					REG="$REG$CANT_HALLAZGOS"
 					echo "$REG" >> "$PROCDIR/rglobales.$PAT_ID"
-					
+
 					TOTAL_HALLAZGOS=`expr $TOTAL_HALLAZGOS + $CANT_HALLAZGOS`
 				fi
 			done < "$MAEDIR/patrones"
@@ -212,13 +281,16 @@ done
 # FIN DE TODOS LOS ARCHIVOS
 ARCHS_SIN_HALLAZGOS=`expr $TOTAL_ARCHIVOS - $CANT_ARCHS_CON_HALLAZGOS`
 # TODO: Grabar en el log esto:
-echo "Fin del ciclo: $CICLO
-Cantidad de archivos con hallazgos: $CANT_ARCHS_CON_HALLAZGOS
-Cantidad de archivos sin hallazgos: $ARCHS_SIN_HALLAZGOS
-Cantidad de archivos sin patron aplicable: $ARCHS_SIN_PATRON"
+echo "[LOG] Fin del ciclo: $CICLO
+[LOG] Cantidad de archivos con hallazgos: $CANT_ARCHS_CON_HALLAZGOS
+[LOG] Cantidad de archivos sin hallazgos: $ARCHS_SIN_HALLAZGOS
+[LOG] Cantidad de archivos sin patron aplicable: $ARCHS_SIN_PATRON"
 
-# Incremento el secuenciador
-CICLO=`expr $CICLO + 1`
-# TODO: actualizar en el archivo de configuraciones el ciclo.
+# Actualizo el numero de ciclo el en archivo de configuracion
+LINEA_CICLO=`grep -e "SECUENCIA2" < "$CONFDIR/InstalaV5.conf"`
+NUM_LINEA_CICLO=`encontrar_numero_de_linea "$CONFDIR/InstalaV5.conf" "$LINEA_CICLO"`
+NUEVA_LINEA=`reemplazar_en_linea "$LINEA_CICLO" = 2 "$CICLO"`
+reemplazar_linea "$CONFDIR/InstalaV5.conf" $NUM_LINEA_CICLO "$NUEVA_LINEA"
 
 exit 0
+

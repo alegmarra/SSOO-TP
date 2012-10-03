@@ -18,15 +18,7 @@ export PROCDIR
 export MAEDIR
 export RECHDIR
 
-if [ $# -gt 0 ]; then
-	if [ $1 = "-nd" ]; then
-		cat BuscarV5.sh | grep -v -e "DEBUG:"  > aux_test.sh
-		chmod a+x aux_test.sh
-		./aux_test.sh
-	fi
-else
-	./BuscarV5.sh
-fi
+./BuscarV5.sh
 
 COD_RES=$?
 
