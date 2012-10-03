@@ -74,7 +74,7 @@ reemplazar_linea () {
 
 # Funcion que reemplaza un sector de una linea separada por algun caracter
 # por otro string
-# Uso: reemplazar_en_linea linea_original caracter_separador numero_de_campo reemplazo
+# Uso: reemplazar_en_linea linea_original caracter_separador numero_de_campo_a_reemplazar texto_de_reemplazo
 # Ej: reemplazar_en_linea "hola,que,tal,javier" , 4 daniel
 # Salida: hola,que,tal,daniel
 reemplazar_en_linea () {
@@ -119,6 +119,7 @@ encontrar_numero_de_linea () {
 	NUMERO=`expr substr "$LINEA" 1 $LONG_NUMERO`
 	echo "$NUMERO"
 }
+
 
 #-------------------------------
 # Programa principal
