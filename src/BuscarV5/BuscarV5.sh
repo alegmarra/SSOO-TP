@@ -32,13 +32,20 @@ chomp () {
 }
 
 # Funcion que elimina el primer y ultimo caracter de su primer parametro
-# Uso:
+# Uso: Para convertir 'texto' -> texto
 # VAR=`recortar_comillas $VAR`
 recortar_comillas () {
 	LONG=`expr length "$1"`
 	AUX=`expr substr "$1" 2 $LONG`
 	LONG=`expr $LONG - 2`
 	RES=`expr substr "$AUX" 1 $LONG`
+	echo "$RES"
+}
+
+# Imprime una linea de un archivo.
+# Uso: LINEA85=`obtener_linea archivo 85`
+obtener_linea () {
+	RES=`head -n $2 "$1" | tail -n 1`
 	echo "$RES"
 }
 
@@ -137,12 +144,12 @@ do
 					EXPR_REG=`recortar_comillas "$EXPR_REG"`
 					# Comienzo a aplicar la expresion regular del mismo codigo
 					# de sistema a las lineas del archivo:
-					CANT_HALLAZGOS="0"
+					CANT_HALLAZGOS='0'
 					PAT_ID=`echo "$linea_patron" | cut -d, -f1`
-					NUM_LINEA="0"
+					NUM_LINEA='0'
 					while read linea # lectura linea a linea del archivo de entrada de datos
 					do
-						NUM_LINEA=`expr $NUM_LINEA + 1`
+						NUM_LINEA=`expr $NUM_LINEA + 1`  # NUM_LINEA++
 						if echo "$linea" | grep -e "$EXPR_REG" > /dev/null
 						then
 							# Se encontro una coincidencia:
@@ -152,7 +159,6 @@ do
 							# Armar el registro para grabarlo, excepto el resultado,
 							# que depende del contexto:
 							REG="$CICLO$SEP_DETALLADOS$NOMBRE$SEP_DETALLADOS"
-							REG="$REG$NUM_LINEA$SEP_DETALLADOS"
 
 							# Determinar los DESDE y HASTA:
 							DESDE=`echo "$linea_patron" | cut -d, -f5`
@@ -168,12 +174,25 @@ do
 								LONG_RES=`echo "$HASTA - $DESDE + 1" | bc`
 								RESULTADO=`expr substr "$linea" $DESDE $LONG_RES`
 								# Grabacion del registro en los resultados
+								REG="$REG$NUM_LINEA$SEP_DETALLADOS"
 								REG="$REG$RESULTADO"
 								echo "$REG" >> "$PROCDIR/resultados.$PAT_ID"
 							fi
 							if [ "$TIPO_CONTEXTO" = "$CONTEXTO_LINEA" ]; then
-								# TODO: completar el contexto linea
-								echo "Contexto linea"
+								# Debo obtener algunos registros del archivo procesado
+								# segun los valores DESDE y HASTA:
+								I='0'
+								CANT_LINEAS=`echo "$HASTA - $DESDE + 1" | bc`
+								LINEA_ACTUAL=$NUM_LINEA
+								while [ $I -lt $CANT_LINEAS ]; do
+									RESULTADO=`obtener_linea "$archivo" $LINEA_ACTUAL`
+									# Grabacion del registro en los resultados
+									REG="$REG$LINEA_ACTUAL$SEP_DETALLADOS"
+									REG="$REG$RESULTADO"
+									echo "$REG" >> "$PROCDIR/resultados.$PAT_ID"
+									LINEA_ACTUAL=`echo "$LINEA_ACTUAL + 1" | bc`  # LINEA_ACTUAL++
+									I=`echo "$I + 1" | bc`  # I++
+								done
 							fi
 						fi
 					done < "$archivo"
