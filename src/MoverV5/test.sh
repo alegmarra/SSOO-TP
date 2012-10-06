@@ -5,20 +5,20 @@
 
 resultado (){
 
-	destino="./tests/""$2"".result"
+	destino="./tests/brief.result"
 
-	if [ !"$1" ]; then
-		echo "TEST OK" >> "$destino"
+	if ! "$1" ; then
+		echo "TEST $2 OK" >> "$destino"
 	else
-		echo "TEST FAILED" >> "$destino"
+		echo "TEST $2 FAILED" >> "$destino"
 	fi
 
 }
 
 limpiar () {
 	
-	rm -f *.test
-	rm -f ./tests/*.test
+	rm -f ./*.test
+	find ./tests -type f ! -name '*.result' | xargs rm -f
 }
 
 # Test mover archivo valido a directorio valido, sin duplicado
@@ -29,8 +29,9 @@ test_moverArchivo_OrigenDestinoValidos () {
 
 	# Creacion
 	echo "test_1" > 1.test
-	
-	./moverV5.sh 1.test tests "pcional"
+	echo "Origen - Destino Validos" >> ./tests/1.result
+
+	./moverV5.sh 1.test tests "Loguear"
 	
 	# Prueba
 	if [ -e 1.test ]; then
@@ -58,9 +59,11 @@ test_moverArchivo_OrigenValido_DestinoInvalido () {
 	falla=false
 	
 	# Creacion
-	echo "test_2" > 2.test
+	echo "test_2" >> 2.test
+	echo "Origen Valido - Destino Invalido" >> ./tests/2.result
 	
-	./moverV5.sh 2.test inexistente
+	./moverV5.sh 2.test inexistente "Loguear"
+
 	
 	# Prueba
 	if [ ! -e 2.test ]; then
@@ -79,7 +82,10 @@ test_moverArchivo_OrigenInvalido_DestinoValido () {
 
 	falla=false
 	
-	./moverV5.sh 3.test tests
+	echo "Origen Invalido - Destino Valido" >> ./tests/3.result
+
+	./moverV5.sh 3.test tests "Loguear"
+
 	
 	# Prueba
 	if [ -e 3.test ]; then
@@ -107,9 +113,11 @@ test_moverArchivo_OrigenDuplicado_DestinoValido () {
 	# Creacion
 	echo "test_4" > 4.test
 	echo "test_4" > ./tests/4.test
+	echo "Origen duplicado en Destino" >> ./tests/4.result
 
 		
-	./moverV5.sh 4.test tests
+	./moverV5.sh 4.test tests "Loguear"
+
 	
 	# Prueba
 	if [ -e 4.test ]; then
@@ -118,23 +126,56 @@ test_moverArchivo_OrigenDuplicado_DestinoValido () {
 	fi
 	
 	if [ ! -e ./tests/4.test ]; then
-		echo "Falla: Elimina archivo existente en destino" >> ./tests/4.result
+		echo "Falla: Elimina archivo existente en destino" \
+		>> ./tests/4.result
 		falla=true
 	fi
 	
-	if [ ! -e "./tests/4"[0..*]".test" ]; then
-		echo "Falla: No movido origen con cambio de secuenciador" >> ./tests/4.result
+	if [ ! -e "./tests/4.test."[0-9+] ]; then
+		echo "Falla: No movido origen con cambio de secuenciador" \
+		>> ./tests/4.result
 		falla=true
 	fi
 	
 	resultado "$falla" 4
 	limpiar 
+}
+
+# Test mover origen igual destino 
+
+test_moverArchivo_OrigenDestinoInvalidos_Iguales () {
+
+	falla=false
+	
+	# Creacion
+	echo "test_5" >> 5.test
+	echo "Origen - Destino Iguales" >> ./tests/5.result
+
+	./moverV5.sh ./5.test ./ "Loguear"
+	salida=$?
+	
+	# Prueba
+	if [[ ! -e 5.test ]]; then
+		echo "Falla: Reemplaza archivo de origen" \
+		>> ./tests/5.result
+		falla=true
+	fi
+	
+	if [[ $salida -ne 1 ]]; then
+		echo "Falla: No retorna con error" \
+		>> ./tests/5.result
+		falla=true
+	fi
+
+	resultado "$falla" 5
+	limpiar 
 	
 }
 
-#MAIN
 
-limpiar; rm -f ./tests/*.result 
+
+#MAIN
+limpiar; rm -f ./tests/*.result ./mover.log
 
 test_moverArchivo_OrigenDestinoValidos
 
@@ -144,4 +185,6 @@ test_moverArchivo_OrigenInvalido_DestinoValido
 
 test_moverArchivo_OrigenDuplicado_DestinoValido
 
-more ./tests/*  
+test_moverArchivo_OrigenDestinoInvalidos_Iguales
+
+cat ./tests/brief.result  

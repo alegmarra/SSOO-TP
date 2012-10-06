@@ -2,7 +2,7 @@
 
 # MoverV5 -v 1.0 
 # Mueve archivos de un directorio a otro, controlando posibles duplicados.
-# @arg1    ruta origen
+# @arg1    archivo  origen
 # @arg2    ruta destino
 # @arg3    codigo comando invocante - Obligatorio si precisan logueo
 
@@ -10,18 +10,27 @@
 # Validación de directorios
 argumentosValidos () {
  
-	if [ $1 == $2 ]; then 
-		return 1
+	# Normalizacion, elimina '/' final del nombre
+	if [[ $1 == */ ]]; then origenDir=${1%/}
+	else origenDir=${1%/*}
+	fi
+	
+	if [[ $2 == */ ]]; then destinoDir=${2%/}
+	else destinoDir=$2
+	fi
+	
+	#Testeo
+	if [ "$origenDir" == "$destinoDir" ]; then 
+		return 1 
 	else 
 		if [ ! -e $1 ]; then
-			if [ ! -d $1 ]; then
-				
+			if [ ! -d "$origenDir" ]; then
 				return 1
 			fi
 		fi	
 	
-		if [ ! -d $2 ]; then
-			return 1 
+		if [ ! -d "$destinoDir" ]; then
+			return 1
 		fi
 	fi
 
@@ -51,7 +60,10 @@ fi
 origen=$1
 destino=$2
 
-if argumentosValidos $origen $destino; then
+argumentosValidos $origen $destino
+sonValidos=$? 
+
+if [[ $sonValidos -eq 0 ]]; then
 	
 	# -n impide el movimiento si existe el archivo en el destino
 	mv -n $origen $destino
@@ -62,7 +74,7 @@ if argumentosValidos $origen $destino; then
 		# numero de en la secuencia
 		obtenerSecuenciador $destino
 		numCopia=$?
-		origenNext=$origen""$numCopia
+		origenNext=$origen"."$numCopia
 
 		# renombra el archivo
 		mv $origen $origenNext
@@ -74,7 +86,6 @@ if argumentosValidos $origen $destino; then
 		# no pudo mover el archivo, retorna con codigo de error
 		if [ ! -z "$3" ]; then 
 			# @TODO log de error
-
 			echo "NO PUDO MOVER" >> mover.log
 		fi
 		exit 1
@@ -82,7 +93,9 @@ if argumentosValidos $origen $destino; then
 else
 	if [ ! -z "$3" ]; then 
 		# @TODO log de error
-			echo "ARG invalidos" >> mover.log
+		echo "ARG invalidos" >> mover.log
 	fi
 	exit 1
 fi
+
+exit 0
