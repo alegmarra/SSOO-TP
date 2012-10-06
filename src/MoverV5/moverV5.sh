@@ -39,7 +39,8 @@ argumentosValidos () {
 
 
 obtenerSecuenciador () {
-
+	
+# @TODO SECUENCIADOR CORRECTO
 	return 4
 
 }
