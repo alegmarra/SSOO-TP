@@ -50,11 +50,12 @@ obtenerSecuenciador () {
 	
 	dirDestino=${2%/}/
 	tempFile="max.tmp"
-	
+	maxPath="`dirname \"$0\"`""/bin/getMax.sh" 
+
 	echo "0" > "$tempFile"
 
 	find "$dirDestino" -type f -regex "$dirDestino$archivo""_\([0-9]*\)_" \
-	-exec ./bin/getMax.sh {} "$tempFile" \;
+	-exec "$maxPath" {} "$tempFile" \;
 
 	max=$(head -n 1 "$tempFile"); rm "$tempFile"
 
