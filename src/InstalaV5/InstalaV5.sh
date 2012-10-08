@@ -12,7 +12,7 @@
 NOM_VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE 
 DATASIZE SECUENCIA1 SECUENCIA2)
 
-declare -A DESCRIP_DIR=( ["CONFDIR"]="Directorio donde se encuentras los archivos de Configuracion del Sistema" \
+declare -A DESCRIP_DIR=( ["CONFDIR"]="Directorio donde se encuentran los archivos de Configuracion del Sistema" \
 	["BINDIR"]="Directorio donde se encuentran los ejectubles del Sistema" \
 	["ACEPDIR"]="Directorio donde se encuentran los archivos aceptados" \
 	)
