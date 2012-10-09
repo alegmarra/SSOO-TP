@@ -8,6 +8,7 @@ DESCRIP_DIR : Descripcion de que es cada carpeta, almacenada en un mapa segun su
 
 NOM_COMANDOS : vector con los nombres de los comandos del sistema.
 COM_INSTALADOS: Mapa que para un nombre de comando, indica si esta o no instalado(true o false (va en contra de mi pero para simplificar y no poner "VERDADERO").
+ARCH_INSTALADOS:mapa que un nombre de archivos, indica si esta o no instalado(con true o false)
 
 RETORNO: variable de ambiente utilizada como dato de retorno de cualquier funcion
 
@@ -19,7 +20,7 @@ RETORNO: variable de ambiente utilizada como dato de retorno de cualquier funcio
 Buscar instalaciones anteriores 
 Si se encontro
 	Cargar Datos de Instalacion anterior
-	Si se recibieron parametros 
+	Si se recivieron parametros 
 		Instalar los comandos ingresados
 	Sino
 		Verificar que la instalacion este completa
