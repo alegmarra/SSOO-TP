@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#DAEMON=> nohup ./DetectaV5.sh 0<&- 1>/dev/null 2>&1 &
+
+
 validarFormato () {
 
 	if [[ ${1##*/} =~ [[:alnum:]+]_[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]
@@ -95,13 +98,12 @@ fi
 
 
 pName="DetectaV5.sh"
-numIDs=`ps -C "$pName" -o "pid=" | wc -l`
 
-if [[ $numIDs -gt 2 ]]; then
+if [[ `ps -C "$pName" -o "pid=" | wc -l` -gt 2 ]]; then
 
 	prevID=` ps -C "$pName" -o "pid=" ` 
-	prevID=${prevID/$$}
-	echo -n "DetectaV5 ya se encuentra en ejecucion. Proceso $prevID "
+	prevID=${prevID/[^0-9]*$$}
+	echo "DetectaV5 ya se encuentra en ejecucion. Proceso $prevID "
 	
 	exit 1
 
