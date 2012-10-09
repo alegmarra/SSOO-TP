@@ -45,16 +45,16 @@ validarFecha () {
 			reg=`grep "^${id%_*};[^;]\+;[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\};*" ${MAEDIR}/sistemas`
 			
 			regFechas=${reg#*;*;}
-			inicio=${regFechas%;*}
-			fin=${regFechas#*;}
+			alta=${regFechas%;*}
+			baja=${regFechas#*;}
 
-			# Si es mayor a la fecha de inicio del sistema
-			if [[ ${fecha} -ge ${inicio//-/} ]]; 
+			# Si es mayor a la fecha de alta del sistema
+			if [[ ${fecha} -ge ${alta//-/} ]]; 
 			then
-				if [[ ! -z "$fin" ]]; 
+				if [[ ! -z "$baja" ]]; 
 				then
-					# Si es menor a la fecha de fin del sistema
-					if [[ ${fecha} -le ${fin//-/} ]]; 
+					# Si es menor a la fecha de baja del sistema
+					if [[ ${fecha} -le ${baja//-/} ]]; 
 					then 
 						return 0
 					else
@@ -71,24 +71,44 @@ validarFecha () {
 
 }
 
-# @TODO Check si ENTORNO INICIALIZADO
+
+### MAIN ########
 
 # Coloco paths DE PRUEBA, @TODO usar el path correcto
 ARRDIR="./tests/arribos"
 MAEDIR="./tests/maestros"
 RECHDIR="./tests/rechazados"
 ACEPDIR="./tests/aceptados"
+BINDIR="./tests"
+SLEEPTIME="2" #segundos
 
-#@TODO manejo de path a otros script externos
+
+# Verificar si la inicializacion de ambiente
+# se realizo anteriormente:
+$BINDIR/IniciarV5.sh -inicializado > /dev/null
+INICIALIZADO=$? # atrapo el codigo de retorno de IniciarV5
+if [ $INICIALIZADO -eq 1 ]; then
+        echo "El sistema no fue inicializado.
+Debe inicializarlo antes con el comando $BINDIR/IniciarV5."
+        exit 1
+fi
+
 
 pName="DetectaV5.sh"
-pID=`ps -C "$pName" -o "pid="`
+numIDs=`ps -C "$pName" -o "pid=" | wc -l`
 
-if [[ $? -eq 1 ]]; then
-	#@TODO Log de error
-	echo "Ya existe otro proceso en ejecucion"
+if [[ $numIDs -gt 2 ]]; then
+
+	prevID=` ps -C "$pName" -o "pid=" ` 
+	prevID=${prevID/$$}
+	echo -n "DetectaV5 ya se encuentra en ejecucion. Proceso $prevID "
+	
 	exit 1
+
 fi
+
+
+while true; do
 
 arribos=`find "$ARRDIR" -maxdepth 1 -type f -regex ${ARRDIR%/}"/.*" | wc -l`
 
@@ -105,25 +125,45 @@ if [[ $arribos -gt 0 ]]; then
 				validarFecha "$file"
 				if [[ "$?" -eq 0  ]]; then
 					
-					../MoverV5/moverV5.sh "$file" "$ACEPDIR"
+					$BINDIR/MoverV5.sh "$file" "$ACEPDIR"
 					# @TODO log de exito			
 
 				else
 				# Fecha invalida
-					../MoverV5/moverV5.sh "$file" "$RECHDIR"
+					$BINDIR/MoverV5.sh "$file" "$RECHDIR"
 					#@TODO log de rechazo
 				fi
 		
 			else
 			# SIS_ID invalido
-				../MoverV5/moverV5.sh "$file" "$RECHDIR"
+				$BINDIR/MoverV5.sh "$file" "$RECHDIR"
 				#@TODO log de rechazo
 			fi
 		else
 		# Formato invalido
-			../MoverV5/moverV5.sh "$file" "$RECHDIR"
+			$BINDIR/MoverV5.sh "$file" "$RECHDIR"
 			#@TODO log de rechazo
 		fi
 	done
 fi
 
+
+
+aceptados=`find "$ACEPDIR" -maxdepth 1 -type f -regex ${ACEPDIR%/}"/.*" | wc -l`
+ 
+if [[ $aceptados -gt 0 ]]; then
+
+	pName="BuscarV5.sh"
+	pID=`ps -C "$pName" -o "pid="`
+	
+	if [[ $pID -eq 0 ]]; then
+		$BINDIR/$pName
+	else 
+		echo "BuscarV5 ya se encuentra en ejecucion. Proceso ${pID/$'\n'}"
+	fi
+		
+fi
+
+sleep "$SLEEPTIME"
+
+done
