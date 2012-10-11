@@ -10,7 +10,7 @@
 
 NOM_ARCH_CONFIG="InstalaV5.conf"
 NOM_ARCH_DE_INSTALACION="arch-sistema.dat"
-NOM_DIR_ARCH_DE_INSTALACION="arch_instalcion"
+DIR_ARCH_DE_INSTALACION="arch_instalcion"
 
 ESTADO_INSTALACION="I" # 3 estados (INCOMPLETO(I), PARCIAL(P), COMPLETO(C))
 
@@ -27,16 +27,28 @@ declare -A DESCRIP_DIR=( ["CONFDIR"]="Directorio donde se encuentras los archivo
 	["LOGDIR"]="directorio de grabacion de los logs del sistema" \
 	)
 
+declare -A DESCRIP_DIR_RES=( ["CONFDIR"]="Libreria del Sistema" \
+	["BINDIR"]="Ejecutables" \
+	["MAEDIR"]="Archivos Maestros" \
+	["ARRIDIR"]="Arribo de archivos externos" \
+	["ACEPDIR"]="Archivos Externo Aceptados" \
+	["RECHDIR"]="Archivos Externos Rechazados" \
+	["PROCDIR"]="Archivos procesado" \
+	["REPODIR"]="Reportes de Salida" \
+	["LOGDIR"]="Logs de auditoria del Sistema" \
+	)
+
 declare -A VARIABLES=( ["BINDIR"]="grupo07" ["CONFDIR"]="config" )
 
-# poner los faltantes
+DIR_INSTALADOS=false
+
 NOM_COM=(IniciarV5 DetectaV5 BuscarV5 ListarV5 MoverV5 LoguearV5 MirarV5 StopD StartD)
-COM_INSTALADOS=( ["${NOM_COM[0]}"]=false ["${NOM_COM[1]}"]=false ["${NOM_COM[2]}"]=false ["${NOM_COM[3]}"]=false \
+declare -A COM_INSTALADOS=( ["${NOM_COM[0]}"]=false ["${NOM_COM[1]}"]=false ["${NOM_COM[2]}"]=false ["${NOM_COM[3]}"]=false \
 	["${NOM_COM[3]}"]=false ["${NOM_COM[4]}"]=false ["${NOM_COM[5]}"]=false ["${NOM_COM[6]}"]=false \
 	["${NOM_COM[7]}"]=false ["${NOM_COM[8]}"]=false)
 
 ARCH_MAESTROS=( patrones sistemas )
-ARCH_MAE_INSTALADOS=( ["${ARCH_MAESTROS[0]}"]=false ["${ARCH_MAESTROS[1]}"]=false )
+declare -A ARCH_MAE_INSTALADOS=( ["${ARCH_MAESTROS[0]}"]=false ["${ARCH_MAESTROS[1]}"]=false )
 RETORNO=""
 
 
@@ -53,7 +65,7 @@ RETORNO=""
 # Arg0: Mensaje a mostrar
 # Arg1: Numero de etapa (solo se muestran los msj con el mismo numero de etapa)
 function echo_depuracion {
-	if [ "$2" == "0" ]; then
+	if [ "$2" == "1" ]; then
 		echo $1
 	fi
 	return 0
@@ -123,6 +135,8 @@ function crear_carpetas {
 		fi
 
 	done
+	
+	DIR_INSTALADOS=true
 
 	return 0
 }
@@ -260,13 +274,14 @@ function guardar_configuracion {
 		# Guardo las datos de instalacion particulares
 		for var in "${NOM_COM[@]}"; do
 			
-			if [ "$COM_INSTALADOS[$var]" == true ]; then
+			if [ "${COM_INSTALADOS[$var]}" == "true" ]; then
+				echo_depuracion "---se va a guardar $var" 1
 				grep "^COMANDO=${var}.*" "$NOM_ARCH_CONFIG" > aux
-				
 				
 				if [ "$?" != "0" ]; then				
 					registro="COMANDO=${var}=INSTALADO=$fecha_creacion"
 					echo "$registro" >> "$NOM_ARCH_CONFIG"
+					echo_depuracion "+++se guardo$var" 1
 				fi
 			fi
 
@@ -274,7 +289,7 @@ function guardar_configuracion {
 		
 		for var in "${NOM_COM[@]}"; do
 			
-			if [ "$ARCH_MAE_INSTALADOS[$var]" == true ]; then
+			if [ "${ARCH_MAE_INSTALADOS[$var]}" == "true" ]; then
 				grep "^ARCHIVO=${var}.*" "$NOM_ARCH_CONFIG" > aux
 				
 				if [ "$?" !=  "0" ]; then
@@ -285,44 +300,19 @@ function guardar_configuracion {
 
 		done
 		
+		if [ "$DIR_INSTALADOS" == "true" ]; then
+			grep "^DIRECTORIOS=INSTALADOS=.*" "$NOM_ARCH_CONFIG" > aux
+			if [ "$?" != "0" ]; then
+				registro="DIRECTORIOS=INSTALADOS=$fecha_creacion"
+				echo "$registro" >> "$NOM_ARCH_CONFIG"
+			fi 
+		fi
+		
+		
 		if [ -f aux ]; then
 			rm aux
 		fi
-	
-	#else
-		
-	
-		#registro="GRUPO"="${VARIABLES[GRUPO]}"="$USERNAME"="${fecha_creacion}"
-	
-		#echo "$registro" > "$NOM_ARCH_CONFIG"
-
-		#for var in "${NOM_VARIABLES[@]}"; do
-	
-			#if [ "$var" != "GRUPO" ]; then
-				#registro="${var}=${VARIABLES[GRUPO]}/${VARIABLES[$var]}=$USERNAME=${fecha_creacion}"
-				#echo "$registro" >> "$NOM_ARCH_CONFIG"
-			#fi		
-
-		#done
-
-		#for var in "${NOM_COM[@]}"; do
-			#if [ "$COM_INSTALADOS[$var]" == true ]; then
-				#registro="COMANDO=${var}=INSTALADO=$fecha_creacion"
-				#echo "$registro" >> "$NOM_ARCH_CONFIG"
-			#fi
-
-		#done
-
-	
-		#for var in "${ARCH_MAESTROS[@]}"; do
-			#if [ "$ARCH_MAE_INSTALADOS[$var]" == true ]; then
-				#registro="ARCHIVO=${var}=INSTALADO=$fecha_creacion"
-				#echo "$registro" >> "$NOM_ARCH_CONFIG"
-			#fi
-
-		#done
-	#fi
-		
+			
 		cd ..
 	else
 		echo "Error al guardar configuracion: No existe carpeta de configuracion"
@@ -337,7 +327,7 @@ function guardar_configuracion {
 ## Arg0: ruta del archivo de configuracion
 ##
 function cargar_configuracion {
-	
+		
 	echo_depuracion "Se estan por cargar las variables" 0
 
 	declare local ruta_arch=$1
@@ -392,7 +382,13 @@ function cargar_configuracion {
 				ARCH_MAE_INSTALADOS[${nom_arch}]=true
 			fi
 		done
-				
+		
+		grep "^DIRECTORIOS=INSTALADOS.*" "$ruta_arch" > aux
+		
+		if [ $? -eq 0 ]; then
+			DIR_INSTALADOS=true
+			echo_depuracion "Se Instalaron los directorios Correctamente" 1
+		fi
 		
 		rm comandos.dat
 		rm archivos.dat		
@@ -499,20 +495,21 @@ function confirmar_respuesta {
 ## RETORNO: true si perl se encuentra instalado en el sistema, false sino.
 ##
 function verificar_perl_instalado {
-
-	which perl > ruta
 	
-	if [ $? -eq 0 ]; then
-
+	declare local ruta_perl
+	ruta_perl=`which perl`
+	
+	if [ -n "$ruta_perl" ]; then
+		echo "Perl Instalado."
+		
 		RETORNO=true
 	else
 		RETORNO=false
 		echo "Perl no se encuentra instalado. Se nesecista tener Perl 5 o superior"
 		echo "Instale Perl en su sistema e inicie nuevamente la instalacion"
-		echo "Fin de Instalacion."
+		finalizar_instalacion 1
 	fi	
 
-	rm ruta	
 
 	return 0
 }
@@ -575,11 +572,48 @@ function reparar_sistema {
 		if [ "${ARCH_MAE_INSTALADOS[$com]}" == false ]; then
 			instalar_componente "$arch"
 			#loguear archivo instalado
-			ARCH_MAR_INSTALADOS["$arch"]=true
+			ARCH_MAE_INSTALADOS["$arch"]=true
 		fi
 		
 	done
 
+	return 0
+}
+
+########################################################################
+##
+## Funcion que retorna un booleano indicando si existe o no dentro del 
+## sistema el componente pasado como argumento(No si esta instalado, si
+## es parte del sistema.)
+## Arg0: componente a comprobar su existencia
+## RETORNO: "true" si existe, "false" si no
+
+function existe_componente {
+	
+	declare local existe=false
+	declare local componente=$1
+	declare local i=0
+	
+	
+	while [ $existe == false ] && [ $i -lt ${#NOM_COM[@]} ]; do
+		if [ "${NOM_COM[$i]}" == "$componente" ]; then
+			existe=true;
+		fi
+		let i=$i+1
+	done
+	
+	i=0
+	
+	while [ $existe == false ] && [ $i -lt ${#ARCH_MAESTROS[@]} ]; do
+		if [ "${ARCH_MAESTROS[$i]}" == "$componente" ]; then
+			existe=true;
+		fi
+		let i=$i+1
+	done
+	
+	
+	RETORNO=$existe
+	
 	return 0
 }
 
@@ -591,19 +625,32 @@ function reparar_sistema {
 
 function instalar_componente {
 	declare local comp_a_inst=$1
+	declare local dir="$DIR_ARCH_DE_INSTALACION"
 
 	if [ -n "${COM_INSTALADOS[$comp_a_inst]}" ]; then
 		if [ -d "${VARIABLES[BINDIR]}" ]; then
-			## Copiar el desde la fuente el archivo orignal a la carpeta de maestros
-			RETORNO="Comando \"${comp_a_inst}\" instalado correctamente."
+			if [ "${COM_INSTALADOS[$comp_a_inst]}" == false ]; then
+				## Copiar el desde la fuente el archivo orignal a la carpeta de maestros
+				cp ${dir}/${comp_a_inst}* "${VARIABLES[BINDIR]}"
+				COM_INSTALADOS["$comp_a_inst"]="true"
+				RETORNO="Comando \"${comp_a_inst}\" instalado correctamente."
+			else
+				RETORNO="Comando \"${comp_a_inst}\" ya se encuentra instalado."
+			fi
 		else
 			RETORNO="Falta la carpeta de los ejecutables para instalar el comando \"${comp_a_inst}\"."
 		fi
 
 	elif [ -n "${ARCH_MAE_INSTALADOS[$comp_a_inst]}" ]; then
 		if [ -d "${VARIABLES[MAEDIR]}" ]; then
-			## Copiar el desde la fuente el archivo orignal a la carpeta de maestros
-			RETORNO="Archivo \"${comp_a_inst}\" instalado correctamente."
+			if [ "${ARCH_MAE_INSTALADOS[$comp_a_inst]}" == false ]; then
+				## Copiar el desde la fuente el archivo orignal a la carpeta de maestros
+				cp ${dir}/${comp_a_inst}* "${VARIABLES[MAEDIR]}"
+				ARCH_MAE_INSTALADOS["$comp_a_inst"]="true"
+				RETORNO="Archivo \"${comp_a_inst}\" instalado correctamente."
+			else
+				RETORNO="Archivo \"${comp_a_inst}\" ya se encuentra instalado."
+			fi
 		else
 			RETORNO="Falta la carpeta de archivos maestros para instalar \"${comp_a_inst}\"."
 		fi
@@ -615,6 +662,41 @@ function instalar_componente {
 	return 0
 }
 
+#######################################################################
+##
+##
+
+function mostrar_dir_instalados {
+	
+	declare local var
+	declare local nom_var	
+	declare local grupo
+	
+	grupo="${VARIABLES[GRUPO]}"
+	
+	for nom_var in "${NOM_VARIABLES[@]}";do
+	var="${VARIABLES[$nom_var]}"
+		
+		if [ $nom_var != "GRUPO" ];then	
+			if [ $nom_var == "BINDIR" ] || [ $nom_var == "MAEDIR" ] \
+			|| [ $nom_var == "CONFDIR" ]; then
+			
+				echo "-${DESCRIP_DIR_RES[$nom_var]}: ${grupo}/${var}"
+				ls "$var"
+			
+			elif [ $nom_var == "LOGDIR" ]; then
+				echo "-${DESCRIP_DIR_RES[$nom_var]}: ${var}/<comando>.${VARIABLES[LOGEXT]}"
+			else
+				if [ -n "${DESCRIP_DIR_RES[$nom_var]}" ];then
+					echo "-${DESCRIP_DIR_RES[$nom_var]}: ${var}"
+				fi
+			fi
+		fi
+		
+	done
+	
+	return 0
+}
 
 ########################################################################
 ##
@@ -623,10 +705,55 @@ function instalar_componente {
 
 function mostrar_componentes_instalados {
 	
-	echo "Componentes Instalados:... "
-	echo "Falta implementar esta funcion"
+	declare local est_inst
+	declare local nom_comp
+	declare local var
 	
 	
+	if [ "$ESTADO_INSTALACION" == "C" ];then
+		est_inst="COMPLETA"
+		echo
+		echo "Componentes Instalados:"
+		mostrar_dir_instalados
+		
+	
+	elif [ "$ESTADO_INSTALACION" == "P" ]; then
+		est_inst="PARCIAL"
+		echo
+		echo "Componentes Instalados:"
+		if [ "$DIR_INSTALADOS" == true ];then
+			mostrar_dir_instalados
+		fi
+		
+		## Se comienzan a listar los componentes faltantes
+		echo
+		echo "Componentes Faltantes: "
+		
+		for nom_comp in "${NOM_COM[@]}"; do
+			if [ "${COM_INSTALADOS[$nom_comp]}" == "false" ]; then
+				echo "-Comando: \"${nom_comp}\""
+			fi
+		done
+		
+		for nom_comp in "${ARCH_MAESTROS[@]}"; do
+			if [ "${ARCH_MAE_INSTALADOS[$nom_comp]}" == "false" ]; then
+				echo "-Archivo Maestro: \"${nom_comp}\""
+			fi
+		done
+		
+	elif [ "$ESTADO_INSTALACION" == "I" ]; then
+		echo "No hay ningun componente Instalado"
+		est_inst="INCOMPLETA"
+	else
+		est_inst="Error, no se puede determinar"
+	fi
+		
+	echo
+	
+	echo "Estado de la Instalacion: $est_inst"
+	
+	echo
+
 	
 	return 0
 }
@@ -662,6 +789,11 @@ function verificar_estado_de_instalacion {
 		fi
 	done
 	
+	
+	if [ "$DIR_INSTALADOS" == true ]; then
+		hay_componentes=true;
+	fi
+	
 	if [ "$hay_componentes" == true ]; then
 		if [ "$faltan_componentes" == true ];then
 			ESTADO_INSTALACION="P"
@@ -683,6 +815,53 @@ function verificar_estado_de_instalacion {
 }
 
 ########################################################################
+##
+##
+##
+
+function comprobar_arch_de_instalacion {
+
+	if [ -f "$NOM_ARCH_DE_INSTALACION" ]; then
+		if [ -d "$DIR_ARCH_DE_INSTALACION" ];then
+			:
+		else
+			mkdir "$DIR_ARCH_DE_INSTALACION"
+		fi
+		
+		tar -xf "$NOM_ARCH_DE_INSTALACION" -C "$DIR_ARCH_DE_INSTALACION"
+		
+	else
+		echo "Falta archivo de Instalacion \"${NOM_ARCH_DE_INSTALACION}\""
+		finalizar_instalacion 2
+	fi
+	
+	
+
+	return 0
+}
+
+########################################################################
+##
+##
+##
+
+function finalizar_instalacion {
+	
+	if [ "$1" != "0" ]; then
+		echo "Instalacion Cancelada."
+	else
+		echo "Fin Instalacion."
+	fi
+	
+	if [ -d "$DIR_ARCH_DE_INSTALACION" ]; then
+		rm "${DIR_ARCH_DE_INSTALACION}/"*
+		rmdir "${DIR_ARCH_DE_INSTALACION}"
+	fi
+	
+	return 0
+}
+
+########################################################################
 ########################################################################
 ########################################################################
 ###								     ###
@@ -693,52 +872,83 @@ function verificar_estado_de_instalacion {
 ########################################################################
 
 clear
+
+comprobar_arch_de_instalacion
+
 echo "TP SO7508 1er cuatrimetre 2012. Tema V, Derechos Reservados, Grupo 7"
 echo "Instalacion de Sistema V-FIVE"
 
 buscar_archivo "$NOM_ARCH_CONFIG"
 
-echo "Tamanio de Retorno: ${#RETORNO}"
-
 if [ -n "$RETORNO" ]; then	
-
-	echo_depuracion "Se entro al modo de completar" 0
+	#########################################################
+	## Se inicia la instalacion con otra ya hecha previamente
+	#########################################################
+	echo_depuracion "Se entro al modo de completar" 1
 	ruta_arch_config=$RETORNO
+	
 	
 	cargar_configuracion "$ruta_arch_config"
 	verificar_estado_de_instalacion
 	mostrar_componentes_instalados
+	verificar_perl_instalado
 	
-	#INST_COMPLETA=$RETORNO
 
-	if [ "$ESTADO_INSTALACION" == "P" ]; then
+	if [ "$ESTADO_INSTALACION" != "C" ]; then
 
 		if [ $# -eq 0 ]; then
 			confirmar_respuesta "Faltan Componentes en el Sistema. ¿Instalar componentes faltantes?"
 			REPARAR=$RETORNO
-	
-			reparar_sistema
+			if [ $RETORNO == true ];then
+				reparar_sistema
+			fi
 		else
 			
-			# Se instalaran los comandos argumento uno por uno
-			for COM in "$@"; do
-				instalar_componente "$COM"
-				echo "$RETORNO"
-			done
+			confirmar_respuesta "¿Continuar con instalacion de Componentes Ingresados?"
+			
+			if [ "$RETORNO" == true ];then
+				# Se instalaran los comandos argumento uno por uno
+				for COM in "$@"; do
+					existe_componente "$COM"
+					
+					if [ "$RETORNO" == "true" ]; then
+						confirmar_respuesta "¿Instalar Componente \"${COM}\"?"
+						if [ "$RETORNO" == true ]; then
+							instalar_componente "$COM"
+						fi
+					else
+						echo "El componente \"$COM\" no es parte de sistema"
+					fi
+					echo "$RETORNO"
+				done
+			fi
 
 		fi
+	
+		guardar_configuracion
 		
-	elif [ "$ESTADO_INSTALACION" == "X" ];then
+		## ver porque no se guarda o recuparan bien los datos de los
+		# archivos maestros
+	
+	elif [ "$ESTADO_INSTALACION" == "C" ]; then
+		echo "El Sistema ya se encuentra instalado completamente"	
+			
+	else
 		echo "Error en comprobacion de componentes del sistema"
 	
-	else
-		echo "El Sistema ya se encuentra instalado completamente"	
 	fi
 
 else
+	##################################################
+	## Se incia el modo de instalacion desde cero
+	##################################################
 	echo_depuracion "Se entro en la instalcion normal"	
 
+
+	verificar_perl_instalado
 	CONFIRMACION=false
+	
+	echo "Defina los Directorios del Sistema"
 	
 	while [ "$CONFIRMACION" == false ]; do
 
@@ -767,17 +977,31 @@ else
 			#guardar archivo Configuracion
 			echo "Instalacion realizada exitosamente"
 		else
-			echo "Instalacion Cancelada"
+			echo "Instalacion Cancelada."
 		fi
 	else
-		confirmar_respuesta "Instalar Componentes(${@})?"
+		confirmar_respuesta "¿Continuar con Instalacion de Componentes Ingresados?"
 		CONFIRMACION=$RETORNO
-		# Se instalaran los comandos argumento uno por uno
-		crear_carpetas 
+		
+		# Se instalaran los comandos argumento uno por uno 
 		if [ "$CONFIRMACION" == true ]; then
+			crear_carpetas
 			for COM in "$@"; do
-				instalar_componente "$COM"
-				echo "$RETORNO"
+			
+				existe_componente "$COM"
+				
+				if [ "$RETORNO" == "true" ]; then
+				
+					confirmar_respuesta "¿Instalar Componente \"${COM}\"?"
+					CONFIRMACION=$RETORNO
+					
+					if [ "$RETORNO" == true ];then
+						instalar_componente "$COM"
+						echo "$RETORNO"
+					fi
+				else
+					echo "El componente \"$COM\" no es parte de sistema"
+				fi
 			done
 		fi
 		guardar_configuracion
@@ -787,4 +1011,4 @@ else
 fi
 
 
-echo "Fin de Instalacion"
+finalizar_instalacion 0
