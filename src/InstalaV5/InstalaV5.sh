@@ -12,8 +12,9 @@ NOM_ARCH_CONFIG="InstalaV5.conf"
 NOM_ARCH_DE_INSTALACION="arch-sistema.dat"
 NOM_DIR_ARCH_DE_INSTALACION="arch_instalcion"
 
-NOM_VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE 
-DATASIZE SECUENCIA1 SECUENCIA2)
+ESTADO_INSTALACION="I" # 3 estados (INCOMPLETO(I), PARCIAL(P), COMPLETO(C))
+
+NOM_VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE DATASIZE SECUENCIA1 SECUENCIA2)
 
 declare -A DESCRIP_DIR=( ["CONFDIR"]="Directorio donde se encuentras los archivos de Configuracion del Sistema" \
 	["BINDIR"]="directorio de archivos ejecutables" \
@@ -82,21 +83,22 @@ function mostrar_y_registrar {
 ## RETORNO: ruta completa del archivo encontrado, desde el directorio actual.
 
 function buscar_archivo {
+	declare local a_buscar=$1
 
-declare local a_buscar=$1
+	find > aux.out
 
+	grep ".*${a_buscar}$" aux.out > aux-2.out  
 
-find > aux.out
+	if [ $? -eq 0 ];then
+		read RETORNO < aux-2.out
+	else
+		RETORNO=""
+	fi
+	
+	rm aux.out
+	rm aux-2.out
 
-grep ".*${a_buscar}$" aux.out > aux-2.out  
-
-
-read RETORNO < aux-2.out
-
-rm aux.out
-rm aux-2.out
-
-return 0
+	return 0
 
 }
 
@@ -171,7 +173,7 @@ function cagar_valores_defecto {
 	VARIABLES["LOGDIR"]="log"
 
 	VARIABLES["LOGEXT"]="log"
-	VARIABLES["LOGSIZE"]=100
+	VARIABLES["LOGSIZE"]=400
 	VARIABLES["DATASIZE"]=150
 
 	VARIABLES["SECUENCIA1"]=0
@@ -185,7 +187,7 @@ function cagar_valores_defecto {
 ##
 ## Muestra los valores de las variables actuales para los directorios
 ## 
-function mostrar_nombres_dir {
+function mostrar_valores_ingresados {
 	declare local nom_var=""
 	declare local decripcion=""
 	for nom_var in "${NOM_VARIABLES[@]}"; do
@@ -195,9 +197,15 @@ function mostrar_nombres_dir {
 
 		if [ -n "$descripcion" ]; then
 			echo "${descripcion}: "${VARIABLES[$nom_var]}
+			echo
 		fi
 
 	done
+	
+	echo "Logs de auditoria del Sistema: ${VARIABLES[LOGDIR]}/<comando>.${VARIABLES[LOGEXT]}"
+	echo
+
+	echo "Tamaño maximo para los archivo de log del sistema: ${VARIABLES[LOGSIZE]} kb"
 
 	
 
@@ -211,44 +219,111 @@ function guardar_configuracion {
 	declare local var
 	declare local fecha_creacion
 	declare local registro
+	declare local valor
 	date > fecha
 	read fecha_creacion < fecha
 	rm fecha
 	
 	if [ -d "${VARIABLES[CONFDIR]}" ]; then
-	
 		cd "${VARIABLES[CONFDIR]}"
-		
-		registro="GRUPO"="${VARIABLES[GRUPO]}"="$USERNAME"="${fecha_creacion}"
-		
-		echo "$registro" > "$NOM_ARCH_CONFIG"
+		if [ -f "$NOM_ARCH_CONFIG" ]; then
+			:
+		else
+			echo "GRUPO=...=${USERNAME}=..." > "$NOM_ARCH_CONFIG"
+		fi
 
-		for var in "${NOM_VARIABLES[@]}"; do
+		# Guarda los Variables principales
 		
-			if [ "$var" != "GRUPO" ]; then
-				registro="${var}=${VARIABLES[GRUPO]}/${VARIABLES[$var]}=$USERNAME=${fecha_creacion}"
+		for var in "${NOM_VARIABLES[@]}";do
+			valor="${VARIABLES[$var]}"
+			grep "^${var}.*" "$NOM_ARCH_CONFIG" > aux
+			
+			
+			if [ $? -eq 0 ]; then
+				# Sutituyo el nuevo registro por el viejo por ER (expresiones regulares)
+				# el simbolo separador de la Expresion regular es +
+				sed "s+${var}=\(.*\)=\(.*\)=\(.*\)+${var}=${valor}=\2=${fecha_creacion}+" \
+				"$NOM_ARCH_CONFIG" > aux
+				mv aux "$NOM_ARCH_CONFIG"
+				
+				echo_depuracion "Se encontro con grep para ${var}" 0
+				
+			else
+			
+				echo_depuracion "No se encontro con grep para ${var} y se guarda como reg nuevo" 0
+				registro="${var}=${VARIABLES[GRUPO]}/${valor}=$USERNAME=${fecha_creacion}"
 				echo "$registro" >> "$NOM_ARCH_CONFIG"
-			fi		
-
+			fi
+			
 		done
-
+		
+		# Guardo las datos de instalacion particulares
 		for var in "${NOM_COM[@]}"; do
+			
 			if [ "$COM_INSTALADOS[$var]" == true ]; then
-				registro="COMANDO=${var}=INSTALADO=$fecha_creacion"
-				echo "$registro" >> "$NOM_ARCH_CONFIG"
+				grep "^COMANDO=${var}.*" "$NOM_ARCH_CONFIG" > aux
+				
+				
+				if [ "$?" != "0" ]; then				
+					registro="COMANDO=${var}=INSTALADO=$fecha_creacion"
+					echo "$registro" >> "$NOM_ARCH_CONFIG"
+				fi
 			fi
 
 		done
-
 		
-		for var in "${ARCH_MAESTROS[@]}"; do
+		for var in "${NOM_COM[@]}"; do
+			
 			if [ "$ARCH_MAE_INSTALADOS[$var]" == true ]; then
-				registro="ARCHIVO=${var}=INSTALADO=$fecha_creacion"
-				echo "$registro" >> "$NOM_ARCH_CONFIG"
+				grep "^ARCHIVO=${var}.*" "$NOM_ARCH_CONFIG" > aux
+				
+				if [ "$?" !=  "0" ]; then
+					registro="ARCHIVO=${var}=INSTALADO=$fecha_creacion"
+					echo "$registro" >> "$NOM_ARCH_CONFIG"
+				fi
 			fi
 
 		done
+		
+		if [ -f aux ]; then
+			rm aux
+		fi
+	
+	#else
+		
+	
+		#registro="GRUPO"="${VARIABLES[GRUPO]}"="$USERNAME"="${fecha_creacion}"
+	
+		#echo "$registro" > "$NOM_ARCH_CONFIG"
 
+		#for var in "${NOM_VARIABLES[@]}"; do
+	
+			#if [ "$var" != "GRUPO" ]; then
+				#registro="${var}=${VARIABLES[GRUPO]}/${VARIABLES[$var]}=$USERNAME=${fecha_creacion}"
+				#echo "$registro" >> "$NOM_ARCH_CONFIG"
+			#fi		
+
+		#done
+
+		#for var in "${NOM_COM[@]}"; do
+			#if [ "$COM_INSTALADOS[$var]" == true ]; then
+				#registro="COMANDO=${var}=INSTALADO=$fecha_creacion"
+				#echo "$registro" >> "$NOM_ARCH_CONFIG"
+			#fi
+
+		#done
+
+	
+		#for var in "${ARCH_MAESTROS[@]}"; do
+			#if [ "$ARCH_MAE_INSTALADOS[$var]" == true ]; then
+				#registro="ARCHIVO=${var}=INSTALADO=$fecha_creacion"
+				#echo "$registro" >> "$NOM_ARCH_CONFIG"
+			#fi
+
+		#done
+	#fi
+		
+		cd ..
 	else
 		echo "Error al guardar configuracion: No existe carpeta de configuracion"
 	fi
@@ -293,7 +368,7 @@ function cargar_configuracion {
 	
 		grep "^COMANDO=.*" "$ruta_arch" > comandos.dat
 
-		for nom_com in "${NOM_COMANDOS[@]}"; do
+		for nom_com in "${NOM_COM[@]}"; do
 			grep ".*=${nom_com}=.*" comandos.dat > aux
 			cut -d "=" -f 3 aux > aux2
 			read com_instalado < aux2
@@ -374,7 +449,7 @@ function establecer_variables_num {
 
 	while [ "$espacio_suficiente" == false ]; do
 
-		leer_entrada "$msj" "$LOGSIZE"
+		leer_entrada "$msj" "${VARIABLES[LOGSIZE]}"
 		valor=$RETORNO
 
 		# Comprobar espacio
@@ -410,7 +485,7 @@ function confirmar_respuesta {
 			RETORNO=false
 			resp_correcta=true
 		else
-			echo "Respuesta incorrecta, vuelva a ingresarla"
+			echo "Respuesta incorrecta, ingrese \"S\" o \"N\""
 		fi
 
 	done
@@ -433,6 +508,8 @@ function verificar_perl_instalado {
 	else
 		RETORNO=false
 		echo "Perl no se encuentra instalado. Se nesecista tener Perl 5 o superior"
+		echo "Instale Perl en su sistema e inicie nuevamente la instalacion"
+		echo "Fin de Instalacion."
 	fi	
 
 	rm ruta	
@@ -451,22 +528,23 @@ function instalar_sistema {
 	
 	declare local comp_a_inst
 
-	echo "Creando Directorios..."
+	echo "Creando Estructuras de Directorios..."
 	crear_carpetas
 	
-	echo "Creando Ejecutables..."
-	for comp_a_inst in "${NOM_COM[@]}"; do
-		instalar_componente "$comp_a_inst"
-		# imprimir y logeuar
-	done
-	
-	echo "Creando Archivos..."
+	echo "Instalando Archivos Maestros..."
 	for comp_a_inst in "${ARCH_MAESTROS[@]}"; do
 		instalar_componente "$comp_a_inst"
 		# imprimir y loguear
 
 	done
+
+	echo "Instalando Programas y Funciones..."
+	for comp_a_inst in "${NOM_COM[@]}"; do
+		instalar_componente "$comp_a_inst"
+		# imprimir y logeuar
+	done
 	
+	echo "Actualizando la configuracion del sistema..."
 	guardar_configuracion
 
 	return 0
@@ -544,7 +622,12 @@ function instalar_componente {
 ##
 
 function mostrar_componentes_instalados {
-
+	
+	echo "Componentes Instalados:... "
+	echo "Falta implementar esta funcion"
+	
+	
+	
 	return 0
 }
 
@@ -552,8 +635,50 @@ function mostrar_componentes_instalados {
 ##
 ## Comprueba si la Instalacion del Sistema Esta Completa.
 ## RETORNO: true si esta completa, false en caso contrario
-function verificar_instalacion_completa {
+function verificar_estado_de_instalacion {
 
+	declare local faltan_componentes=false
+	declare local hay_componentes=false
+	declare local var
+	declare local i
+	
+	for i in "${NOM_COM[@]}";	do
+		var="${NOM_COM[$i]}"
+		if [ "${COM_INSTALADOS[$var]}" == "false" ];then
+			faltan_componentes=true
+		elif [ "${COM_INSTALADOS[$var]}" == "true" ];then
+			hay_componentes=true
+		fi
+	done
+	
+	
+	for i in "${ARCH_MAESTROS[@]}"; do
+	
+		var="${ARCH_MAESTROS[$i]}"
+		if [ "${ARCH_MAE_INSTALADOS[$var]}" == "false" ];then
+			faltan_componentes=true
+		elif [ "${ARCH_MAE_INSTALADOS[$var]}" == "true" ];then
+			hay_componentes=true
+		fi
+	done
+	
+	if [ "$hay_componentes" == true ]; then
+		if [ "$faltan_componentes" == true ];then
+			ESTADO_INSTALACION="P"
+		else
+			ESTADO_INSTALACION="C"
+		fi
+	else
+		if [ "$faltan_componentes" == true ];then
+			ESTADO_INSTALACION="I"
+		else
+			ESTADO_INSTALACION="X"
+		fi
+	fi
+	
+	echo_depuracion "Estado de Instalacion: $ESTADO_INSTALACION" 0
+	
+	
 	return 0
 }
 
@@ -567,13 +692,50 @@ function verificar_instalacion_completa {
 ########################################################################
 ########################################################################
 
-
+clear
+echo "TP SO7508 1er cuatrimetre 2012. Tema V, Derechos Reservados, Grupo 7"
 echo "Instalacion de Sistema V-FIVE"
 
 buscar_archivo "$NOM_ARCH_CONFIG"
 
-if [ -z "$RETORNO" ]; then	
+echo "Tamanio de Retorno: ${#RETORNO}"
 
+if [ -n "$RETORNO" ]; then	
+
+	echo_depuracion "Se entro al modo de completar" 0
+	ruta_arch_config=$RETORNO
+	
+	cargar_configuracion "$ruta_arch_config"
+	verificar_estado_de_instalacion
+	mostrar_componentes_instalados
+	
+	#INST_COMPLETA=$RETORNO
+
+	if [ "$ESTADO_INSTALACION" == "P" ]; then
+
+		if [ $# -eq 0 ]; then
+			confirmar_respuesta "Faltan Componentes en el Sistema. ¿Instalar componentes faltantes?"
+			REPARAR=$RETORNO
+	
+			reparar_sistema
+		else
+			
+			# Se instalaran los comandos argumento uno por uno
+			for COM in "$@"; do
+				instalar_componente "$COM"
+				echo "$RETORNO"
+			done
+
+		fi
+		
+	elif [ "$ESTADO_INSTALACION" == "X" ];then
+		echo "Error en comprobacion de componentes del sistema"
+	
+	else
+		echo "El Sistema ya se encuentra instalado completamente"	
+	fi
+
+else
 	echo_depuracion "Se entro en la instalcion normal"	
 
 	CONFIRMACION=false
@@ -587,16 +749,16 @@ if [ -z "$RETORNO" ]; then
 		establecer_variables_num # Se establecen las variables de tipo numerico
 		clear
 	
-		mostrar_nombres_dir
+		mostrar_valores_ingresados
 		
-		confirmar_respuesta "Conservar estos valores"
+		confirmar_respuesta "Los datos ingresados son correctos?"
 		CONFIRMACION=$RETORNO
 
 	done
 	
 	if [ $# -eq 0 ]; then
 
-		confirmar_respuesta "Instalar Sistema"
+		confirmar_respuesta "Iniciando Instalacion. Esta Ud, seguro?"
 		CONFIRMACION=$RETORNO
 	
 
@@ -618,43 +780,11 @@ if [ -z "$RETORNO" ]; then
 				echo "$RETORNO"
 			done
 		fi
+		guardar_configuracion
 	fi
 
-else
-
-	ruta_arch_config=$RETORNO
-	
-	cargar_configuracion "$ruta_arch_config"
-	mostrar_componentes_instalados
-	verificar_instalacion_completa
-	INST_COMPLETA=$RETORNO
-
-	if [ "$INST_COMPLETA" == false ]; then
-
-		if [ $# -eq 0 ]; then
-			confirmar_respuesta "Faltan Componentes en el Sistema. ¿Instalar componentes faltantes?"
-			REPARAR=$RETORNO
-	
-			reparar_sistema
-		else
-			
-			# Se instalaran los comandos argumento uno por uno
-			for COM in "$@"; do
-				instalar_componente "$COM"
-				echo "$RETORNO"
-			done
-
-		fi
-		
-	else
-		echo "El Sistema ya se encuentra instalado completamente"	
-	fi
 
 fi
 
 
-
-# echo "Fin de Instalacion"
-# echo "FIN"
-
-#exit 0
+echo "Fin de Instalacion"
