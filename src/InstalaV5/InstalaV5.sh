@@ -256,7 +256,7 @@ function guardar_configuracion {
 			if [ $? -eq 0 ]; then
 				# Sustituyo el nuevo registro por el viejo por ER (expresiones regulares)
 				# el simbolo separador de la Expresion regular es +
-				sed "s+${var}=\(.*\)=\(.*\)=\(.*\)+${var}=${valor}=\2=${fecha_creacion}+" \
+				sed "s+${var}=\(.*\)=\(.*\)=\(.*\)+${var}=${VARIABLES[GRUPO]}/${valor}=\2=${fecha_creacion}+" \
 				"$NOM_ARCH_CONFIG" > aux
 				mv aux "$NOM_ARCH_CONFIG"
 				
@@ -287,7 +287,7 @@ function guardar_configuracion {
 
 		done
 		
-		for var in "${NOM_COM[@]}"; do
+		for var in "${ARCH_MAESTROS[@]}"; do
 			
 			if [ "${ARCH_MAE_INSTALADOS[$var]}" == "true" ]; then
 				grep "^ARCHIVO=${var}.*" "$NOM_ARCH_CONFIG" > aux
@@ -559,20 +559,21 @@ function reparar_sistema {
 
 	for com in "${NOM_COM[@]}"; do
 		
-		if [ "${COM_INSTALADOS[$com]}" == false ]; then
+		if [ "${COM_INSTALADOS[$com]}" == "false" ]; then
 			instalar_componente "$com"
 			# loguear componente instalado
-			COM_INSTALADOS["$com"]=true
+			#COM_INSTALADOS["$com"]=true
 		fi
 
 	done
 
 	for arch in "${ARCH_MAESTROS[@]}"; do
 	
-		if [ "${ARCH_MAE_INSTALADOS[$com]}" == false ]; then
+		if [ "${ARCH_MAE_INSTALADOS[$arch]}" == "false" ]; then
 			instalar_componente "$arch"
+			echo_depuracion $RETORNO 1
 			#loguear archivo instalado
-			ARCH_MAE_INSTALADOS["$arch"]=true
+			#ARCH_MAE_INSTALADOS["$arch"]=true
 		fi
 		
 	done
@@ -762,6 +763,7 @@ function mostrar_componentes_instalados {
 ##
 ## Comprueba si la Instalacion del Sistema Esta Completa.
 ## RETORNO: true si esta completa, false en caso contrario
+##
 function verificar_estado_de_instalacion {
 
 	declare local faltan_componentes=false
@@ -816,7 +818,8 @@ function verificar_estado_de_instalacion {
 
 ########################################################################
 ##
-##
+## Comprueba que existan los archivos necesarios para realizar la
+## instalación del sistema. Si falta alguno, concluye el flujo del script
 ##
 
 function comprobar_arch_de_instalacion {
@@ -842,8 +845,11 @@ function comprobar_arch_de_instalacion {
 
 ########################################################################
 ##
-##
-##
+## Finaliza el script elimando los archivos y directorios utilizados
+## para la instalacion. Recibe por argumeto la forma de finalizar, si es
+## cero, finaliza sin errores, en caso contrario el argumeto es distinto
+## de cero.
+## Arg0: codigo de finalizacion (= 0 sin errores, != 0 hay errores)
 
 function finalizar_instalacion {
 	
@@ -853,9 +859,13 @@ function finalizar_instalacion {
 		echo "Fin Instalacion."
 	fi
 	
+	echo_depuracion "Se estan por eliminar los archivos de inst" 1
 	if [ -d "$DIR_ARCH_DE_INSTALACION" ]; then
 		rm "${DIR_ARCH_DE_INSTALACION}/"*
 		rmdir "${DIR_ARCH_DE_INSTALACION}"
+		echo_depuracion "Se eliminaron los archivos de inst" 1
+	else
+		echo "Error al eliminar carpeta de archivos de instalación"
 	fi
 	
 	return 0
@@ -898,8 +908,7 @@ if [ -n "$RETORNO" ]; then
 
 		if [ $# -eq 0 ]; then
 			confirmar_respuesta "Faltan Componentes en el Sistema. ¿Instalar componentes faltantes?"
-			REPARAR=$RETORNO
-			if [ $RETORNO == true ];then
+			if [ "$RETORNO" == "true" ];then
 				reparar_sistema
 			fi
 		else
@@ -939,14 +948,13 @@ if [ -n "$RETORNO" ]; then
 	fi
 
 else
-<<<<<<< HEAD
+
 	##################################################
 	## Se incia el modo de instalacion desde cero
 	##################################################
-	echo_depuracion "Se entro en la instalcion normal"	
-=======
+
 	echo_depuracion "Se entro en la instalacion normal"	
->>>>>>> 6091aee92a150661a9bff7c51626e5d59cf0fd1c
+
 
 
 	verificar_perl_instalado
