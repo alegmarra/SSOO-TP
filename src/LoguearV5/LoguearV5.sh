@@ -34,7 +34,8 @@ do
 			errstat=$OPTARG
 		;;
 		s)
-			sep=$OPTARG	
+			sep=$OPTARG
+		;;	
 		?)
 			uso; exit 1
 		;;
@@ -45,19 +46,19 @@ if [ [ -z $errcode ] || [ -z $cmdname ] || [ -z $errstat ] ]; then
 	echo "error en los parametros\n"
 	exit 1
 fi
-if [ -z $logdir ]; then
-	logdir=$GRUPO/logdir
+if [ -z $LOGDIR ]; then
+	LOGDIR=$GRUPO/logdir
 fi
-if [ -z $logext ]; then
-	logext="log"
-if [ ![ -d $logdir ] ]; then
-	mkdir $logdir
+if [ -z $LOGEXT ]; then
+	LOGEXT="log"
+if [ ! -d $LOGDIR ]; then
+	mkdir $LOGDIR
 fi
 
-output="$cmdname.$logext"
+output="$cmdname.$LOGEXT"
 mensaje=`grep $errcode ListaErrores`
 fecha=`date +"%D"`
 usr=`gawk '{print $1}' FS=" "`
 
-printf "%s$sep%s$sep%s$sep%s$sep%120s" $fecha $usr $errstat $cmdname $mensaje >>$logdir/$output120.
+printf "%s$sep%s$sep%s$sep%s$sep%120s\n" $fecha $usr $errstat $cmdname $mensaje >>$LOGDIR/$output120.
 
