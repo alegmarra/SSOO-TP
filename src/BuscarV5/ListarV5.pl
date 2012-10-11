@@ -28,8 +28,57 @@ sub usage
 	exit;
 }
 
-system 'clear';
+# 
+# Tomando un hash como parametro (valor), del a forma %hash -> {key: 0 or 1},
+# Devuelve un string de los seleccionados o "Todos" si están todos seleccionados
+#
+sub str_seleccion {
+	my %hash = @_;
+	my @selected = sort grep { $hash{$_} == 1} keys %hash;
+	return ((eval(join('*', values %hash)) =~ /^1$/) or (eval(join('+', values %hash)) =~ /^0$/)) ? 'Todos' : join(', ', @selected);
+}
 
+# 
+# Tomando un hash como parametro (referencia), del a forma %hash -> {key: 0 or 1},
+# Construye un menu de selección poniendo alternando entre 1 y 0 para seleccionado o no.
+#
+sub hash_selection {
+	my $hashref = shift;
+	@keys = sort keys $hashref;
+	my $finish = 0;
+	while( ! $finish ) {
+		system 'clear';
+		my $i = 1;
+		foreach my $key ( @keys ) {
+		  	print(($hashref->{$key} == 1 ? '*' : ' ') . " $i: $key\n");
+		  	$i++;		  
+		}
+
+	    print "\nx: Volver atras\n";
+	    print "\nSeleccione alguna de los siguientes opciones: ";
+	    my $opcion = <STDIN>;
+	    chomp($opcion);
+		if ($opcion =~ /^x$/) {
+	    	$finish = 1;
+	    }
+		if ($opcion =~ /^(\d)$/) {
+			if ($opcion > 0 and defined $keys[$opcion-1]) {
+	    		$hashref->{$keys[$opcion-1]} = $hashref->{$keys[$opcion-1]} ? 0 : 1;
+	    	}
+	    }
+    }
+
+}
+
+# Abro el archivo maestro de patrones\
+%patterns_def = ();
+open(PATRONES, "<$ENV{'MAEDIR'}/patrones") or die "No puede abrir el archivo de patrones";
+while ($linea = <PATRONES>) {
+	$linea =~ /(\d),'(.*)',/;
+	$patterns_def{$1} = $2;
+}
+
+# Abro el directorio de procesados
 if (opendir(DIRH, $ENV{'PROCDIR'})) {
 	@flist = readdir(DIRH);
 	closedir(DIRH);
@@ -43,22 +92,46 @@ if ($opciones{resultado}) {
 		# ignorar . y .. :
 		next if ($_ eq "." || $_ eq "..");
 		if ($_  =~ /resultados.([0-9]+)/) {
-			$patterns{$1} = 1;
+			$patterns{$patterns_def{$1}} = 0;
 			open (RESULTADO,"<$ENV{'PROCDIR'}/$_") || die "ERROR: No puedo abrir el fichero $ENV{'PROCDIR'}/$_\n";
 			while ($linea = <RESULTADO>) {
 				@data = split('\+-#-\+', $linea);
-				$ciclos{@data[0]} = 1;
-				$archivos{@data[1]} = 1;
+				$ciclos{$data[0]} = 0;
+				$archivos{$data[1]} = 0;
 			}
 		}
 	}
 
-	sort keys %archivos;
-	sort keys %ciclos;
 	print join(", ", %patterns) . "\n";
 	print join(", ", %ciclos) . "\n";
 	print join(", ", %archivos) . "\n";
+
+	my $finish = 0;
+	while( ! $finish ) {
+		system 'clear';
+	    print "1: Patrones: " . str_seleccion(%patterns) . "\n";
+	    print "2: Ciclos: " . str_seleccion(%ciclos) . "\n";
+	    print "3: Archivos: " . str_seleccion(%archivos) . "\n";
+	    print "\ni: Imprimir informe\n";
+	    print "x: Salir\n";
+	    print "\nSeleccione alguno de los siguientes filtros o comandos: ";
+	    my $opcion = <STDIN>;
+	    chomp($opcion);
+		if ($opcion =~ /^x$/) {
+	    	$finish = 1;
+	    }
+		if ($opcion =~ /^1$/) {
+	    	hash_selection(\%patterns);
+	    }
+		if ($opcion =~ /^2$/) {
+	    	hash_selection(\%ciclos);
+	    }
+		if ($opcion =~ /^3$/) {
+	    	hash_selection(\%archivos);
+	    }
+    }
 	
+
 }
 else {
 

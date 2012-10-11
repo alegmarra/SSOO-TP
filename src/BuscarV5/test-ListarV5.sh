@@ -1,7 +1,9 @@
 #!/bin/sh
 
 PROCDIR=./Procesados
+MAEDIR=./ArchivosMaestros
 export PROCDIR
+export MAEDIR
 
 ./ListarV5.pl $@
 
