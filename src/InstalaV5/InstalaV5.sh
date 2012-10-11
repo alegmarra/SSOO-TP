@@ -16,7 +16,7 @@ ESTADO_INSTALACION="I" # 3 estados (INCOMPLETO(I), PARCIAL(P), COMPLETO(C))
 
 NOM_VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE DATASIZE SECUENCIA1 SECUENCIA2)
 
-declare -A DESCRIP_DIR=( ["CONFDIR"]="Directorio donde se encuentras los archivos de Configuracion del Sistema" \
+declare -A DESCRIP_DIR=( ["CONFDIR"]="Directorio donde se encuentran los archivos de Configuracion del Sistema" \
 	["BINDIR"]="directorio de archivos ejecutables" \
 	["MAEDIR"]="directorio de archivos Maestros" \
 	["ARRIDIR"]="directorio de arribo de archivos externos" \
@@ -254,7 +254,7 @@ function guardar_configuracion {
 			
 			
 			if [ $? -eq 0 ]; then
-				# Sutituyo el nuevo registro por el viejo por ER (expresiones regulares)
+				# Sustituyo el nuevo registro por el viejo por ER (expresiones regulares)
 				# el simbolo separador de la Expresion regular es +
 				sed "s+${var}=\(.*\)=\(.*\)=\(.*\)+${var}=${valor}=\2=${fecha_creacion}+" \
 				"$NOM_ARCH_CONFIG" > aux
@@ -505,7 +505,7 @@ function verificar_perl_instalado {
 		RETORNO=true
 	else
 		RETORNO=false
-		echo "Perl no se encuentra instalado. Se nesecista tener Perl 5 o superior"
+		echo "Perl no se encuentra instalado. Se necesita tener Perl 5 o superior"
 		echo "Instale Perl en su sistema e inicie nuevamente la instalacion"
 		finalizar_instalacion 1
 	fi	
@@ -939,10 +939,14 @@ if [ -n "$RETORNO" ]; then
 	fi
 
 else
+<<<<<<< HEAD
 	##################################################
 	## Se incia el modo de instalacion desde cero
 	##################################################
 	echo_depuracion "Se entro en la instalcion normal"	
+=======
+	echo_depuracion "Se entro en la instalacion normal"	
+>>>>>>> 6091aee92a150661a9bff7c51626e5d59cf0fd1c
 
 
 	verificar_perl_instalado
@@ -968,7 +972,7 @@ else
 	
 	if [ $# -eq 0 ]; then
 
-		confirmar_respuesta "Iniciando Instalacion. Esta Ud, seguro?"
+		confirmar_respuesta "Iniciando Instalacion. Esta Ud. seguro?"
 		CONFIRMACION=$RETORNO
 	
 

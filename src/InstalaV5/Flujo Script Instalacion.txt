@@ -20,7 +20,7 @@ RETORNO: variable de ambiente utilizada como dato de retorno de cualquier funcio
 Buscar instalaciones anteriores 
 Si se encontro
 	Cargar Datos de Instalacion anterior
-	Si se recivieron parametros 
+	Si se recibieron parametros 
 		Instalar los comandos ingresados
 	Sino
 		Verificar que la instalacion este completa
