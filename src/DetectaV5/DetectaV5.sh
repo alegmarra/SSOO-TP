@@ -2,7 +2,11 @@
 
 #DAEMON=> nohup ./DetectaV5.sh 0<&- 1>/dev/null 2>&1 &
 
+ayuda () {
 
+	echo "DAEMON=> nohup ./DetectaV5.sh 0<&- 1>/dev/null 2>&1 & "
+
+}
 validarFormato () {
 
 	if [[ ${1##*/} =~ [[:alnum:]+]_[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]
@@ -111,6 +115,10 @@ if [[ `ps -C "$pName" -o "pid=" | wc -l` -gt 2 ]]; then
 
 fi
 
+if [[ $1 == "-h" ]]; then 
+	ayuda 
+	exit 1
+fi
 
 # Inicio Loop Demonizado
 

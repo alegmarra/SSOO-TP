@@ -8,6 +8,19 @@
 # @arg4    bool: loguear resultados
 
 
+ayuda () {
+
+	echo "MoverV5 -v 1.0 
+  	      Mueve archivos de un directorio a otro, controlando posibles duplicados.
+	      MoverV5.sh  <archivo origen> <ruta destino> <comando invocante> [OPCIONAL]
+	      Opcion:
+			-h : Ayuda
+			-l : Loguear movimientos"
+	
+}
+
+
+
 # Validación de directorios
 argumentosValidos () {
  
@@ -72,18 +85,28 @@ obtenerSecuenciador () {
 
 #MAIN
 
-if [ "$#" -lt 2 ]; then
-	echo "Faltan parámetros"
+origen=
+destino=
+caller=
+loguear=false
 
-	if [ ! -z "$3" ]; then 
-		# @TODO Logeo de error
-		echo "FALTAN PARAMETROS" >> errMover.log
-	fi
+if [[ "$#" -lt 3 ]]; then
+	echo "Cantidad de argumentos inválida"
+		
+	ayuda 
+
 	exit 1
 fi
 
+if [[ $4 == "-h" ]]; then
+
+	loguear=true
+fi
+
+
 origen="$1"
 destino="$2"
+caller="$3"
 
 argumentosValidos "$origen" "$destino"
 sonValidos="$?" 
@@ -109,16 +132,16 @@ if [[ "$sonValidos" -eq 0 ]]; then
 	
 	if [[ -e "$origen" || -e "$origenNext" ]]; then
 		# no pudo mover el archivo, retorna con codigo de error
-		if [ ! -z "$3" ]; then 
-			# @TODO log de error
-			echo "NO PUDO MOVER" >> errMover.log
+		if $loguear ; then 
+			
+			$BINDIR/LoguearV5.sh -c "010" -f "MoverV5.sh" -i "E"
+
 		fi
 		exit 1
 	fi	
 else
-	if [ ! -z "$3" ]; then 
-		# @TODO log de error
-		echo "ARG invalidos" >> errMover.log
+	if $loguear ; then 
+		$BINDIR/LoguearV5.sh -c "104" -f "MoverV5.sh" -i "E"
 	fi
 	exit 1
 fi
