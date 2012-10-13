@@ -22,6 +22,7 @@ iniciarBackground () {
 
 iniciarConArgumentos () {
 
+	echo "TODO"
 # @TODO (me tengo que ir, despues lo termino)
 
 }
