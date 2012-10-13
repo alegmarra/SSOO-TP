@@ -109,7 +109,7 @@ if [[ `ps -C "$pName" -o "pid=" | wc -l` -gt 2 ]]; then
 
 	prevID=` ps -C "$pName" -o "pid=" ` 
 	prevID=${prevID/[^0-9]*$$}
-	echo ""$pName" ya se encuentra en ejecucion. Proceso "$prevID" "
+	echo "DetectaV5 ya se encuentra en ejecucion. Proceso $prevID "
 
 	exit 1
 
