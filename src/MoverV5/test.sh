@@ -31,7 +31,7 @@ test_moverArchivo_OrigenDestinoValidos () {
 	echo "test_1" > "1. test"
 	echo "Origen - Destino Validos" >> ./tests/1.result
 
-	./MoverV5.sh "1. test" "./tests" "Loguear"
+	./MoverV5.sh "1. test" "./tests" "Test"
 	
 	# Prueba
 	if [ -e "1. test" ]; then
@@ -62,7 +62,7 @@ test_moverArchivo_OrigenValido_DestinoInvalido () {
 	echo "test_2" >> 2.test
 	echo "Origen Valido - Destino Invalido" >> ./tests/2.result
 	
-	./MoverV5.sh "2.test" inexistente 
+	./MoverV5.sh "2.test" inexistente "Test" 
 
 	
 	# Prueba
@@ -84,7 +84,7 @@ test_moverArchivo_OrigenInvalido_DestinoValido () {
 	
 	echo "Origen Invalido - Destino Valido" >> ./tests/3.result
 
-	./MoverV5.sh "3.test" "./tests"
+	./MoverV5.sh "3.test" "./tests" "Test"
 
 	
 	# Prueba
@@ -116,11 +116,11 @@ test_moverArchivo_OrigenDuplicado_DestinoValido () {
 	echo "Origen duplicado en Destino" >> ./tests/4.result
 
 	# Prueba
-	./MoverV5.sh "4.test" "./tests" "Loguear"
+	./MoverV5.sh "4.test" "./tests" "Test"
 
 	
 	echo "test_4" > 4.test
-	./MoverV5.sh "4.test" "./tests" "Loguear"
+	./MoverV5.sh "4.test" "./tests" "Test"
 
 	# Evaluacion
 	if [ -e 4.test ]; then
@@ -153,7 +153,7 @@ test_moverArchivo_OrigenDuplicado_DestinoValido () {
 	
 	# Prueba
 	echo "test_4" > 4.test
-	./MoverV5.sh "4.test" "./tests" "Loguear"
+	./MoverV5.sh "4.test" "./tests" "Test"
 
 	# Evaluacion
 		
@@ -177,7 +177,7 @@ test_moverArchivo_OrigenDestinoInvalidos_Iguales () {
 	echo "test_5" >> 5.test
 	echo "Origen - Destino Iguales" >> ./tests/5.result
 
-	./MoverV5.sh "./5.test" "./" 
+	./MoverV5.sh "./5.test" "./" "Test"
 	salida=$?
 	
 	# Prueba
@@ -202,9 +202,6 @@ test_moverArchivo_OrigenDestinoInvalidos_Iguales () {
 
 #MAIN
 limpiar; rm -f ./tests/*.result 
-
-rm -f ./mover.log  
-#@TODO Quitar llamados  una vez que se complete el tema logueo
 
 test_moverArchivo_OrigenDestinoValidos
 
