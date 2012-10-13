@@ -93,25 +93,30 @@ INICIALIZADO=$? # atrapo el codigo de retorno de IniciarV5
 if [ $INICIALIZADO -eq 1 ]; then
         echo "El sistema no fue inicializado.
 Debe inicializarlo antes con el comando $BINDIR/IniciarV5."
+
         exit 1
 fi
 
 
+# Chequeo de ejecución única del proceso. 
 pName="DetectaV5.sh"
 
 if [[ `ps -C "$pName" -o "pid=" | wc -l` -gt 2 ]]; then
 
 	prevID=` ps -C "$pName" -o "pid=" ` 
 	prevID=${prevID/[^0-9]*$$}
-	echo "DetectaV5 ya se encuentra en ejecucion. Proceso $prevID "
-	
+	echo ""$pName" ya se encuentra en ejecucion. Proceso $prevID "
+
 	exit 1
 
 fi
 
 
+# Inicio Loop Demonizado
+
 while true; do
 
+#Si hay archivos en la carpeta de arribos
 arribos=`find "$ARRDIR" -maxdepth 1 -type f -regex ${ARRDIR%/}"/.*" | wc -l`
 
 if [[ $arribos -gt 0 ]]; then
@@ -128,23 +133,28 @@ if [[ $arribos -gt 0 ]]; then
 				if [[ "$?" -eq 0  ]]; then
 					
 					$BINDIR/MoverV5.sh "$file" "$ACEPDIR"
-					# @TODO log de exito			
+					
+					# Log de exito			
+					$BINDIR/LoguearV5.sh -c "001" -f "$pname" -i "I"
 
 				else
 				# Fecha invalida
 					$BINDIR/MoverV5.sh "$file" "$RECHDIR"
-					#@TODO log de rechazo
+					# Log de rechazo. Fecha incorrecta
+					$BINDIR/LoguearV5.sh -c "002" -f "$pname" -i "E"
 				fi
 		
 			else
 			# SIS_ID invalido
 				$BINDIR/MoverV5.sh "$file" "$RECHDIR"
-				#@TODO log de rechazo
+				# Log de rechazo. SIS_ID Inválido
+				$BINDIR/LoguearV5.sh -c "003" -f "$pname" -i "E"
 			fi
 		else
 		# Formato invalido
 			$BINDIR/MoverV5.sh "$file" "$RECHDIR"
-			#@TODO log de rechazo
+			# Log de rechazo. Formato de archivo Inválido
+			$BINDIR/LoguearV5.sh -c "004" -f "$pname" -i "E"
 		fi
 	done
 fi
@@ -155,13 +165,13 @@ aceptados=`find "$ACEPDIR" -maxdepth 1 -type f -regex ${ACEPDIR%/}"/.*" | wc -l`
  
 if [[ $aceptados -gt 0 ]]; then
 
-	pName="BuscarV5.sh"
-	pID=`ps -C "$pName" -o "pid="`
+	pCallName="BuscarV5.sh"
+	pID=`ps -C "$pCallName" -o "pid="`
 	
 	if [[ $pID -eq 0 ]]; then
-		$BINDIR/$pName
+		$BINDIR/$pCallName
 	else 
-		echo "BuscarV5 ya se encuentra en ejecucion. Proceso ${pID/$'\n'}"
+		echo ""$pCallName" ya se encuentra en ejecucion. Proceso ${pID/$'\n'}"
 	fi
 		
 fi
