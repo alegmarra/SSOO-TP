@@ -52,8 +52,7 @@ if [[ ! -z "$2" ]]; then
 		;;
 	esac 	
 else
-
- 	`$BINDIR/$pName`
+ 	$BINDIR/$pName
 fi
 
 exit 0
