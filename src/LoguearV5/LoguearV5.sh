@@ -42,7 +42,7 @@ do
 	esac
 done
 
-if [ [ -z $errcode ] || [ -z $cmdname ] || [ -z $errstat ] ]; then
+if  [ -z $errcode ] || [ -z $cmdname ] || [ -z $errstat ]; then
 	echo error en los parametros
 	exit 1
 fi
