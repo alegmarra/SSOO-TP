@@ -71,4 +71,5 @@ fecha=`date +"%D"`
 usr=`gawk '{print $1}' FS=" "`
 
 printf "%s$sep%s$sep%s$sep%s$sep%120s\n" $fecha $usr $errstat $cmdname $mensaje >>$LOGDIR/$output
+
 exit 0
