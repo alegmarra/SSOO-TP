@@ -108,7 +108,7 @@ pName="DetectaV5.sh"
 if [[ `ps -C "$pName" -o "pid=" | wc -l` -gt 2 ]]; then
 
 	prevID=` ps -C "$pName" -o "pid=" ` 
-	prevID=${prevID/[^0-9]*$$}
+	prevID=${prevID%[^0-9]*}
 	echo "DetectaV5 ya se encuentra en ejecucion. Proceso $prevID "
 
 	exit 1
