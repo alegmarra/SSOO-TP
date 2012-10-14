@@ -17,7 +17,7 @@ ayuda () {
 }
 
 iniciarDemonio () {
-	`nohup $BINDIR/$1 0<&- 1>/dev/null 2>&1 & `
+	nohup $BINDIR/$1 0<&- 1>/dev/null 2>&1 & 
 }
 
 iniciarBackground () {
@@ -38,6 +38,10 @@ fi
 
 pName="$1"
 
+if [[ `ps -C "$pName" | wc -l` -gt 1 ]]; then
+	exit 1
+fi
+
 
 if [[ ! -z "$2" ]]; then 
 	
@@ -55,6 +59,4 @@ else
  	$BINDIR/$pName
 fi
 
-exit 0
-	
 

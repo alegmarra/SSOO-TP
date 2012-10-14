@@ -140,30 +140,27 @@ if [[ $arribos -gt 0 ]]; then
 				validarFecha "$file"
 				if [[ "$?" -eq 0  ]]; then
 					
-					$BINDIR/MoverV5.sh "$file" "$ACEPDIR" "$pName"
+					$BINDIR/MoverV5.sh "$file" "$ACEPDIR"
 					
 					# Log de exito			
 					$BINDIR/LoguearV5.sh -c "001" -f "$pName" -i "I"
 
 				else
 				# Fecha invalida
-					$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName"
-
+					$BINDIR/MoverV5.sh "$file" "$RECHDIR"
 					# Log de rechazo. Fecha incorrecta
 					$BINDIR/LoguearV5.sh -c "002" -f "$pName" -i "E"
 				fi
 		
 			else
 			# SIS_ID invalido
-				$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName"
-
+				$BINDIR/MoverV5.sh "$file" "$RECHDIR"
 				# Log de rechazo. SIS_ID Inválido
 				$BINDIR/LoguearV5.sh -c "003" -f "$pName" -i "E"
 			fi
 		else
 		# Formato invalido
-			$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName"
-
+			$BINDIR/MoverV5.sh "$file" "$RECHDIR"
 			# Log de rechazo. Formato de archivo Inválido
 			$BINDIR/LoguearV5.sh -c "004" -f "$pName" -i "E"
 		fi
@@ -190,5 +187,3 @@ fi
 sleep "$SLEEPTIME"
 
 done
-
-exit 0

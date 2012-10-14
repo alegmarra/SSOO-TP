@@ -4,7 +4,6 @@ ayuda () {
 	echo "StopD.sh <NombreProceso.sh>"
 }
 
-
 # Chequeo de ejecución del  proceso. 
 
 if [[ "$#" -lt 1 ]]; then 
@@ -17,7 +16,7 @@ pName="$1"
 
 for ID in ` ps -C "$pName" -o "pid=" `
 do
-	`kill "$ID" `
+	kill $ID
 done
 
 exit 0

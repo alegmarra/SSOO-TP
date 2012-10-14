@@ -136,25 +136,11 @@ Debe inicializarlo antes con el comando $BINDIR/IniciarV5."
 fi
 
 # Verificar que no haya otra busqueda corriendo:
-#if ps ax | grep -v grep | grep -v $$ | grep "BuscarV5.sh" > /dev/null
-#then
- #   echo "No se puede iniciar porque otra busqueda esta ejecutandose."
-  #  exit 2
-#fi
-
-# Chequeo de ejecución única del proceso. 
-pName="BuscarV5.sh"
-
-if [[ `ps -C "$pName" -o "pid=" | wc -l` -gt 2 ]]; then
-
-        prevID=` ps -C "$pName" -o "pid=" `
-        prevID=${prevID%[^0-9]*}
-        echo "$pName ya se encuentra en ejecucion. Proceso $prevID "
-
-        exit 1
-
+if ps ax | grep -v grep | grep -v $$ | grep "BuscarV5.sh" > /dev/null
+then
+    echo "No se puede iniciar porque otra busqueda esta ejecutandose."
+    exit 2
 fi
-
 
 # Determinar la cantidad de archivos en la carpeta de aceptados
 CANT_ARCHIVOS=`find "$ACEPDIR" -type f | wc -l`
