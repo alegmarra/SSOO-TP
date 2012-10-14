@@ -55,11 +55,15 @@ if [ ! -d $LOGDIR ]; then
 	mkdir $LOGDIR
 fi
 
+if [ ! -z $LOGSIZE ]; then
+	$LOGSIZE=100000
+fi
+
 output="$cmdname.$LOGEXT"
 
-if [ `stat -c%s $(LOGDIR)/$(output)` -gt $(LOGSIZE) ]; then
-	tail -n `expr `wc -l $(LOGDIR)/$(output)`/2` > $(LOGDIR)/$(output)
-	sh LoguearV5.sh -c 1 -f $(cmdname) -i A
+if [ `stat -c%s $LOGDIR/$output` -gt $LOGSIZE ]; then
+	tail -n `expr `wc -l $LOGDIR/$output`/2` > $LOGDIR/$output
+	sh LoguearV5.sh -c 1 -f $cmdname -i A
 fi
 
 mensaje=`grep $errcode ListaErrores`
