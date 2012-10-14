@@ -16,7 +16,7 @@ pName="$1"
 
 for ID in ` ps -C "$pName" -o "pid=" `
 do
-	kill $ID
+	kill -9 $ID
 done
 
 exit 0
