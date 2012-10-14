@@ -8,6 +8,8 @@
 # Declaracion y Definicion de Variables Principales #
 #####################################################
 
+NOM_ARCH_LOG="InstalaV5.log"
+
 NOM_ARCH_CONFIG="InstalaV5.conf"
 NOM_ARCH_DE_INSTALACION="arch-sistema.dat"
 DIR_ARCH_DE_INSTALACION="arch_instalcion"
@@ -49,8 +51,10 @@ declare -A COM_INSTALADOS=( ["${NOM_COM[0]}"]=false ["${NOM_COM[1]}"]=false ["${
 
 ARCH_MAESTROS=( patrones sistemas )
 declare -A ARCH_MAE_INSTALADOS=( ["${ARCH_MAESTROS[0]}"]=false ["${ARCH_MAESTROS[1]}"]=false )
-RETORNO=""
 
+## Variables utilizadas para los valores de retorno de una funcion
+RETORNO=""
+RETORNO_2=""
 
 ########################################################################
 ########################################################################
@@ -65,7 +69,7 @@ RETORNO=""
 # Arg0: Mensaje a mostrar
 # Arg1: Numero de etapa (solo se muestran los msj con el mismo numero de etapa)
 function echo_depuracion {
-	if [ "$2" == "1" ]; then
+	if [ "$2" == "2" ]; then
 		echo $1
 	fi
 	return 0
@@ -79,16 +83,20 @@ function echo_depuracion {
 
 function mostrar_y_registrar {
 	declare local msj=$1
+	declare local registro
+	declare local
 	
+	fecha=`date +%D`
 	echo "$msj"
-	#...
-	#...
+	
+	registro="$fecha;$USERNAME;I;InstalaV5;$msj"
+	
+	echo "$registro" >> "$NOM_ARCH_LOG"
 
 	return 0
 }
 
 ##########################################################################
-
 ##
 ## Busca un archivo en todos los subdirectorios partir del actual, si no lo encuentra retorna un string nulo
 ## Arg0: nombre del archivo a buscar
@@ -121,6 +129,8 @@ function buscar_archivo {
 function crear_carpetas {
 	declare nom_var
 	declare local nom_dir
+	declare dir_aux
+	declare i
 		
 	for nom_var in "${NOM_VARIABLES[@]}";do
 	
@@ -129,7 +139,38 @@ function crear_carpetas {
 			if [ -d "$nom_dir" ]; then
 				:
 			else
-				mkdir "$nom_dir"
+			
+			
+				echo "$nom_dir" > dir.dat
+				i=1
+				
+				cut -d "/" -f $i dir.dat > dir_actual
+				read dir_aux < dir_actual
+				
+				while [ -n "$dir_aux" ]; do
+				
+					echo_depuracion "dir_aux: $dir_aux" 2
+										
+					if [ -d "$dir_aux" ];then
+						:
+					elif [ "$dir_aux" != "." ]; then
+				
+						mkdir "$dir_aux"
+						echo_depuracion "Se crea dir $dir_aux" 2
+					fi
+					
+					cd "$dir_aux"
+					
+					let i=$i+1
+					cut -d "/" -f $i dir.dat > dir_actual
+					read dir_aux < dir_actual
+					
+				done
+				
+				rm _dir_
+				rm dir_actual
+				
+				cd "${VARIABLES[GRUPO]}"
 			fi
 
 		fi
@@ -234,16 +275,15 @@ function guardar_configuracion {
 	declare local fecha_creacion
 	declare local registro
 	declare local valor
-	date > fecha
-	read fecha_creacion < fecha
-	rm fecha
+	
+	fecha_creacion=`date`
 	
 	if [ -d "${VARIABLES[CONFDIR]}" ]; then
 		cd "${VARIABLES[CONFDIR]}"
 		if [ -f "$NOM_ARCH_CONFIG" ]; then
 			:
 		else
-			echo "GRUPO=...=${USERNAME}=..." > "$NOM_ARCH_CONFIG"
+			: > "$NOM_ARCH_CONFIG"
 		fi
 
 		# Guarda los Variables principales
@@ -260,11 +300,7 @@ function guardar_configuracion {
 				"$NOM_ARCH_CONFIG" > aux
 				mv aux "$NOM_ARCH_CONFIG"
 				
-				echo_depuracion "Se encontro con grep para ${var}" 0
-				
 			else
-			
-				echo_depuracion "No se encontro con grep para ${var} y se guarda como reg nuevo" 0
 				registro="${var}=${VARIABLES[GRUPO]}/${valor}=$USERNAME=${fecha_creacion}"
 				echo "$registro" >> "$NOM_ARCH_CONFIG"
 			fi
@@ -432,6 +468,37 @@ function establecer_variables {
 
 #########################################################################
 ##
+## Funcion que comprueba si hay cierta cantidad de espacio suficiente en
+## el disco actual
+##
+## Arg0: cantidad de espacio requerida para la comparacion
+## RETORNO: true si hay espacio mayor o igual al parametro, false sino
+## RETORNO_2: espacio libre en la particion actual
+function hay_espacio_suficiente {
+	
+	declare local tam_a_comp=$1
+	declare local particion_disco='/$'
+	declare local tam_actual
+	
+	## ...
+	## compara si se esta en otra particion
+	
+	tam_actual=`df --block-size 1000000 | grep "$particion_disco" | awk '{ print $4 }'`
+	
+	echo_depuracion "Tamanio libre actual de disco: $tam_actual Mb" 2
+	
+	if [ $tam_a_comp -le $tam_actual ];then
+		RETORNO=true
+	else
+		RETORNO=false
+	fi
+
+	RETORNO_2=$tam_actual
+	
+	return 0
+}
+#########################################################################
+##
 ## Funcion que pregunta por los datos numericos configurables del sistema
 ##
 
@@ -439,22 +506,35 @@ function establecer_variables_num {
 	
 	declare local msj=""	
 	declare local espacio_suficiente=false
+	declare local espacio_libre
 	declare local valor
 
-	msj="Define el tamanio maximo para los archivos de log"
+	msj="Defina el espacio mínimo libre para el arribo de archivos externos en Mbytes"
 
 	while [ "$espacio_suficiente" == false ]; do
 
-		leer_entrada "$msj" "${VARIABLES[LOGSIZE]}"
+		leer_entrada "$msj" "${VARIABLES[DATASIZE]}"
 		valor=$RETORNO
-
-		# Comprobar espacio
-		# Si es hay suficiente espacio terminar ciclo
-		# 
-		espacio_suficiente=true
-		VARIABLES["LOGSIZE"]=$valor		
-
+		
+		hay_espacio_suficiente $valor
+		
+		if [ "$RETORNO" == "true" ]; then
+			espacio_suficiente=true
+			VARIABLES["DATASIZE"]=$valor		
+		else
+			
+			# imprimir y loguear
+			mostrar_y_registrar "Insuficiente Espacio en Disco:"
+			:
+		fi
+		
 	done
+	
+	
+	msj="Defina el tamaño maximo para los archivos de log, en kb"
+	leer_entrada "$msj" "${VARIABLES[LOGSIZE]}"
+	VARIABLES["LOGSIZE"]=$RETORNO
+	
 	return 0
 }
 
@@ -868,6 +948,26 @@ function finalizar_instalacion {
 		echo "Error al eliminar carpeta de archivos de instalación"
 	fi
 	
+	## Agrega los registros nuevos al registro de log
+	if [ -f "$NOM_ARCH_LOG" ]; then
+		if [ -f "${VARIABLES[CONFDIR]}/$NOM_ARCH_LOG" ]; then
+			cd "${VARIABLES[CONFDIR]}"
+			
+			cat "$NOM_ARCH_LOG" ../"$NOM_ARCH_LOG" > aux
+			mv aux "$NOM_ARCH_LOG"
+			
+			cd ..
+			rm "$NOM_ARCH_LOG"
+			
+		else
+			if [ -d "${VARIABLES[CONFDIR]}" ]; then
+				mv "$NOM_ARCH_LOG" "${VARIABLES[CONFDIR]}"
+			else
+				rm "$NOM_ARCH_LOG"
+			fi			
+		fi		
+	fi
+	
 	return 0
 }
 
@@ -887,6 +987,7 @@ comprobar_arch_de_instalacion
 
 echo "TP SO7508 1er cuatrimetre 2012. Tema V, Derechos Reservados, Grupo 7"
 echo "Instalacion de Sistema V-FIVE"
+mostrar_y_registrar "Comando InstalaV5 Inicio de Ejecución"
 
 buscar_archivo "$NOM_ARCH_CONFIG"
 
