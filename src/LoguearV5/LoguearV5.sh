@@ -43,7 +43,7 @@ do
 done
 
 if [ [ -z $errcode ] || [ -z $cmdname ] || [ -z $errstat ] ]; then
-	echo "error en los parametros\n"
+	echo error en los parametros
 	exit 1
 fi
 if [ -z $LOGDIR ]; then
@@ -56,9 +56,15 @@ if [ ! -d $LOGDIR ]; then
 fi
 
 output="$cmdname.$LOGEXT"
+
+if [ `stat -c%s $(LOGDIR)/$(output)` -gt $(LOGSIZE) ]; then
+	tail -n `expr `wc -l $(LOGDIR)/$(output)`/2` > $(LOGDIR)/$(output)
+	sh LoguearV5.sh -c 1 -f $(cmdname) -i A
+fi
+
 mensaje=`grep $errcode ListaErrores`
 fecha=`date +"%D"`
 usr=`gawk '{print $1}' FS=" "`
 
 printf "%s$sep%s$sep%s$sep%s$sep%120s\n" $fecha $usr $errstat $cmdname $mensaje >>$LOGDIR/$output
-
+exit 0
