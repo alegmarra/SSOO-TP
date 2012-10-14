@@ -80,6 +80,8 @@ function echo_depuracion {
 ## Funcion que almacena el string parametro en el archivo de log y lo
 ## muesta en pantalla
 ## Arg0: Mensaje a procesar en el "log"
+## Arg1(Opcional): puede ser "-nm" (no mostrar) para no imprimir el 
+## mensaje por salida estandard
 
 function mostrar_y_registrar {
 	declare local msj=$1
@@ -87,7 +89,10 @@ function mostrar_y_registrar {
 	declare local
 	
 	fecha=`date +%D`
-	echo "$msj"
+	
+	if [ "$2" != "-nm" ]; then
+		echo "$msj"
+	fi
 	
 	registro="$fecha;$USERNAME;I;InstalaV5;$msj"
 	
@@ -129,52 +134,15 @@ function buscar_archivo {
 function crear_carpetas {
 	declare nom_var
 	declare local nom_dir
-	declare dir_aux
-	declare i
 		
 	for nom_var in "${NOM_VARIABLES[@]}";do
 	
 		if [ -n  "${DESCRIP_DIR[$nom_var]}" ]; then
 			nom_dir="${VARIABLES[$nom_var]}"
-			if [ -d "$nom_dir" ]; then
-				:
-			else
-			
-			
-				echo "$nom_dir" > dir.dat
-				i=1
-				
-				cut -d "/" -f $i dir.dat > dir_actual
-				read dir_aux < dir_actual
-				
-				while [ -n "$dir_aux" ]; do
-				
-					echo_depuracion "dir_aux: $dir_aux" 2
-										
-					if [ -d "$dir_aux" ];then
-						:
-					elif [ "$dir_aux" != "." ]; then
-				
-						mkdir "$dir_aux"
-						echo_depuracion "Se crea dir $dir_aux" 2
-					fi
-					
-					cd "$dir_aux"
-					
-					let i=$i+1
-					cut -d "/" -f $i dir.dat > dir_actual
-					read dir_aux < dir_actual
-					
-				done
-				
-				rm _dir_
-				rm dir_actual
-				
-				cd "${VARIABLES[GRUPO]}"
+			if [ ! -d "$nom_dir" ]; then
+				mkdir -p "$nom_dir"
 			fi
-
 		fi
-
 	done
 	
 	DIR_INSTALADOS=true
@@ -251,16 +219,21 @@ function mostrar_valores_ingresados {
 		
 
 		if [ -n "$descripcion" ]; then
-			echo "${descripcion}: "${VARIABLES[$nom_var]}
+			echo "-${descripcion}: "${VARIABLES[$nom_var]}
 			echo
+			if [ "$nom_var" == "ARRIDIR" ]; then
+				echo "--Espacio para el arribo de archivos externos: ${VARIABLES[DATASIZE]} Mb"
+				echo
+			fi
+			
 		fi
 
 	done
 	
-	echo "Logs de auditoria del Sistema: ${VARIABLES[LOGDIR]}/<comando>.${VARIABLES[LOGEXT]}"
+	echo "-Logs de auditoria del Sistema: ${VARIABLES[LOGDIR]}/<comando>.${VARIABLES[LOGEXT]}"
 	echo
 
-	echo "Tamaño maximo para los archivo de log del sistema: ${VARIABLES[LOGSIZE]} kb"
+	echo "--Tamaño maximo para los archivo de log del sistema: ${VARIABLES[LOGSIZE]} kb"
 
 	
 
@@ -280,9 +253,7 @@ function guardar_configuracion {
 	
 	if [ -d "${VARIABLES[CONFDIR]}" ]; then
 		cd "${VARIABLES[CONFDIR]}"
-		if [ -f "$NOM_ARCH_CONFIG" ]; then
-			:
-		else
+		if [ ! -f "$NOM_ARCH_CONFIG" ]; then
 			: > "$NOM_ARCH_CONFIG"
 		fi
 
@@ -458,6 +429,7 @@ function establecer_variables {
 				
 			leer_entrada "$mensaje" "${VARIABLES[$nom_var]}"
 			VARIABLES[$nom_var]=$RETORNO
+			mostrar_y_registrar "Definido el valor \"$RETORNO\" para variable \"$nom_var\"" -nm
 
 		fi
 	done;
@@ -485,7 +457,7 @@ function hay_espacio_suficiente {
 	
 	tam_actual=`df --block-size 1000000 | grep "$particion_disco" | awk '{ print $4 }'`
 	
-	echo_depuracion "Tamanio libre actual de disco: $tam_actual Mb" 2
+	echo_depuracion "++++Tamanio libre actual de disco: $tam_actual Mb" 2
 	
 	if [ $tam_a_comp -le $tam_actual ];then
 		RETORNO=true
@@ -520,20 +492,35 @@ function establecer_variables_num {
 		
 		if [ "$RETORNO" == "true" ]; then
 			espacio_suficiente=true
-			VARIABLES["DATASIZE"]=$valor		
+			VARIABLES["DATASIZE"]=$valor	
+			mostrar_y_registrar "Definido $valor Mb para espacio de arch de arribo." -nm	
 		else
 			
 			# imprimir y loguear
-			mostrar_y_registrar "Insuficiente Espacio en Disco:"
-			:
+			# mostrar_y_registrar "Insuficiente Espacio en Disco:"
+			
+			echo "Insuficiente Espacio en Disco."
+			echo "Espacio Disponible: $RETORNO_2 Mb"
+			echo "Espacio Requerido: $valor Mb"
+			echo "Cancela Instalación e intentelo mas tarde o vuelva intentarlo con otro valor."
+			
+			mostrar_y_registrar "Tam Ingresado para disco, insuficiente. Tam actual: $RETORNO_2 Mb. Ingresado: $valor Mb." -nm
+			
+			confirmar_respuesta "¿Ingresar otro valor?"
+			
+			if [ "$RETORNO" == "false" ]; then
+				finalizar_instalacion 1			
+			fi
+			
 		fi
 		
 	done
 	
 	
-	msj="Defina el tamaño maximo para los archivos de log, en kb"
+	msj="Defina el tamaño maximo para los archivos de log, en Kb"
 	leer_entrada "$msj" "${VARIABLES[LOGSIZE]}"
 	VARIABLES["LOGSIZE"]=$RETORNO
+	mostrar_y_registrar "Definido $RETORNO Kb para tamaño max de archivos de log." -nm
 	
 	return 0
 }
@@ -578,17 +565,32 @@ function verificar_perl_instalado {
 	
 	declare local ruta_perl
 	ruta_perl=`which perl`
+	declare version
+	declare version_a_comp
+	
+	mostrar_y_registrar "Se inicia comprobacion de Perl." -nm
 	
 	if [ -n "$ruta_perl" ]; then
-		echo "Perl Instalado."
-		
-		RETORNO=true
+		version=`perl --version | grep "v[0-9]\.*" | sed "s+\(.*\)v\([0-9]*\.[0-9]*\)\(.*\)+\2+gi"` 
+		version_a_comp=`echo "$version" | sed "s+\(^\)\([0-9]\)\(.*\)+\2+"`
+		echo_depuracion "Version Perl: $version" 2
+		if [ $version_a_comp -ge 5 ]; then
+			RETORNO=true
+		else
+			RETORNO=false
+		fi
 	else
 		RETORNO=false
+	fi	
+		
+	if [ "$RETORNO" == "false" ];then
 		echo "Perl no se encuentra instalado. Se necesita tener Perl 5 o superior"
 		echo "Instale Perl en su sistema e inicie nuevamente la instalacion"
+		mostrar_y_registrar "Perl no se encuentra instalado o tiene una version inferior a 5" -nm
 		finalizar_instalacion 1
-	fi	
+	else
+		mostrar_y_registrar "Perl se encuentra instalado, version: $version"
+	fi
 
 
 	return 0
@@ -623,6 +625,8 @@ function instalar_sistema {
 	
 	echo "Actualizando la configuracion del sistema..."
 	guardar_configuracion
+	
+	mostrar_y_registrar "Instalacion realizada exitosamente"
 
 	return 0
 }
@@ -657,6 +661,8 @@ function reparar_sistema {
 		fi
 		
 	done
+	
+	mostrar_y_registrar "Sistema reparado existosamente."
 
 	return 0
 }
@@ -738,7 +744,8 @@ function instalar_componente {
 	else	
 		RETORNO="Componente \"${com_a_inst}\" no existe dentro del sistema."
 	fi
-
+	
+	mostrar_y_registrar "$RETORNO" -nm
 	
 	return 0
 }
@@ -934,9 +941,9 @@ function comprobar_arch_de_instalacion {
 function finalizar_instalacion {
 	
 	if [ "$1" != "0" ]; then
-		echo "Instalacion Cancelada."
+		mostrar_y_registrar "Instalacion Cancelada."
 	else
-		echo "Fin Instalacion."
+		mostrar_y_registrar "Fin Instalacion."
 	fi
 	
 	echo_depuracion "Se estan por eliminar los archivos de inst" 1
@@ -968,7 +975,7 @@ function finalizar_instalacion {
 		fi		
 	fi
 	
-	return 0
+	exit 0
 }
 
 ########################################################################
@@ -1088,9 +1095,8 @@ else
 		if [ "$CONFIRMACION" == true ]; then
 			instalar_sistema
 			#guardar archivo Configuracion
-			echo "Instalacion realizada exitosamente"
 		else
-			echo "Instalacion Cancelada."
+			finalizar_instalacion 1 ## Instalacion cancelada
 		fi
 	else
 		confirmar_respuesta "¿Continuar con Instalacion de Componentes Ingresados?"
