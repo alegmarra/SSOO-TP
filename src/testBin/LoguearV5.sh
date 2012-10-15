@@ -69,11 +69,12 @@ if [ -r $LOGDIR/$output ] && [ `stat -c%s $LOGDIR/$output` -gt $LOGSIZE ]; then
 fi
 
 
-mensaje=`grep "$errcode" ListaErrores`
+mensaje=`grep "$errcode" $(pwd)/ListaErrores`
 printf "%s" "$mensaje"
 fecha=`date +"%D"`
 
-usr=`who | gawk '{print $1}' FS=" " | sed s/[^$]*//`
+usr=`who | awk '{print $1}' FS=" "`
+usr=`echo ${usr%%\\*}`
 printf "usr = %s\n" "$usr"
 printf "%s$sep%s$sep%s$sep%s$sep%s\n" "$fecha" "$usr" "$errstat" "$cmdname" "$mensaje" >>$LOGDIR/$output
 
