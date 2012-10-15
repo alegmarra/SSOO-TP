@@ -72,7 +72,9 @@ fi
 
 
 mensaje=$(printf "$(grep "$errcode" ListaErrores)" $@)
-if [ ! -z $? ]; then
+ret=$?
+printf "ret = %s\n" $ret
+if [ $ret -ne 0 ]; then
 	echo "faltan argumentos para el mensaje\n"
 	exit 1
 fi
