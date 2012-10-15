@@ -71,8 +71,10 @@ if [ -r $LOGDIR/$output ] && [ `stat -c%s $LOGDIR/$output` -gt $LOGSIZE ]; then
 fi
 
 
-mensaje=$(printf "$(grep "$errcode" ListaErrores)" $@)
-if [ ! -z $? ]; then
+mensaje=$(printf "$(grep "$errcode" $BINDIR/ListaErrores)" $@)
+ret=$?
+printf "ret = %s\n" $ret
+if [ $ret -ne 0 ]; then
 	echo "faltan argumentos para el mensaje\n"
 	exit 1
 fi

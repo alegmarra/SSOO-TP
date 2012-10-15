@@ -182,15 +182,14 @@ if [[ "$sonValidos" -eq 0 ]]; then
 		# no pudo mover el archivo, retorna con codigo de error
 		if $loguear ; then 
 
-			$BINDIR/LoguearV5.sh -c "010" -f "MoverV5.sh" -i "SE"
-
+			$BINDIR/LoguearV5.sh -c "010" -i "SE" -f "MoverV5.sh"
 		fi
 		exit 1
 	fi	
 else
 	# Rutas de origen y/o destino inválidas
 	if $loguear ; then 
-		$BINDIR/LoguearV5.sh -c "104" -f "MoverV5.sh" -i "E"
+		$BINDIR/LoguearV5.sh -c "104"  -i "E" -f "MoverV5.sh"
 	fi
 	exit 1
 fi

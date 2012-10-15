@@ -1,4 +1,4 @@
-#! /bin/bash/
+#!/bin/bash/
 
 uso() {
 	echo 'MirarV5 [-n cant_lineas] [-p patron] [-s separador] -f archivo_log'
@@ -49,25 +49,24 @@ if [ ! -r $file ]; then
 	exit 1
 fi
 
-output=`echo $file`
+output=`cat $file`
 
 if [ ! -z $n ]
 then
-	output=`echo $output | tail -n $n`
+	output=`echo "$output" | tail -n $n`
 fi
 
 if [ ! -z $pattern ]
 then
-	output=`grep $pattern $file`
+	output=`echo "$output" | grep $pattern $file`
 fi
 
-entradas=`echo $output | sed s/$sep/\t/g`
+entradas=`echo "$output"| sed s/$sep/"|"/g`
 
-divider===============================
+divider===================================
 divider=$divider$divider
 
-header="\n %s %s %s %s %s\n"
-format=" %s %s %s %s %120s\n"
+header="\n%6s %10s %10s %10s %12s\n"
 
 width=43
 
@@ -77,5 +76,5 @@ printf "%$width.${width}s\n" "$divider"
 
 printf "%s" "$entradas" | while IFS= read -r line
 do
-	printf "$format" $line
+	printf "%s\n" "$line"
 done
