@@ -129,11 +129,7 @@ procesarArribos () {
 	if [[ $arribos -gt 0 ]]; then
 	
 		# Log inicio procesado de archivos
-<<<<<<< HEAD
-		$BINDIR/LoguearV5.sh -c "301" -i "I" -f "$pName" "$arribos"
-=======
 		$BINDIR/LoguearV5.sh -c "302" -i "I" -f "$pName" "$arribos"
->>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 	
 
 		# Por cada uno de los archivos en el directorio de arribos
@@ -149,45 +145,13 @@ procesarArribos () {
 					if [[ "$?" -eq 0  ]]; then
 					# Archivo válido, pasa a carpeta de aceptados
 				
-<<<<<<< HEAD
-						$BINDIR/MoverV5.sh "$file" "$ACEPDIR" "$pName"
-=======
 						$BINDIR/MoverV5.sh "$file" "$ACEPDIR" "$pName" "-l"
->>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 						# Log de exito			
 						$BINDIR/LoguearV5.sh -c "302" -i "I" -f "$pName" "$file" 
 
 					else
 					# Fecha invalida
-<<<<<<< HEAD
-						$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName"
-
-						# Log de rechazo. Fecha incorrecta
-						$BINDIR/LoguearV5.sh -c "305" -i "I" -f "$pName" "$file"
-					fi
-		
-				else
-				# SIS_ID invalido
-					$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName"
-
-					# Log de rechazo. SIS_ID Inválido
-					$BINDIR/LoguearV5.sh -c "304" -i "I" -f "$pName" "$file"
-				fi
-			else
-			# Formato invalido
-				$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName"
-
-				# Log de rechazo. Formato de archivo Inválido
-				$BINDIR/LoguearV5.sh -c "303" -i "I" -f "$pName" "$file"
-			fi
-		done
-	fi
-
-}
-
-=======
 						$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
->>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 
 						# Log de rechazo. Fecha incorrecta
 						$BINDIR/LoguearV5.sh -c "305" -i "I" -f "$pName" "$file"
@@ -314,17 +278,6 @@ $BINDIR/LoguearV5.sh -c "301" -i "I" -f "$pName"
 ##
 $BINDIR/IniciarV5.sh "-inicializado" > /dev/null
 INICIALIZADO=$? # atrapo el codigo de retorno de IniciarV5
-<<<<<<< HEAD
-if [ $INICIALIZADO -eq 1 ]; then
-        
-	
-	$BINDIR/LoguearV5.sh -c "001" -i "SE" -f "$pName"
-
-	echo "El sistema no fue inicializado.
-	      Debe inicializarlo antes con el comando $BINDIR/IniciarV5."
-
-	
-=======
 if [ $INICIALIZADO -eq 0 ]; then
         
 	
@@ -332,7 +285,6 @@ if [ $INICIALIZADO -eq 0 ]; then
 
 	echo "El sistema no fue inicializado.
 	      Debe inicializarlo antes con el comando $BINDIR/IniciarV5."
->>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
         exit 1
 fi
 
@@ -340,10 +292,6 @@ fi
 # Chequeo de ejecución única del proceso. 
 ##
 
-<<<<<<< HEAD
-
-=======
->>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 if [[ `ps -C "$pName" -o "pid=" | wc -l` -gt 2 ]]; then
 
 	prevID=` ps -C "$pName" -o "pid=" ` 
@@ -366,12 +314,6 @@ while true; do
 	# Verifica existencia de ARRDIR
 	if [ -d "$ARRDIR" ]; then
 
-<<<<<<< HEAD
-	# Verifica existencia de ARRDIR
-	if [ -d "$ARRDIR" ]; then
-
-=======
->>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 		procesarArribos	
 
 	else
@@ -380,21 +322,13 @@ while true; do
 	fi
 	
 	# Verifica existencia de ACEPDIR
-<<<<<<< HEAD
-	if [ -d "$ACEPDIR"]; then
-=======
 	if [ -d "$ACEPDIR" ]; then
->>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 	
 		procesarAceptados
 	else
 	
 		# Log Maestro no encontrado 
 		$BINDIR/LoguearV5.sh -c "003" -i "E" -f "$pName" "$ACEPDIR"
-<<<<<<< HEAD
-=======
-
->>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 	fi
 
 	##

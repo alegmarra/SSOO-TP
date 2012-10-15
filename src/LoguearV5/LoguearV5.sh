@@ -79,8 +79,8 @@ if [ $ret -ne 0 ]; then
 	exit 1
 fi
 fecha=`date +"%D"`
-usr=`who | awk '{print $1}' FS=" "`
-usr=`echo ${usr%%\\*}`
+usr=`who | awk '{print $1}' FS=" " | head -1`
+usr=${usr%%\\*}
 printf "usr = %s\n" "$usr"
 printf "%s$sep%s$sep%s$sep%s$sep%s\n" "$fecha" "$usr" "$errstat" "$cmdname" "$mensaje" >>$LOGDIR/$output
 
