@@ -1,6 +1,7 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 use Getopt::Long;
 use Term::ANSIColor;
+use Data::Dumper;
 
 # configuro el módulo de Getopt para que no imprima errores en caso de opciones no validas
 # ya que eso lo manejo manualmente, y para que no acepte abreviaciones
@@ -68,7 +69,7 @@ sub hash_selection {
 	    print "\nn: Seleccionar ninguna\n";
 	    print "t: Seleccionar todas\n";
 	    print "x: Volver atras\n";
-	    print "\nSeleccione alguna de los siguientes opciones: ";
+	    print "\nSeleccione alguna de los siguientes opciones (acepta rangos x-y): ";
 	    my $opcion = <STDIN>;
 	    chomp($opcion);
 		if ($opcion =~ /^x$/) {
@@ -84,21 +85,94 @@ sub hash_selection {
 	    		$hashref->{$_} = 0;
 	    	}
 	    }
-		if ($opcion =~ /^(\d)$/) {
+		if ($opcion =~ /^(\d+)$/) {
 			if ($opcion > 0 and defined $keys[$opcion-1]) {
 	    		$hashref->{$keys[$opcion-1]} = $hashref->{$keys[$opcion-1]} ? 0 : 1;
 	    	}
 	    }
+		if ($opcion =~ /^(\d+)-(\d+)$/) {
+			foreach ($1..$2) {
+				if ($_ > 0 and defined $keys[$_-1]) {
+		    		$hashref->{$keys[$_-1]} = $hashref->{$keys[$_-1]} ? 0 : 1;
+		    	}
+			}
+	    }
     }
-
 }
+
+#
+# Tomando un hash como parametro (referencia), de la forma %hash -> {key: 0 or 1},
+# Devuelve un string con el maximo elemento y su valor entre parentesis
+#
+sub global_max {
+	my $hash = shift;
+	my @sorted_keys = sort {$hash->{$b} <=> $hash->{$a}} keys $hash;
+	return @sorted_keys ? "$sorted_keys[0] ($hash->{$sorted_keys[0]})" : 'Ninguno';
+}
+
+#
+# Tomando un hash como parametro (referencia), de la forma %hash -> {key: 0 or 1},
+# Devuelve un string con todos los elementos con valor 0 o ninguno
+#
+sub global_cero {
+	my $hash = shift;
+	my @list = ();
+	foreach $key (keys $hash) {
+		if (!$hash->{$key}) {
+			push(@list, "$key");
+		}
+	}
+	if (@list) {
+		return join(', ', @list);
+	}
+	else {
+		return 'Ninguno';
+	}
+}
+
+#
+# Tomando un hash como parametro (referencia), de la forma %hash -> {key: 0 or 1},
+# Devuelve un string con el maximo elemento y su valor entre parentesis
+#
+sub global_max5 {
+	my $hash = shift;
+	my @sorted_keys = sort {$hash->{$b} <=> $hash->{$a}} keys $hash;
+	my $max = @sorted_keys >= 5 ? 4 : @sorted_keys-1;
+	my @list = ();
+	foreach (@sorted_keys[0..$max]) {
+		push(@list, "$_ ($hash->{$_})")
+	}
+	if (@list) {
+		return join(', ', @list);
+	}
+	else {
+		return 'Ninguno';
+	}
+}
+
+sub global_min5 {
+	my $hash = shift;
+	my @sorted_keys = sort {$hash->{$a} <=> $hash->{$b}} keys $hash;
+	my $max = @sorted_keys >= 5 ? 4 : @sorted_keys-1;
+	my @list = ();
+	foreach (@sorted_keys[0..$max]) {
+		push(@list, "$_ ($hash->{$_})")
+	}
+	if (@list) {
+		return join(', ', @list);
+	}
+	else {
+		return 'Ninguno';
+	}
+}
+
 
 # Abro el archivo maestro de patrones\
 %patterns_def = ();
 %patterns_keys = ();
 open(PATRONES, "<$ENV{'MAEDIR'}/patrones") or die "No puede abrir el archivo de patrones";
 while ($linea = <PATRONES>) {
-	$linea =~ /(\d),'(.*)',/;
+	$linea =~ /(\d+),'(.*)',/;
 	$patterns_def{$1} = $2;
 	$patterns_keys{$2} = $1;
 }
@@ -133,9 +207,9 @@ if ( $opciones{resultado} ) {
 
 	my $finish = 0;
 	while( ! $finish ) {
-	    print "\n1: Patrones: " . str_seleccion(%patterns) . "\n";
-	    print "2: Ciclos: " . str_seleccion(%ciclos) . "\n";
-	    print "3: Archivos: " . str_seleccion(%archivos) . "\n";
+	    print "\np: Patrones: " . str_seleccion(%patterns) . "\n";
+	    print "c: Ciclos: " . str_seleccion(%ciclos) . "\n";
+	    print "a: Archivos: " . str_seleccion(%archivos) . "\n";
 	    print "\ni: Imprimir informe\n";
 	    print "x: Salir\n";
 	    print "\nSeleccione alguno de los siguientes filtros o comandos: ";
@@ -144,13 +218,13 @@ if ( $opciones{resultado} ) {
 		if ($opcion =~ /^x$/) {
 	    	$finish = 1;
 	    }
-		if ($opcion =~ /^1$/) {
+		if ($opcion =~ /^p$/) {
 	    	hash_selection(\%patterns);
 	    }
-		if ($opcion =~ /^2$/) {
+		if ($opcion =~ /^c$/) {
 	    	hash_selection(\%ciclos);
 	    }
-		if ($opcion =~ /^3$/) {
+		if ($opcion =~ /^a$/) {
 	    	hash_selection(\%archivos);
 	    }
 		if ($opcion =~ /^i$/) {
@@ -196,4 +270,107 @@ if ( $opciones{resultado} ) {
 			}
 		}
     }
+}
+else {
+	%patterns = ();
+	%ciclos = ();
+	%archivos = ();
+	%sistemas = ();
+	my $finish = 0;
+	while( ! $finish ) {
+		%hallazgos = (
+			ciclos => {},
+			archivos => {},
+			sistemas => {},
+			patrones => {}
+		);
+		foreach (@flist) {
+			# ignorar . y .. :
+			next if ($_ eq "." || $_ eq "..");
+			if ($_  =~ /rglobales.([0-9]+)/) {
+				$patron_id = $1;
+				$patterns{$patterns_def{$patron_id}} = 1 if ! defined $patterns{$patterns_def{$patron_id}};
+				open (RESULTADO,"<$ENV{'PROCDIR'}/$_") || die "ERROR: No puedo abrir el fichero $ENV{'PROCDIR'}/$_\n";
+				while ($linea = <RESULTADO>) {
+					($ciclo, $archivo, $patron, $tipo, $desde, $hasta, $cantidad) = split(',', $linea);
+					$ciclos{$ciclo} = 1 if ! defined $ciclos{$ciclo};
+					$archivos{$archivo} = 1 if ! defined $archivos{$archivo};
+					$sistema = $1 if ($archivo =~ /(.*)_/);
+					$sistemas{$sistema} = 1 if ! defined $sistemas{$sistema};
+					if ($sistemas{$sistema} and $ciclos{$ciclo} and $archivos{$archivo} and $patterns{$patterns_def{$patron_id}}) {
+						$hallazgos{ciclos}{$ciclo} += $cantidad;
+						$hallazgos{archivos}{$archivo} += $cantidad;
+						$hallazgos{sistemas}{$sistema} += $cantidad;
+						$hallazgos{patrones}{$patterns_def{$patron_id}} += $cantidad;
+					}
+				}
+				close(RESULTADO);
+			}
+		}
+
+		# filtro por el rango de hallazgos
+		if (defined $rango_x and defined $rango_y) {
+			foreach $key (keys %hallazgos) {
+				foreach $item (keys $hallazgos{$key}) {
+					if ($hallazgos{$key}{$item} < $rango_x or $hallazgos{$key}{$item} > $rango_y) {
+						delete $hallazgos{$key}{$item};
+					}
+				}
+			}
+		}
+
+		print "\nMayor cantidad de hallazgos en patrones: " . global_max($hallazgos{patrones}) . "\n";
+		print "Mayor cantidad de hallazgos en sistemas: " . global_max($hallazgos{sistemas}) . "\n";
+		print "Mayor cantidad de hallazgos en archivos: " . global_max($hallazgos{archivos}) . "\n";
+		print "Patrones con ningún hallazgo: " . global_cero($hallazgos{patrones}) . "\n";
+		print "Sistemas con ningún hallazgo: " . global_cero($hallazgos{sistemas}) . "\n";
+		print "Archivos con ningún hallazgo: " . global_cero($hallazgos{archivos}) . "\n";
+		print "Los 5 patrones con más hallazgos: " . global_max5($hallazgos{patrones}) . "\n";
+		print "Los 5 patrones con menos hallazgos: " . global_min5($hallazgos{patrones}) . "\n";
+	    print "\np: Patrones seleccionados: " . str_seleccion(%patterns) . "\n";
+	    print "c: Ciclos seleccionados: " . str_seleccion(%ciclos) . "\n";
+	    print "a: Archivos seleccioandos: " . str_seleccion(%archivos) . "\n";
+	    print "s: Sistemas seleccioandos: " . str_seleccion(%sistemas) . "\n";
+	    print "r: Rango de hallazgos: " . ((defined $rango_x and defined $rango_y) ? "$rango_x-$rango_y\n" : "Todos\n") ;
+	    print "x: Salir\n";
+	    print "\nSeleccione alguno de los siguientes filtros o comandos: ";
+	    my $opcion = <STDIN>;
+	    chomp($opcion);
+		if ($opcion =~ /^x$/) {
+	    	$finish = 1;
+	    }
+		if ($opcion =~ /^p$/) {
+	    	hash_selection(\%patterns);
+	    }
+		if ($opcion =~ /^c$/) {
+	    	hash_selection(\%ciclos);
+	    }
+		if ($opcion =~ /^a$/) {
+	    	hash_selection(\%archivos);
+	    }
+		if ($opcion =~ /^s$/) {
+	    	hash_selection(\%sistemas);
+	    }
+		if ($opcion =~ /^r$/) {
+			my $finish = 0;
+			while( ! $finish ) {
+			    print "\nIngrese el rango de hallazgos en la forma x-y, x para salir o t para todos: ";
+			    my $opcion = <STDIN>;
+			    chomp($opcion);
+				if ($opcion =~ /^x$/) {
+			    	$finish = 1;
+			    }
+				if ($opcion =~ /^t$/) {
+					$finish = 1;
+			    	undef $rango_x;
+			    	undef $rango_y;
+			    }
+				if ($opcion =~ /^(\d+)-(\d+)$/) {
+					$finish = 1;
+					$rango_x = $1;
+					$rango_y = $2;
+			    }
+		    }
+	    }
+	}
 }
