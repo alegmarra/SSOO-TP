@@ -17,7 +17,7 @@
 
 ayuda () {
 
-	echo "DAEMON=> nohup ./DetectaV5.sh 0<&- 1>/dev/null 2>&1 & "
+	echo "DAEMON=> nohup DetectaV5.sh 0<&- 1>/dev/null 2>&1 & "
 
 }
 
@@ -129,7 +129,7 @@ procesarArribos () {
 	if [[ $arribos -gt 0 ]]; then
 	
 		# Log inicio procesado de archivos
-		$BINDIR/LoguearV5.sh -c "301" -i "I" -f "$pName" "$arribos"
+		$BINDIR/LoguearV5.sh -c "302" -i "I" -f "$pName" "$arribos"
 	
 
 		# Por cada uno de los archivos en el directorio de arribos
@@ -145,13 +145,13 @@ procesarArribos () {
 					if [[ "$?" -eq 0  ]]; then
 					# Archivo válido, pasa a carpeta de aceptados
 				
-						$BINDIR/MoverV5.sh "$file" "$ACEPDIR" "$pName"
+						$BINDIR/MoverV5.sh "$file" "$ACEPDIR" "$pName" "-l"
 						# Log de exito			
 						$BINDIR/LoguearV5.sh -c "302" -i "I" -f "$pName" "$file" 
 
 					else
 					# Fecha invalida
-						$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName"
+						$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
 
 						# Log de rechazo. Fecha incorrecta
 						$BINDIR/LoguearV5.sh -c "305" -i "I" -f "$pName" "$file"
@@ -159,14 +159,14 @@ procesarArribos () {
 		
 				else
 				# SIS_ID invalido
-					$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName"
+					$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
 
 					# Log de rechazo. SIS_ID Inválido
 					$BINDIR/LoguearV5.sh -c "304" -i "I" -f "$pName" "$file"
 				fi
 			else
 			# Formato invalido
-				$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName"
+				$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
 
 				# Log de rechazo. Formato de archivo Inválido
 				$BINDIR/LoguearV5.sh -c "303" -i "I" -f "$pName" "$file"
@@ -194,12 +194,11 @@ procesarAceptados () {
 	
 		# Si BuscarV5 no se encuentra en ejecución
 		if [[ $pID -eq 0 ]]; then
-			$BINDIR/$pCallName
+			$BINDIR/$pCallName &
 	
 			pID=`ps -C "$pCallName" -o "pid="`
 			# Log llamado a BuscarV5	
-			$BINDIR/LoguearV5.sh -c "006" -i "I" -f "$pName" "$pCallName" \
-				     "Cantidad de aceptados "$aceptados""
+			$BINDIR/LoguearV5.sh -c "006" -i "I" -f "$pName" "$pCallName" "$pID" 
 		
 		else 
 		
@@ -236,12 +235,17 @@ export pName="DetectaV5.sh"
 
 ##
 
+
+# Log inicio Demonio
+$BINDIR/LoguearV5.sh -c "301" -i "I" -f "$pName"
+
+
 # Verificar si la inicializacion de ambiente
 # se realizo anteriormente:
 ##
-$BINDIR/IniciarV5.sh -inicializado > /dev/null
+$BINDIR/IniciarV5.sh "-inicializado" > /dev/null
 INICIALIZADO=$? # atrapo el codigo de retorno de IniciarV5
-if [ $INICIALIZADO -eq 1 ]; then
+if [ $INICIALIZADO -eq 0 ]; then
         
 	
 	$BINDIR/LoguearV5.sh -c "001" -i "SE" -f "$pName"
@@ -274,8 +278,6 @@ fi
 ##
 while true; do
 
-<<<<<<< HEAD
-
 	# Verifica existencia de ARRDIR
 	if [ -d "$ARRDIR" ]; then
 
@@ -287,7 +289,7 @@ while true; do
 	fi
 	
 	# Verifica existencia de ACEPDIR
-	if [ -d "$ACEPDIR"]; then
+	if [ -d "$ACEPDIR" ]; then
 	
 		procesarAceptados
 	else

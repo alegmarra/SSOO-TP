@@ -1,4 +1,4 @@
-######
+# #####
 # 0XX Comunes a todos
 # 1XX Instala
 # 2XX Iniciar
@@ -14,18 +14,19 @@
 003 Archivo Maestro %s no encontrado
 004 Cantidad de argumentos inválida: Minima %s - Recibidos %s
 005 Argumentos inválidos
-006 Llamado a %s, Process ID %s - %s
+006 Llamado a %s, Process ID %s
 007 Proceso %s ya en ejecución, Process ID %s
 
 101 Inicio InstalaV5
 
 201 Inicio IniciarV5
 
-301 Inicio DetectaV5 - Cantidad de Arribos %s
-302 Archivo %s válido: Aceptado
-303 Archivo %s inválido - Formato Invalido: Rechazado
-304 Archivo %s inválido - SIS-ID Invalida: Rechazado
-305 Archivo %s inválido - Fecha Invalida: Rechazado
+301 Inicio DetectaV5
+302 Cantidad de Arribos %s
+303 Archivo %s válido: Aceptado
+304 Archivo %s inválido - Formato Invalido: Rechazado
+305 Archivo %s inválido - SIS-ID Invalida: Rechazado
+306 Archivo %s inválido - Fecha Invalida: Rechazado
 
 
 401 Inicio BuscarV5 - Ciclo Nro: %s - Cantidad de archivos: %s
@@ -40,9 +41,12 @@
 501 Inicio ListarV5
 
 601 Inicio MoverV5
-602 No se pudo mover el archivo %s
-603 Rutas inválidas
-
+602 Se movio el archivo %s con éxito
+603 No se pudo mover el archivo %s
+604 Ruta inválida: No existe %s
+605 Rutas inválidas: Origen igual a Destino %s
+606 Archivo %s duplicado: Renombrado a %s
+ 
 701 Inicio LoguearV5
 
 801 Inicio MirarV5
