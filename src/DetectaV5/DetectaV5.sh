@@ -235,6 +235,7 @@ export SLEEPTIME="2" #segundos
 export pName="DetectaV5.sh"
 
 ##
+
 # Verificar si la inicializacion de ambiente
 # se realizo anteriormente:
 ##
@@ -247,17 +248,12 @@ if [ $INICIALIZADO -eq 1 ]; then
 
 	echo "El sistema no fue inicializado.
 	      Debe inicializarlo antes con el comando $BINDIR/IniciarV5."
-
-	
         exit 1
 fi
-
-
 
 ##
 # Chequeo de ejecución única del proceso. 
 ##
-
 
 if [[ `ps -C "$pName" -o "pid=" | wc -l` -gt 2 ]]; then
 
@@ -278,6 +274,7 @@ fi
 ##
 while true; do
 
+<<<<<<< HEAD
 
 	# Verifica existencia de ARRDIR
 	if [ -d "$ARRDIR" ]; then
@@ -297,6 +294,7 @@ while true; do
 	
 		# Log Maestro no encontrado 
 		$BINDIR/LoguearV5.sh -c "003" -i "E" -f "$pName" "$ACEPDIR"
+
 	fi
 
 	##

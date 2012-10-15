@@ -1,5 +1,6 @@
 #!/usr/bin/perl -w
 use Getopt::Long;
+use Term::ANSIColor;
 
 # configuro el módulo de Getopt para que no imprima errores en caso de opciones no validas
 # ya que eso lo manejo manualmente, y para que no acepte abreviaciones
@@ -28,18 +29,29 @@ sub usage
 	exit;
 }
 
-# 
+#
 # Tomando un hash como parametro (valor), del a forma %hash -> {key: 0 or 1},
 # Devuelve un string de los seleccionados o "Todos" si están todos seleccionados
 #
 sub str_seleccion {
 	my %hash = @_;
 	my @selected = sort grep { $hash{$_} == 1} keys %hash;
-	return ((eval(join('*', values %hash)) =~ /^1$/) or (eval(join('+', values %hash)) =~ /^0$/)) ? 'Todos' : join(', ', @selected);
+	return 'Todos' if eval(join('*', values %hash)) =~ /^1$/;
+	return 'Ninguno' if hash_vacio(%hash);
+	return join(', ', @selected);
 }
 
-# 
-# Tomando un hash como parametro (referencia), del a forma %hash -> {key: 0 or 1},
+#
+# Tomando un hash como parametro, de la forma %hash -> {key: 0 or 1},
+# Devuelve 1 si todos los elementos del hash son 0, o 0 en caso contrario
+#
+sub hash_vacio {
+	my %hash = @_;
+	return (eval(join('+', values %hash)) =~ /^0$/ ? 1 : 0);
+}
+
+#
+# Tomando un hash como parametro (referencia), de la forma %hash -> {key: 0 or 1},
 # Construye un menu de selección poniendo alternando entre 1 y 0 para seleccionado o no.
 #
 sub hash_selection {
@@ -47,19 +59,30 @@ sub hash_selection {
 	@keys = sort keys $hashref;
 	my $finish = 0;
 	while( ! $finish ) {
-		system 'clear';
+		print "\n";
 		my $i = 1;
 		foreach my $key ( @keys ) {
 		  	print(($hashref->{$key} == 1 ? '*' : ' ') . " $i: $key\n");
-		  	$i++;		  
+		  	$i++;
 		}
-
-	    print "\nx: Volver atras\n";
+	    print "\nn: Seleccionar ninguna\n";
+	    print "t: Seleccionar todas\n";
+	    print "x: Volver atras\n";
 	    print "\nSeleccione alguna de los siguientes opciones: ";
 	    my $opcion = <STDIN>;
 	    chomp($opcion);
 		if ($opcion =~ /^x$/) {
 	    	$finish = 1;
+	    }
+		if ($opcion =~ /^t$/) {
+	    	foreach (keys $hashref) {
+	    		$hashref->{$_} = 1;
+	    	}
+	    }
+		if ($opcion =~ /^n$/) {
+	    	foreach (keys $hashref) {
+	    		$hashref->{$_} = 0;
+	    	}
 	    }
 		if ($opcion =~ /^(\d)$/) {
 			if ($opcion > 0 and defined $keys[$opcion-1]) {
@@ -72,10 +95,12 @@ sub hash_selection {
 
 # Abro el archivo maestro de patrones\
 %patterns_def = ();
+%patterns_keys = ();
 open(PATRONES, "<$ENV{'MAEDIR'}/patrones") or die "No puede abrir el archivo de patrones";
 while ($linea = <PATRONES>) {
 	$linea =~ /(\d),'(.*)',/;
 	$patterns_def{$1} = $2;
+	$patterns_keys{$2} = $1;
 }
 
 # Abro el directorio de procesados
@@ -84,7 +109,10 @@ if (opendir(DIRH, $ENV{'PROCDIR'})) {
 	closedir(DIRH);
 }
 
-if ($opciones{resultado}) {
+#
+# proceso la opción resultado
+#
+if ( $opciones{resultado} ) {
 	%patterns = ();
 	%ciclos = ();
 	%archivos = ();
@@ -92,24 +120,20 @@ if ($opciones{resultado}) {
 		# ignorar . y .. :
 		next if ($_ eq "." || $_ eq "..");
 		if ($_  =~ /resultados.([0-9]+)/) {
-			$patterns{$patterns_def{$1}} = 0;
+			$patterns{$patterns_def{$1}} = 1;
 			open (RESULTADO,"<$ENV{'PROCDIR'}/$_") || die "ERROR: No puedo abrir el fichero $ENV{'PROCDIR'}/$_\n";
 			while ($linea = <RESULTADO>) {
 				@data = split('\+-#-\+', $linea);
-				$ciclos{$data[0]} = 0;
-				$archivos{$data[1]} = 0;
+				$ciclos{$data[0]} = 1;
+				$archivos{$data[1]} = 1;
 			}
+			close(RESULTADO);
 		}
 	}
 
-	print join(", ", %patterns) . "\n";
-	print join(", ", %ciclos) . "\n";
-	print join(", ", %archivos) . "\n";
-
 	my $finish = 0;
 	while( ! $finish ) {
-		system 'clear';
-	    print "1: Patrones: " . str_seleccion(%patterns) . "\n";
+	    print "\n1: Patrones: " . str_seleccion(%patterns) . "\n";
 	    print "2: Ciclos: " . str_seleccion(%ciclos) . "\n";
 	    print "3: Archivos: " . str_seleccion(%archivos) . "\n";
 	    print "\ni: Imprimir informe\n";
@@ -129,10 +153,47 @@ if ($opciones{resultado}) {
 		if ($opcion =~ /^3$/) {
 	    	hash_selection(\%archivos);
 	    }
+		if ($opcion =~ /^i$/) {
+			if ( hash_vacio(%patterns) or hash_vacio(%ciclos) or hash_vacio(%archivos) ) {
+				print color 'bright_red' ;
+				print "\nDebe seleccionar al menos un patrón, un ciclo y un archivo para poder realizar\nla consulta.\n";
+				print color 'reset';
+				next;
+			}
+			$salida = *STDOUT;
+			if ($opciones{salida}) {
+				($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime;
+				$year+=1900;
+				$mon++;
+				$archivo = sprintf("salida_%4d%02d%02d%02d%02d%02d", $year, $mon, $mday, $hour, $min, $sec);
+				open( SALIDA, ">$ENV{'REPODIR'}/$archivo" ) || die "ERROR: No puedo abrir el fichero $ENV{'REPODIR'}/$archivo\n";
+				$salida = SALIDA;
+			}
+			foreach ( sort keys %patterns ) {
+				if ($patterns{$_}) {
+					print $salida "\nPatrón: $_\n";
+					print $salida "Ciclos: " . str_seleccion(%ciclos) . "\n";
+					print $salida "Archivos: " . str_seleccion(%archivos) . "\n\n";
+					open( RESULTADO, "<$ENV{'PROCDIR'}/resultados.$patterns_keys{$_}" ) || die "ERROR: No puedo abrir el fichero $ENV{'PROCDIR'}/resultados.$patterns_keys{$_}\n";
+					$count = 0;
+					while ($linea = <RESULTADO>) {
+						@data = split('\+-#-\+', $linea);
+						if ( $ciclos{$data[0]} and $archivos{$data[1]} ) {
+							printf $salida "%-10s%-25s %s", $data[0], $data[1], $data[3];
+							$count++;
+						}
+					}
+					if (!$count) {
+						print $salida "No se encontraon resultados para este patrón con los filtros seleccionados.\n";
+					}
+					else {
+						print $salida "\nTotal de resultados para este patrón con los filtros seleccionados.: $count\n";
+					}
+
+					close (RESULTADO);
+				}
+				$finish = 1;
+			}
+		}
     }
-	
-
-}
-else {
-
 }

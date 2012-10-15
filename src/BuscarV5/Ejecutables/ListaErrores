@@ -1,0 +1,9 @@
+1 error de prueba
+101 Inicio BuscarV5 - Ciclo Nro: %s - Cantidad de archivos: %s
+102 Archivo a procesar: %s
+103 Archivo duplicado: %s
+104 No hay patrones aplicables al archivo.
+105 Fin del ciclo: %s
+106 Cantidad de archivos con hallazgos: %s
+107 Cantidad de archivos sin hallazgos: %s
+108 Cantidad de archivos sin patron aplicable: %s

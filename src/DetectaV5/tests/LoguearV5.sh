@@ -17,6 +17,8 @@ errcode=
 errstat=
 cmdname=
 sep=";"
+
+# TODO: limpiar estas variables cuando este hecha la parte de IniciarV5
 GRUPO="."
 LOGSIZE=2000000
 
@@ -42,7 +44,7 @@ do
 			uso; exit 1
 	esac
 done
-
+shift $(($OPTIND - 1))
 if  [ -z $errcode ] || [ -z $cmdname ] || [ -z $errstat ]; then
 	echo error en los parametros
 	exit 1
@@ -69,11 +71,14 @@ if [ -r $LOGDIR/$output ] && [ `stat -c%s $LOGDIR/$output` -gt $LOGSIZE ]; then
 fi
 
 
-mensaje=`grep "$errcode" ./ListaErrores`
-printf "%s" "$mensaje"
+mensaje=$(printf "$(grep "$errcode" ListaErrores)" $@)
+if [ ! -z $? ]; then
+	echo "faltan argumentos para el mensaje\n"
+	exit 1
+fi
 fecha=`date +"%D"`
-
-usr=`who | awk '{print $1}' FS=" " | sed s/[^$]*//`
+usr=`who | awk '{print $1}' FS=" "`
+usr=`echo ${usr%%\\*}`
 printf "usr = %s\n" "$usr"
 printf "%s$sep%s$sep%s$sep%s$sep%s\n" "$fecha" "$usr" "$errstat" "$cmdname" "$mensaje" >>$LOGDIR/$output
 

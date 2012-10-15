@@ -6,57 +6,74 @@ BINDIR="./testBin"
 
 ayuda () {
 
-	echo "StarD.sh <NombreProceso.sh> [OPCION...] <Argumentos>
+	echo "StarD.sh [OPCION] <NombreProceso.sh> <Argumentos>
 	      Opciones:
 			-h : Muestra esta ayuda
-			-A : El proceso utiliza argumentos. 
-			     Si se utiliza debe ser la primer opcion.
-			
-			-D : Inicia el proceso demonizado
-			-B : Inicia el proceso en segundo plano" 
+			-F : Inicia el proceso en primer plano
+			-B : Inicia el proceso en segundo plano
+			-D : Inicia el proceso demonizado"
 }
 
-iniciarDemonio () {
-	nohup $BINDIR/$1 0<&- 1>/dev/null 2>&1 & 
+
+
+iniciarForeground () {
+
+	local pName="$1"
+	shift 1
+	
+	"$BINDIR"/"$pName" "$@"
 }
 
 iniciarBackground () {
-	`$BINDIR/$1 &`
+
+	local pName="$1"
+	shift 1
+	
+	"$BINDIR"/"$pName" "$@" &
 }
 
-iniciarConArgumentos () {
-
-	echo "TODO"
-# @TODO (me tengo que ir, despues lo termino)
-
+iniciarDemonio () {
+	local pName="$1"
+	shift 1
+	
+	nohup "$BINDIR"/"$pName" "$@" 0<&- 1>/dev/null 2>&1 & 
 }
 
-if [[ "$#" -lt 1 ]]; then
+
+
+if [[ "$#" -lt 2 ]]; then
 	ayuda
 	exit 1
 fi
 
-pName="$1"
+opcion="$1"
+pName="$2"
+
+# Desplazo lista de argumentos, obtengo parametros del proceso
+shift 2
 
 if [[ `ps -C "$pName" | wc -l` -gt 1 ]]; then
 	exit 1
 fi
 
 
-if [[ ! -z "$2" ]]; then 
+if [[ ! -z "$opcion" ]]; then 
 	
-	case "$2" in
+	case "$opcion" in
 		-h) ayuda; exit 1
 		;;
-		-A) iniciarConArgumentos "$@" 
+		-F) iniciarForeground "$pName" "$@"
 		;;
-		-D) iniciarDemonio "$pName"
+		-B) iniciarBackground "$pName" "$@"
 		;;
-		-B) iniciarBackground "$pName"
+		-D) iniciarDemonio "$pName" "$@"
+		;;
+		*) ayuda; exit 1
 		;;
 	esac 	
 else
- 	$BINDIR/$pName
+	ayuda
+	exit 1
 fi
 
-
+exit 0

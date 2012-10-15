@@ -2,8 +2,10 @@
 
 PROCDIR=./Procesados
 MAEDIR=./ArchivosMaestros
+REPODIR=./Reportes
 export PROCDIR
 export MAEDIR
+export REPODIR
 
 ./ListarV5.pl $@
 
