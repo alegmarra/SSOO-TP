@@ -270,15 +270,21 @@ function guardar_configuracion {
 			if [ $? -eq 0 ]; then
 				# Sustituyo el nuevo registro por el viejo por ER (expresiones regulares)
 				# el simbolo separador de la Expresion regular es +
+				if [ -n "${DESCRIP_DIR[$var]}" ]; then
 				sed "s+${var}=\(.*\)=\(.*\)=\(.*\)+${var}=${VARIABLES[GRUPO]}/${valor}=\2=${fecha_creacion}+" \
 				"$NOM_ARCH_CONFIG" > aux
+				else
+				sed "s+${var}=\(.*\)=\(.*\)=\(.*\)+${var}=${valor}=\2=${fecha_creacion}+" \
+				"$NOM_ARCH_CONFIG" > aux
+				fi
 				mv aux "$NOM_ARCH_CONFIG"
 				
-			elif [ "$var" == "GRUPO" ]; then
-				registro="${var}=${VARIABLES[GRUPO]}=$usuario=${fecha_creacion}"
-				echo "$registro" >> "$NOM_ARCH_CONFIG"
-			elif [ -n "$DESCRIP_DIR[$var]}" ]; then
-				registro="${var}=${VARIABLES[GRUPO]}/${valor}=$usuario=${fecha_creacion}"
+			elif [ -n "${DESCRIP_DIR[$var]}" ]; then
+				if [ "$var" == "GRUPO" ]; then
+					registro="${var}=${VARIABLES[GRUPO]}=$usuario=${fecha_creacion}"
+				else
+					registro="${var}=${VARIABLES[GRUPO]}/${valor}=$usuario=${fecha_creacion}"
+				fi
 				echo "$registro" >> "$NOM_ARCH_CONFIG"
 			else
 				registro="${var}=${valor}=$usuario=${fecha_creacion}"
