@@ -71,7 +71,7 @@ if [ -r $LOGDIR/$output ] && [ `stat -c%s $LOGDIR/$output` -gt $LOGSIZE ]; then
 fi
 
 
-mensaje=$(printf "$(grep "$errcode" ListaErrores)" $@)
+mensaje=$(printf "$(grep "$errcode" $BINDIR/ListaErrores)" $@)
 ret=$?
 printf "ret = %s\n" $ret
 if [ $ret -ne 0 ]; then
