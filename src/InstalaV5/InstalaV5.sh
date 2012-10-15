@@ -248,6 +248,9 @@ function guardar_configuracion {
 	declare local fecha_creacion
 	declare local registro
 	declare local valor
+	declare local usuario
+	
+	usuario="$USER"
 	
 	fecha_creacion=`date`
 	
@@ -271,10 +274,17 @@ function guardar_configuracion {
 				"$NOM_ARCH_CONFIG" > aux
 				mv aux "$NOM_ARCH_CONFIG"
 				
+			elif [ "$var" == "GRUPO" ]; then
+				registro="${var}=${VARIABLES[GRUPO]}=$usuario=${fecha_creacion}"
+				echo "$registro" >> "$NOM_ARCH_CONFIG"
+			elif [ -n "$DESCRIP_DIR[$var]}" ]; then
+				registro="${var}=${VARIABLES[GRUPO]}/${valor}=$usuario=${fecha_creacion}"
+				echo "$registro" >> "$NOM_ARCH_CONFIG"
 			else
-				registro="${var}=${VARIABLES[GRUPO]}/${valor}=$USERNAME=${fecha_creacion}"
+				registro="${var}=${valor}=$usuario=${fecha_creacion}"
 				echo "$registro" >> "$NOM_ARCH_CONFIG"
 			fi
+			
 			
 		done
 		
@@ -328,7 +338,6 @@ function guardar_configuracion {
 }
 
 #########################################################################
-
 ##
 ## Carga las variables principales del Sistema
 ## Arg0: ruta del archivo de configuracion
@@ -346,20 +355,30 @@ function cargar_configuracion {
 
 	declare local nom_arch
 	declare local arch_instalado
+	declare local grupo
+	
+	
 	
 	if [ -f "$ruta_arch" ]; then
-	
+		grupo=`grep "^GRUPO" "$ruta_arch" | cut -d "=" -f 2` 
+		
+		VARIABLES["GRUPO"]="$grupo"
+		echo_depuracion "+++Grupo: $grupo" 2
+		
 		for nom_var in "${NOM_VARIABLES[@]}"; do
-			grep "^${nom_var}.*" "$ruta_arch" > aux
-			cut -d "=" -f 2 aux > aux2
-			read dir_instalado < aux2
-
-			if [ "$nom_var" == "GRUPO" ]; then
-				VARIABLES["GRUPO"]="${dir_instalado}"
-			else
-				VARIABLES["$nom_var"]="${dir_instalado##*/}"
+			dir_instalado=`grep "^${nom_var}.*" "$ruta_arch" | cut -d "=" -f 2`
+			
+			echo_depuracion "++Se esta por cargar: $dir_instalado" 2
+			
+			if [ "$nom_var" != "GRUPO" ] && [ -n "${DESCRIP_DIR[$nom_var]}" ]
+			then
+				VARIABLES["$nom_var"]="${dir_instalado/${grupo}\/}"
 				echo_depuracion "Variable: $nom_var = ${VARIABLES[$nom_var]}" 0
+			else
+				VARIABLES["$nom_var"]="${dir_instalado}"
 			fi
+			
+			echo_depuracion "-----++++Se cargo: ${VARIABLES[$nom_var]}" 2
 		done
 		
 	
@@ -423,7 +442,8 @@ function establecer_variables {
 
 		mensaje=${DESCRIP_DIR[$nom_var]}
 		
-		if [ -n "${mensaje}" ] && [ "$nom_var" != "LOGDIR" ]; then
+		if [ -n "${mensaje}" ] && [ "$nom_var" != "LOGDIR" ] && [ "$nom_var" != "CONFDIR" ]
+		then
 			
 			mensaje="Definir el "${mensaje}
 				
@@ -975,7 +995,7 @@ function finalizar_instalacion {
 		fi		
 	fi
 	
-	exit 0
+	#exit 0
 }
 
 ########################################################################
