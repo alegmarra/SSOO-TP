@@ -17,7 +17,7 @@
 
 ayuda () {
 
-	echo "DAEMON=> nohup ./DetectaV5.sh 0<&- 1>/dev/null 2>&1 & "
+	echo "DAEMON=> nohup DetectaV5.sh 0<&- 1>/dev/null 2>&1 & "
 
 }
 
@@ -129,7 +129,11 @@ procesarArribos () {
 	if [[ $arribos -gt 0 ]]; then
 	
 		# Log inicio procesado de archivos
+<<<<<<< HEAD
 		$BINDIR/LoguearV5.sh -c "301" -i "I" -f "$pName" "$arribos"
+=======
+		$BINDIR/LoguearV5.sh -c "302" -i "I" -f "$pName" "$arribos"
+>>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 	
 
 		# Por cada uno de los archivos en el directorio de arribos
@@ -145,12 +149,17 @@ procesarArribos () {
 					if [[ "$?" -eq 0  ]]; then
 					# Archivo válido, pasa a carpeta de aceptados
 				
+<<<<<<< HEAD
 						$BINDIR/MoverV5.sh "$file" "$ACEPDIR" "$pName"
+=======
+						$BINDIR/MoverV5.sh "$file" "$ACEPDIR" "$pName" "-l"
+>>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 						# Log de exito			
 						$BINDIR/LoguearV5.sh -c "302" -i "I" -f "$pName" "$file" 
 
 					else
 					# Fecha invalida
+<<<<<<< HEAD
 						$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName"
 
 						# Log de rechazo. Fecha incorrecta
@@ -176,7 +185,66 @@ procesarArribos () {
 
 }
 
+=======
+						$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
+>>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 
+						# Log de rechazo. Fecha incorrecta
+						$BINDIR/LoguearV5.sh -c "305" -i "I" -f "$pName" "$file"
+					fi
+		
+				else
+				# SIS_ID invalido
+					$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
+
+					# Log de rechazo. SIS_ID Inválido
+					$BINDIR/LoguearV5.sh -c "304" -i "I" -f "$pName" "$file"
+				fi
+			else
+			# Formato invalido
+				$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
+
+				# Log de rechazo. Formato de archivo Inválido
+				$BINDIR/LoguearV5.sh -c "303" -i "I" -f "$pName" "$file"
+			fi
+		done
+	fi
+
+}
+
+
+####################################################################
+# procesarAaceptados 
+# @brief Busca archivos nuevos en ACEPDIR y ejecuta BuscarV5
+####################################################################
+
+procesarAceptados () {
+	
+	aceptados=`find "$ACEPDIR" -maxdepth 1 -type f -regex ${ACEPDIR%/}"/.*" | wc -l`
+ 
+	if [[ $aceptados -gt 0 ]]; then
+	
+		pCallName="BuscarV5.sh"
+		pID=`ps -C "$pCallName" -o "pid="`
+	
+	
+		# Si BuscarV5 no se encuentra en ejecución
+		if [[ $pID -eq 0 ]]; then
+			$BINDIR/$pCallName &
+	
+			pID=`ps -C "$pCallName" -o "pid="`
+			# Log llamado a BuscarV5	
+			$BINDIR/LoguearV5.sh -c "006" -i "I" -f "$pName" "$pCallName" "$pID" 
+		
+		else 
+		
+			$BINDIR/LoguearV5.sh -c "007" -i "E" -f "$pName" "$pCallName" "${pID/$'\n'}"
+		
+			echo ""$pCallName" ya se encuentra en ejecucion. Proceso ${pID/$'\n'}"
+		fi
+		
+	fi
+}
 ####################################################################
 # procesarAaceptados 
 # @brief Busca archivos nuevos en ACEPDIR y ejecuta BuscarV5
@@ -235,11 +303,18 @@ export SLEEPTIME="2" #segundos
 export pName="DetectaV5.sh"
 
 ##
+
+
+# Log inicio Demonio
+$BINDIR/LoguearV5.sh -c "301" -i "I" -f "$pName"
+
+
 # Verificar si la inicializacion de ambiente
 # se realizo anteriormente:
 ##
-$BINDIR/IniciarV5.sh -inicializado > /dev/null
+$BINDIR/IniciarV5.sh "-inicializado" > /dev/null
 INICIALIZADO=$? # atrapo el codigo de retorno de IniciarV5
+<<<<<<< HEAD
 if [ $INICIALIZADO -eq 1 ]; then
         
 	
@@ -249,16 +324,26 @@ if [ $INICIALIZADO -eq 1 ]; then
 	      Debe inicializarlo antes con el comando $BINDIR/IniciarV5."
 
 	
+=======
+if [ $INICIALIZADO -eq 0 ]; then
+        
+	
+	$BINDIR/LoguearV5.sh -c "001" -i "SE" -f "$pName"
+
+	echo "El sistema no fue inicializado.
+	      Debe inicializarlo antes con el comando $BINDIR/IniciarV5."
+>>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
         exit 1
 fi
-
-
 
 ##
 # Chequeo de ejecución única del proceso. 
 ##
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 if [[ `ps -C "$pName" -o "pid=" | wc -l` -gt 2 ]]; then
 
 	prevID=` ps -C "$pName" -o "pid=" ` 
@@ -278,10 +363,15 @@ fi
 ##
 while true; do
 
-
 	# Verifica existencia de ARRDIR
 	if [ -d "$ARRDIR" ]; then
 
+<<<<<<< HEAD
+	# Verifica existencia de ARRDIR
+	if [ -d "$ARRDIR" ]; then
+
+=======
+>>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 		procesarArribos	
 
 	else
@@ -290,13 +380,21 @@ while true; do
 	fi
 	
 	# Verifica existencia de ACEPDIR
+<<<<<<< HEAD
 	if [ -d "$ACEPDIR"]; then
+=======
+	if [ -d "$ACEPDIR" ]; then
+>>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 	
 		procesarAceptados
 	else
 	
 		# Log Maestro no encontrado 
 		$BINDIR/LoguearV5.sh -c "003" -i "E" -f "$pName" "$ACEPDIR"
+<<<<<<< HEAD
+=======
+
+>>>>>>> f0bcfd345c8abdc38a711eccf2d540951e1533df
 	fi
 
 	##
