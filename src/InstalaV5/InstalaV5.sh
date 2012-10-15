@@ -725,8 +725,6 @@ function reparar_sistema {
 	
 		if [ "${ARCH_MAE_INSTALADOS[$arch]}" == "false" ]; then
 			instalar_componente "$arch"
-			echo_depuracion $RETORNO 1
-
 		fi
 		
 	done
