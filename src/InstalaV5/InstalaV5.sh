@@ -729,10 +729,6 @@ function reparar_sistema {
 	
 		if [ "${ARCH_MAE_INSTALADOS[$com]}" == false ]; then
 			instalar_componente "$arch"
-
-			#loguear archivo instalado
-			ARCH_MAE_INSTALADOS["$arch"]=true
-
 		fi
 		
 	done
