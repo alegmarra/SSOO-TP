@@ -8,6 +8,8 @@
 # Declaracion y Definicion de Variables Principales #
 #####################################################
 
+NOM_ARCH_LOG="InstalaV5.log"
+
 NOM_ARCH_CONFIG="InstalaV5.conf"
 NOM_ARCH_DE_INSTALACION="arch-sistema.dat"
 DIR_ARCH_DE_INSTALACION="arch_instalcion"
@@ -49,8 +51,10 @@ declare -A COM_INSTALADOS=( ["${NOM_COM[0]}"]=false ["${NOM_COM[1]}"]=false ["${
 
 ARCH_MAESTROS=( patrones sistemas )
 declare -A ARCH_MAE_INSTALADOS=( ["${ARCH_MAESTROS[0]}"]=false ["${ARCH_MAESTROS[1]}"]=false )
-RETORNO=""
 
+## Variables utilizadas para los valores de retorno de una funcion
+RETORNO=""
+RETORNO_2=""
 
 ########################################################################
 ########################################################################
@@ -65,7 +69,7 @@ RETORNO=""
 # Arg0: Mensaje a mostrar
 # Arg1: Numero de etapa (solo se muestran los msj con el mismo numero de etapa)
 function echo_depuracion {
-	if [ "$2" == "1" ]; then
+	if [ "$2" == "3" ]; then
 		echo $1
 	fi
 	return 0
@@ -76,19 +80,28 @@ function echo_depuracion {
 ## Funcion que almacena el string parametro en el archivo de log y lo
 ## muesta en pantalla
 ## Arg0: Mensaje a procesar en el "log"
+## Arg1(Opcional): puede ser "-nm" (no mostrar) para no imprimir el 
+## mensaje por salida estandard
 
 function mostrar_y_registrar {
 	declare local msj=$1
+	declare local registro
+	declare local
 	
-	echo "$msj"
-	#...
-	#...
+	fecha=`date +%D`
+	
+	if [ "$2" != "-nm" ]; then
+		echo "$msj"
+	fi
+	
+	registro="$fecha;$USERNAME;I;InstalaV5;$msj"
+	
+	echo "$registro" >> "$NOM_ARCH_LOG"
 
 	return 0
 }
 
 ##########################################################################
-
 ##
 ## Busca un archivo en todos los subdirectorios partir del actual, si no lo encuentra retorna un string nulo
 ## Arg0: nombre del archivo a buscar
@@ -126,14 +139,10 @@ function crear_carpetas {
 	
 		if [ -n  "${DESCRIP_DIR[$nom_var]}" ]; then
 			nom_dir="${VARIABLES[$nom_var]}"
-			if [ -d "$nom_dir" ]; then
-				:
-			else
-				mkdir "$nom_dir"
+			if [ ! -d "$nom_dir" ]; then
+				mkdir -p "$nom_dir"
 			fi
-
 		fi
-
 	done
 	
 	DIR_INSTALADOS=true
@@ -210,16 +219,21 @@ function mostrar_valores_ingresados {
 		
 
 		if [ -n "$descripcion" ]; then
-			echo "${descripcion}: "${VARIABLES[$nom_var]}
+			echo "-${descripcion}: "${VARIABLES[$nom_var]}
 			echo
+			if [ "$nom_var" == "ARRIDIR" ]; then
+				echo "--Espacio para el arribo de archivos externos: ${VARIABLES[DATASIZE]} Mb"
+				echo
+			fi
+			
 		fi
 
 	done
 	
-	echo "Logs de auditoria del Sistema: ${VARIABLES[LOGDIR]}/<comando>.${VARIABLES[LOGEXT]}"
+	echo "-Logs de auditoria del Sistema: ${VARIABLES[LOGDIR]}/<comando>.${VARIABLES[LOGEXT]}"
 	echo
 
-	echo "Tamaño maximo para los archivo de log del sistema: ${VARIABLES[LOGSIZE]} kb"
+	echo "--Tamaño maximo para los archivo de log del sistema: ${VARIABLES[LOGSIZE]} kb"
 
 	
 
@@ -234,16 +248,16 @@ function guardar_configuracion {
 	declare local fecha_creacion
 	declare local registro
 	declare local valor
-	date > fecha
-	read fecha_creacion < fecha
-	rm fecha
+	declare local usuario
+	
+	usuario="$USER"
+	
+	fecha_creacion=`date`
 	
 	if [ -d "${VARIABLES[CONFDIR]}" ]; then
 		cd "${VARIABLES[CONFDIR]}"
-		if [ -f "$NOM_ARCH_CONFIG" ]; then
-			:
-		else
-			echo "GRUPO=...=${USERNAME}=..." > "$NOM_ARCH_CONFIG"
+		if [ ! -f "$NOM_ARCH_CONFIG" ]; then
+			: > "$NOM_ARCH_CONFIG"
 		fi
 
 		# Guarda los Variables principales
@@ -256,18 +270,28 @@ function guardar_configuracion {
 			if [ $? -eq 0 ]; then
 				# Sustituyo el nuevo registro por el viejo por ER (expresiones regulares)
 				# el simbolo separador de la Expresion regular es +
-				sed "s+${var}=\(.*\)=\(.*\)=\(.*\)+${var}=${valor}=\2=${fecha_creacion}+" \
-				"$NOM_ARCH_CONFIG" > aux
+
+				if [ -n "${DESCRIP_DIR[$var]}" ]; then
+					sed "s+${var}=\(.*\)=\(.*\)=\(.*\)+${var}=${VARIABLES[GRUPO]}/${valor}=\2=${fecha_creacion}+" \
+					"$NOM_ARCH_CONFIG" > aux
+				else
+					sed "s+${var}=\(.*\)=\(.*\)=\(.*\)+${var}=${valor}=\2=${fecha_creacion}+" \
+					"$NOM_ARCH_CONFIG" > aux
+				fi
 				mv aux "$NOM_ARCH_CONFIG"
 				
-				echo_depuracion "Se encontro con grep para ${var}" 0
-				
+			elif [ -n "${DESCRIP_DIR[$var]}" ]; then
+				if [ "$var" == "GRUPO" ]; then
+					registro="${var}=${VARIABLES[GRUPO]}=$usuario=${fecha_creacion}"
+				else
+					registro="${var}=${VARIABLES[GRUPO]}/${valor}=$usuario=${fecha_creacion}"
+				fi
+				echo "$registro" >> "$NOM_ARCH_CONFIG"
 			else
-			
-				echo_depuracion "No se encontro con grep para ${var} y se guarda como reg nuevo" 0
-				registro="${var}=${VARIABLES[GRUPO]}/${valor}=$USERNAME=${fecha_creacion}"
+				registro="${var}=${valor}=$usuario=${fecha_creacion}"
 				echo "$registro" >> "$NOM_ARCH_CONFIG"
 			fi
+			
 			
 		done
 		
@@ -321,7 +345,6 @@ function guardar_configuracion {
 }
 
 #########################################################################
-
 ##
 ## Carga las variables principales del Sistema
 ## Arg0: ruta del archivo de configuracion
@@ -339,20 +362,30 @@ function cargar_configuracion {
 
 	declare local nom_arch
 	declare local arch_instalado
+	declare local grupo
+	
+	
 	
 	if [ -f "$ruta_arch" ]; then
-	
+		grupo=`grep "^GRUPO" "$ruta_arch" | cut -d "=" -f 2` 
+		
+		VARIABLES["GRUPO"]="$grupo"
+		echo_depuracion "+++Grupo: $grupo" 2
+		
 		for nom_var in "${NOM_VARIABLES[@]}"; do
-			grep "^${nom_var}.*" "$ruta_arch" > aux
-			cut -d "=" -f 2 aux > aux2
-			read dir_instalado < aux2
-
-			if [ "$nom_var" == "GRUPO" ]; then
-				VARIABLES["GRUPO"]="${dir_instalado}"
-			else
-				VARIABLES["$nom_var"]="${dir_instalado##*/}"
+			dir_instalado=`grep "^${nom_var}.*" "$ruta_arch" | cut -d "=" -f 2`
+			
+			echo_depuracion "++Se esta por cargar: $dir_instalado" 2
+			
+			if [ "$nom_var" != "GRUPO" ] && [ -n "${DESCRIP_DIR[$nom_var]}" ]
+			then
+				VARIABLES["$nom_var"]="${dir_instalado/${grupo}\/}"
 				echo_depuracion "Variable: $nom_var = ${VARIABLES[$nom_var]}" 0
+			else
+				VARIABLES["$nom_var"]="${dir_instalado}"
 			fi
+			
+			echo_depuracion "-----++++Se cargo: ${VARIABLES[$nom_var]}" 2
 		done
 		
 	
@@ -416,12 +449,14 @@ function establecer_variables {
 
 		mensaje=${DESCRIP_DIR[$nom_var]}
 		
-		if [ -n "${mensaje}" ] && [ "$nom_var" != "LOGDIR" ]; then
+		if [ -n "${mensaje}" ] && [ "$nom_var" != "LOGDIR" ] && [ "$nom_var" != "CONFDIR" ]
+		then
 			
 			mensaje="Definir el "${mensaje}
 				
 			leer_entrada "$mensaje" "${VARIABLES[$nom_var]}"
 			VARIABLES[$nom_var]=$RETORNO
+			mostrar_y_registrar "Definido el valor \"$RETORNO\" para variable \"$nom_var\"" -nm
 
 		fi
 	done;
@@ -432,6 +467,37 @@ function establecer_variables {
 
 #########################################################################
 ##
+## Funcion que comprueba si hay cierta cantidad de espacio suficiente en
+## el disco actual
+##
+## Arg0: cantidad de espacio requerida para la comparacion
+## RETORNO: true si hay espacio mayor o igual al parametro, false sino
+## RETORNO_2: espacio libre en la particion actual
+function hay_espacio_suficiente {
+	
+	declare local tam_a_comp=$1
+	declare local particion_disco='/$'
+	declare local tam_actual
+	
+	## ...
+	## compara si se esta en otra particion
+	
+	tam_actual=`df --block-size 1000000 | grep "$particion_disco" | awk '{ print $4 }'`
+	
+	echo_depuracion "++++Tamanio libre actual de disco: $tam_actual Mb" 2
+	
+	if [ $tam_a_comp -le $tam_actual ];then
+		RETORNO=true
+	else
+		RETORNO=false
+	fi
+
+	RETORNO_2=$tam_actual
+	
+	return 0
+}
+#########################################################################
+##
 ## Funcion que pregunta por los datos numericos configurables del sistema
 ##
 
@@ -439,22 +505,50 @@ function establecer_variables_num {
 	
 	declare local msj=""	
 	declare local espacio_suficiente=false
+	declare local espacio_libre
 	declare local valor
 
-	msj="Define el tamanio maximo para los archivos de log"
+	msj="Defina el espacio mínimo libre para el arribo de archivos externos en Mbytes"
 
 	while [ "$espacio_suficiente" == false ]; do
 
-		leer_entrada "$msj" "${VARIABLES[LOGSIZE]}"
+		leer_entrada "$msj" "${VARIABLES[DATASIZE]}"
 		valor=$RETORNO
-
-		# Comprobar espacio
-		# Si es hay suficiente espacio terminar ciclo
-		# 
-		espacio_suficiente=true
-		VARIABLES["LOGSIZE"]=$valor		
-
+		
+		hay_espacio_suficiente $valor
+		
+		if [ "$RETORNO" == "true" ]; then
+			espacio_suficiente=true
+			VARIABLES["DATASIZE"]=$valor	
+			mostrar_y_registrar "Definido $valor Mb para espacio de arch de arribo." -nm	
+		else
+			
+			# imprimir y loguear
+			# mostrar_y_registrar "Insuficiente Espacio en Disco:"
+			
+			echo "Insuficiente Espacio en Disco."
+			echo "Espacio Disponible: $RETORNO_2 Mb"
+			echo "Espacio Requerido: $valor Mb"
+			echo "Cancela Instalación e intentelo mas tarde o vuelva intentarlo con otro valor."
+			
+			mostrar_y_registrar "Tam Ingresado para disco, insuficiente. Tam actual: $RETORNO_2 Mb. Ingresado: $valor Mb." -nm
+			
+			confirmar_respuesta "¿Ingresar otro valor?"
+			
+			if [ "$RETORNO" == "false" ]; then
+				finalizar_instalacion 1			
+			fi
+			
+		fi
+		
 	done
+	
+	
+	msj="Defina el tamaño maximo para los archivos de log, en Kb"
+	leer_entrada "$msj" "${VARIABLES[LOGSIZE]}"
+	VARIABLES["LOGSIZE"]=$RETORNO
+	mostrar_y_registrar "Definido $RETORNO Kb para tamaño max de archivos de log." -nm
+	
 	return 0
 }
 
@@ -498,17 +592,32 @@ function verificar_perl_instalado {
 	
 	declare local ruta_perl
 	ruta_perl=`which perl`
+	declare version
+	declare version_a_comp
+	
+	mostrar_y_registrar "Se inicia comprobacion de Perl." -nm
 	
 	if [ -n "$ruta_perl" ]; then
-		echo "Perl Instalado."
-		
-		RETORNO=true
+		version=`perl --version | grep "v[0-9]\.*" | sed "s+\(.*\)v\([0-9]*\.[0-9]*\)\(.*\)+\2+gi"` 
+		version_a_comp=`echo "$version" | sed "s+\(^\)\([0-9]\)\(.*\)+\2+"`
+		echo_depuracion "Version Perl: $version" 2
+		if [ $version_a_comp -ge 5 ]; then
+			RETORNO=true
+		else
+			RETORNO=false
+		fi
 	else
 		RETORNO=false
+	fi	
+		
+	if [ "$RETORNO" == "false" ];then
 		echo "Perl no se encuentra instalado. Se necesita tener Perl 5 o superior"
 		echo "Instale Perl en su sistema e inicie nuevamente la instalacion"
+		mostrar_y_registrar "Perl no se encuentra instalado o tiene una version inferior a 5" -nm
 		finalizar_instalacion 1
-	fi	
+	else
+		mostrar_y_registrar "Perl se encuentra instalado, version: $version"
+	fi
 
 
 	return 0
@@ -543,6 +652,8 @@ function instalar_sistema {
 	
 	echo "Actualizando la configuracion del sistema..."
 	guardar_configuracion
+	
+	mostrar_y_registrar "Instalacion realizada exitosamente"
 
 	return 0
 }
@@ -576,6 +687,8 @@ function reparar_sistema {
 		fi
 		
 	done
+	
+	mostrar_y_registrar "Sistema reparado existosamente."
 
 	return 0
 }
@@ -657,7 +770,8 @@ function instalar_componente {
 	else	
 		RETORNO="Componente \"${com_a_inst}\" no existe dentro del sistema."
 	fi
-
+	
+	mostrar_y_registrar "$RETORNO" -nm
 	
 	return 0
 }
@@ -848,9 +962,9 @@ function comprobar_arch_de_instalacion {
 function finalizar_instalacion {
 	
 	if [ "$1" != "0" ]; then
-		echo "Instalacion Cancelada."
+		mostrar_y_registrar "Instalacion Cancelada."
 	else
-		echo "Fin Instalacion."
+		mostrar_y_registrar "Fin Instalacion."
 	fi
 	
 	if [ -d "$DIR_ARCH_DE_INSTALACION" ]; then
@@ -858,7 +972,27 @@ function finalizar_instalacion {
 		rmdir "${DIR_ARCH_DE_INSTALACION}"
 	fi
 	
-	return 0
+	## Agrega los registros nuevos al registro de log
+	if [ -f "$NOM_ARCH_LOG" ]; then
+		if [ -f "${VARIABLES[CONFDIR]}/$NOM_ARCH_LOG" ]; then
+			cd "${VARIABLES[CONFDIR]}"
+			
+			cat "$NOM_ARCH_LOG" ../"$NOM_ARCH_LOG" > aux
+			mv aux "$NOM_ARCH_LOG"
+			
+			cd ..
+			rm "$NOM_ARCH_LOG"
+			
+		else
+			if [ -d "${VARIABLES[CONFDIR]}" ]; then
+				mv "$NOM_ARCH_LOG" "${VARIABLES[CONFDIR]}"
+			else
+				rm "$NOM_ARCH_LOG"
+			fi			
+		fi		
+	fi
+	
+	#exit 0
 }
 
 ########################################################################
@@ -877,6 +1011,7 @@ comprobar_arch_de_instalacion
 
 echo "TP SO7508 1er cuatrimetre 2012. Tema V, Derechos Reservados, Grupo 7"
 echo "Instalacion de Sistema V-FIVE"
+mostrar_y_registrar "Comando InstalaV5 Inicio de Ejecución"
 
 buscar_archivo "$NOM_ARCH_CONFIG"
 
@@ -939,15 +1074,11 @@ if [ -n "$RETORNO" ]; then
 	fi
 
 else
-<<<<<<< HEAD
+
 	##################################################
 	## Se incia el modo de instalacion desde cero
 	##################################################
 	echo_depuracion "Se entro en la instalcion normal"	
-=======
-	echo_depuracion "Se entro en la instalacion normal"	
->>>>>>> 6091aee92a150661a9bff7c51626e5d59cf0fd1c
-
 
 	verificar_perl_instalado
 	CONFIRMACION=false
@@ -979,9 +1110,8 @@ else
 		if [ "$CONFIRMACION" == true ]; then
 			instalar_sistema
 			#guardar archivo Configuracion
-			echo "Instalacion realizada exitosamente"
 		else
-			echo "Instalacion Cancelada."
+			finalizar_instalacion 1 ## Instalacion cancelada
 		fi
 	else
 		confirmar_respuesta "¿Continuar con Instalacion de Componentes Ingresados?"
