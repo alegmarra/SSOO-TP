@@ -8,6 +8,8 @@
 # Declaracion y Definicion de Variables Principales #
 #####################################################
 
+NOM_ARCH_ERRORES="ListaErrores"
+
 NOM_ARCH_LOG="InstalaV5.log"
 
 NOM_ARCH_CONFIG="InstalaV5.conf"
@@ -86,10 +88,9 @@ function echo_depuracion {
 function mostrar_y_registrar {
 	declare local msj=$1
 	declare local registro
-	declare local
 	
-	fecha=`date +%D`
-	
+	fecha=`date +"%0d/%0m/%Y %I:%M%p"`
+
 	if [ "$2" != "-nm" ]; then
 		echo "$msj"
 	fi
@@ -134,18 +135,30 @@ function buscar_archivo {
 function crear_carpetas {
 	declare nom_var
 	declare local nom_dir
-		
+	
+	mostrar_y_registrar "Se inicia la creacion de directorios." -nm
+	
 	for nom_var in "${NOM_VARIABLES[@]}";do
 	
 		if [ -n  "${DESCRIP_DIR[$nom_var]}" ]; then
 			nom_dir="${VARIABLES[$nom_var]}"
 			if [ ! -d "$nom_dir" ]; then
 				mkdir -p "$nom_dir"
+				mostrar_y_registrar "Se creo el directorio/s \"$nom_dir\"" -nm
 			fi
 		fi
 	done
 	
 	DIR_INSTALADOS=true
+	
+	mostrar_y_registrar "Finaliza la creacion de directorios." -nm
+	
+	## copia el archivo de errores a BINDIR
+	
+	if [ -f "${DIR_ARCH_DE_INSTALACION}/$NOM_ARCH_ERRORES" ]; then
+		cp "${DIR_ARCH_DE_INSTALACION}/$NOM_ARCH_ERRORES" "${VARIABLES[BINDIR]}"
+		mostrar_y_registrar "Copiado archivo de errores al directorio ${VARIABLES[BINDIR]}." -nm
+	fi
 
 	return 0
 }
@@ -184,6 +197,8 @@ function cagar_valores_defecto {
 	read aux < ruta
 	rm ruta
 	
+	mostrar_y_registrar "Se establecen las variables con sus valores por defecto." -nm
+	
 	VARIABLES["GRUPO"]="$aux"
 	VARIABLES["CONFDIR"]="conf"
 	VARIABLES["BINDIR"]="bin"
@@ -202,6 +217,8 @@ function cagar_valores_defecto {
 	VARIABLES["SECUENCIA1"]=0
 	VARIABLES["SECUENCIA2"]=0
 	
+	mostrar_y_registrar "Fin de establecer las variables con sus valores por defecto." -nm
+	
 	return 0
 }
 
@@ -213,6 +230,9 @@ function cagar_valores_defecto {
 function mostrar_valores_ingresados {
 	declare local nom_var=""
 	declare local decripcion=""
+	
+	mostrar_y_registrar "Se inicia el proceso de muestreo de valores ingresados por el usuario." -nm
+	
 	for nom_var in "${NOM_VARIABLES[@]}"; do
 		
 		descripcion="${DESCRIP_DIR[$nom_var]}"
@@ -236,7 +256,7 @@ function mostrar_valores_ingresados {
 	echo "--Tamaño maximo para los archivo de log del sistema: ${VARIABLES[LOGSIZE]} kb"
 
 	
-
+	mostrar_y_registrar "Finaliza el proceso de muestreo de valores ingresados por el usuario." -nm
 }
 
 ################################################################
@@ -249,6 +269,10 @@ function guardar_configuracion {
 	declare local registro
 	declare local valor
 	declare local usuario
+	
+	
+	mostrar_y_registrar "Se incia el proceso de almacenamiento de la configuracion del sistema." -nm
+	
 	
 	usuario="$USER"
 	
@@ -340,6 +364,9 @@ function guardar_configuracion {
 	else
 		echo "Error al guardar configuracion: No existe carpeta de configuracion"
 	fi
+	
+	mostrar_y_registrar "Finaliza el proceso de almacenamiento de la configuracion del sistema." -nm
+	
 	return 0
 }
 
@@ -351,6 +378,8 @@ function guardar_configuracion {
 function cargar_configuracion {
 		
 	echo_depuracion "Se estan por cargar las variables" 0
+
+	mostrar_y_registrar "Se inicia la carga de la configuracion del sistema." -nm
 
 	declare local ruta_arch=$1
 	declare local nom_var
@@ -429,8 +458,10 @@ function cargar_configuracion {
 
 	else
 		echo_depuracion "Archivo de configuracion no existe" 0
-		return 1
 	fi
+	
+	mostrar_y_registrar "Finalizo la carga de la configuracion del sistema." -nm
+	
 }
 
 ########################################################################
@@ -440,6 +471,8 @@ function cargar_configuracion {
 
 function establecer_variables {
 	declare local mensaje=""	
+
+	mostrar_y_registrar "Se inicia el proceso de definir las variables globales del sistema." -nm
 
 	for nom_var in "${NOM_VARIABLES[@]}"; do
 
@@ -460,7 +493,7 @@ function establecer_variables {
 		fi
 	done;
 	
-
+	mostrar_y_registrar "Se finalizo el proceso de definir las variables globales del sistema." -nm
 	return 0
 }
 
@@ -478,6 +511,8 @@ function hay_espacio_suficiente {
 	declare local particion_disco='/$'
 	declare local tam_actual
 	
+	mostrar_y_registrar "Comienza la comprobacion del espacio en disco." -nm
+	
 	## ...
 	## compara si se esta en otra particion
 	
@@ -491,8 +526,9 @@ function hay_espacio_suficiente {
 		RETORNO=false
 	fi
 
+
 	RETORNO_2=$tam_actual
-	
+
 	return 0
 }
 #########################################################################
@@ -506,6 +542,8 @@ function establecer_variables_num {
 	declare local espacio_suficiente=false
 	declare local espacio_libre
 	declare local valor
+
+	mostrar_y_registrar "Se inicia el proceso de definir las variables globales de tipo numerico del sistema." -nm
 
 	msj="Defina el espacio mínimo libre para el arribo de archivos externos en Mbytes"
 
@@ -521,10 +559,7 @@ function establecer_variables_num {
 			VARIABLES["DATASIZE"]=$valor	
 			mostrar_y_registrar "Definido $valor Mb para espacio de arch de arribo." -nm	
 		else
-			
-			# imprimir y loguear
-			# mostrar_y_registrar "Insuficiente Espacio en Disco:"
-			
+						
 			echo "Insuficiente Espacio en Disco."
 			echo "Espacio Disponible: $RETORNO_2 Mb"
 			echo "Espacio Requerido: $valor Mb"
@@ -547,6 +582,8 @@ function establecer_variables_num {
 	leer_entrada "$msj" "${VARIABLES[LOGSIZE]}"
 	VARIABLES["LOGSIZE"]=$RETORNO
 	mostrar_y_registrar "Definido $RETORNO Kb para tamaño max de archivos de log." -nm
+	
+	mostrar_y_registrar "Se finalizo el proceso de definir las variables globales de tipo numerico del sistema." -nm
 	
 	return 0
 }
@@ -599,7 +636,7 @@ function verificar_perl_instalado {
 	if [ -n "$ruta_perl" ]; then
 		version=`perl --version | grep "v[0-9]\.*" | sed "s+\(.*\)v\([0-9]*\.[0-9]*\)\(.*\)+\2+gi"` 
 		version_a_comp=`echo "$version" | sed "s+\(^\)\([0-9]\)\(.*\)+\2+"`
-		echo_depuracion "Version Perl: $version" 2
+		
 		if [ $version_a_comp -ge 5 ]; then
 			RETORNO=true
 		else
@@ -618,7 +655,8 @@ function verificar_perl_instalado {
 		mostrar_y_registrar "Perl se encuentra instalado, version: $version"
 	fi
 
-
+	mostrar_y_registrar "Finaliza comprobacion de Perl en el sistema." -nm
+	
 	return 0
 }
 
@@ -632,6 +670,8 @@ function verificar_perl_instalado {
 function instalar_sistema {
 	
 	declare local comp_a_inst
+	
+	mostrar_y_registrar "Se inicia la instalacion completa del sistema" -nm
 
 	echo "Creando Estructuras de Directorios..."
 	crear_carpetas
@@ -639,20 +679,20 @@ function instalar_sistema {
 	echo "Instalando Archivos Maestros..."
 	for comp_a_inst in "${ARCH_MAESTROS[@]}"; do
 		instalar_componente "$comp_a_inst"
-		# imprimir y loguear
 
 	done
 
 	echo "Instalando Programas y Funciones..."
 	for comp_a_inst in "${NOM_COM[@]}"; do
 		instalar_componente "$comp_a_inst"
-		# imprimir y logeuar
+
 	done
 	
 	echo "Actualizando la configuracion del sistema..."
 	guardar_configuracion
 	
-	mostrar_y_registrar "Instalacion realizada exitosamente"
+	echo
+	mostrar_y_registrar "Instalacion realizada exitosamente."
 
 	return 0
 }
@@ -667,12 +707,16 @@ function reparar_sistema {
 	declare local com
 	declare local arch	
 
+	mostrar_y_registrar "Se inicia la reparacion del sistema."
+	
+	echo 
+	echo "Instalando componentes faltantes..."
+	echo
+	
 	for com in "${NOM_COM[@]}"; do
 		
 		if [ "${COM_INSTALADOS[$com]}" == "false" ]; then
 			instalar_componente "$com"
-			# loguear componente instalado
-			#COM_INSTALADOS["$com"]=true
 		fi
 
 	done
@@ -682,12 +726,12 @@ function reparar_sistema {
 		if [ "${ARCH_MAE_INSTALADOS[$arch]}" == "false" ]; then
 			instalar_componente "$arch"
 			echo_depuracion $RETORNO 1
-			#loguear archivo instalado
-			#ARCH_MAE_INSTALADOS["$arch"]=true
+
 		fi
 		
 	done
 	
+	mostrar_y_registrar "Finaliza la repacion del sistema." -nm
 	mostrar_y_registrar "Sistema reparado existosamente."
 
 	return 0
@@ -788,6 +832,8 @@ function mostrar_dir_instalados {
 	
 	grupo="${VARIABLES[GRUPO]}"
 	
+	
+	
 	for nom_var in "${NOM_VARIABLES[@]}";do
 	var="${VARIABLES[$nom_var]}"
 		
@@ -809,6 +855,8 @@ function mostrar_dir_instalados {
 		
 	done
 	
+
+	
 	return 0
 }
 
@@ -823,6 +871,7 @@ function mostrar_componentes_instalados {
 	declare local nom_comp
 	declare local var
 	
+	mostrar_y_registrar "Se inicia el proceso de muestreo de componentes instalados." -nm
 	
 	if [ "$ESTADO_INSTALACION" == "C" ];then
 		est_inst="COMPLETA"
@@ -864,10 +913,11 @@ function mostrar_componentes_instalados {
 		
 	echo
 	
-	echo "Estado de la Instalacion: $est_inst"
+	mostrar_y_registrar "Estado de la Instalacion: $est_inst"
 	
 	echo
 
+	mostrar_y_registrar "Se finaliza el proceso de muestreo de componentes instalados." -nm
 	
 	return 0
 }
@@ -883,6 +933,8 @@ function verificar_estado_de_instalacion {
 	declare local hay_componentes=false
 	declare local var
 	declare local i
+	
+	mostrar_y_registrar "Inicia comprobacion del estado del sistema." -nm
 	
 	for i in "${NOM_COM[@]}";	do
 		var="${NOM_COM[$i]}"
@@ -923,8 +975,7 @@ function verificar_estado_de_instalacion {
 		fi
 	fi
 	
-	echo_depuracion "Estado de Instalacion: $ESTADO_INSTALACION" 0
-	
+	mostrar_y_registrar "Finaliza comprobacion del estado del sistema." -nm
 	
 	return 0
 }
@@ -936,22 +987,22 @@ function verificar_estado_de_instalacion {
 ##
 
 function comprobar_arch_de_instalacion {
-
+	
+	mostrar_y_registrar "Se inica la comprobacion de los archivos de instalacion." -nm
+	
 	if [ -f "$NOM_ARCH_DE_INSTALACION" ]; then
-		if [ -d "$DIR_ARCH_DE_INSTALACION" ];then
-			:
-		else
+		if [ ! -d "$DIR_ARCH_DE_INSTALACION" ];then
 			mkdir "$DIR_ARCH_DE_INSTALACION"
 		fi
 		
 		tar -xf "$NOM_ARCH_DE_INSTALACION" -C "$DIR_ARCH_DE_INSTALACION"
-		
+
 	else
-		echo "Falta archivo de Instalacion \"${NOM_ARCH_DE_INSTALACION}\""
+		mostrar_y_registrar "Falta archivo de Instalacion \"${NOM_ARCH_DE_INSTALACION}\""
 		finalizar_instalacion 2
 	fi
 	
-	
+	mostrar_y_registrar "Finaliza la comprobacion de los archivos de instalacion." -nm
 
 	return 0
 }
@@ -966,17 +1017,17 @@ function comprobar_arch_de_instalacion {
 
 function finalizar_instalacion {
 	
+	echo
+	
 	if [ "$1" != "0" ]; then
 		mostrar_y_registrar "Instalacion Cancelada."
 	else
 		mostrar_y_registrar "Fin Instalacion."
 	fi
 	
-	echo_depuracion "Se estan por eliminar los archivos de inst" 1
 	if [ -d "$DIR_ARCH_DE_INSTALACION" ]; then
 		rm "${DIR_ARCH_DE_INSTALACION}/"*
 		rmdir "${DIR_ARCH_DE_INSTALACION}"
-		echo_depuracion "Se eliminaron los archivos de inst" 1
 	else
 		echo "Error al eliminar carpeta de archivos de instalación"
 	fi
@@ -1001,7 +1052,14 @@ function finalizar_instalacion {
 		fi		
 	fi
 	
-	#exit 0
+	exit 0
+}
+
+function limpiar_pantalla {
+	clear
+	echo "TP SO7508 1er cuatrimetre 2012. Tema V, Derechos Reservados, Grupo 7"
+	echo
+	return 0
 }
 
 ########################################################################
@@ -1014,13 +1072,13 @@ function finalizar_instalacion {
 ########################################################################
 ########################################################################
 
-clear
+mostrar_y_registrar "Comando InstalaV5 Inicio de Ejecución"
+
+limpiar_pantalla
 
 comprobar_arch_de_instalacion
 
-echo "TP SO7508 1er cuatrimetre 2012. Tema V, Derechos Reservados, Grupo 7"
 echo "Instalacion de Sistema V-FIVE"
-mostrar_y_registrar "Comando InstalaV5 Inicio de Ejecución"
 
 buscar_archivo "$NOM_ARCH_CONFIG"
 
@@ -1043,24 +1101,28 @@ if [ -n "$RETORNO" ]; then
 		if [ $# -eq 0 ]; then
 			confirmar_respuesta "Faltan Componentes en el Sistema. ¿Instalar componentes faltantes?"
 			if [ "$RETORNO" == "true" ];then
+				limpiar_pantalla
+				mostrar_y_registrar "Se confirmo reparacion del sistema." -nm
 				reparar_sistema
 			fi
 		else
-			
+			limpiar_pantalla
 			confirmar_respuesta "¿Continuar con instalacion de Componentes Ingresados?"
 			
 			if [ "$RETORNO" == true ];then
 				# Se instalaran los comandos argumento uno por uno
+				mostrar_y_registrar "Se confirmo instalacion de componentes." -nm
 				for COM in "$@"; do
 					existe_componente "$COM"
 					
 					if [ "$RETORNO" == "true" ]; then
+						echo
 						confirmar_respuesta "¿Instalar Componente \"${COM}\"?"
 						if [ "$RETORNO" == true ]; then
 							instalar_componente "$COM"
 						fi
 					else
-						echo "El componente \"$COM\" no es parte de sistema"
+						mostrar_y_registrar "El componente \"$COM\" no es parte de sistema"
 					fi
 					echo "$RETORNO"
 				done
@@ -1074,10 +1136,10 @@ if [ -n "$RETORNO" ]; then
 		# archivos maestros
 	
 	elif [ "$ESTADO_INSTALACION" == "C" ]; then
-		echo "El Sistema ya se encuentra instalado completamente"	
+		mostrar_y_registrar "El Sistema ya se encuentra instalado completamente"	
 			
 	else
-		echo "Error en comprobacion de componentes del sistema"
+		mostrar_y_registrar "Error en comprobacion de componentes del sistema"
 	
 	fi
 
@@ -1089,21 +1151,20 @@ else
 
 	echo_depuracion "Se entro en la instalacion normal"	
 
-
-
 	verificar_perl_instalado
 	CONFIRMACION=false
 	
-	echo "Defina los Directorios del Sistema"
+	echo
+	echo "Defina los Directorios del Sistema."
+	echo
 	
 	while [ "$CONFIRMACION" == false ]; do
-
 
 		cagar_valores_defecto # Se almacenan los nombres por defecto de los directorios principales
 	
 		establecer_variables # Se establecen todos los nombres de carpetas y algunos datos importantes
 		establecer_variables_num # Se establecen las variables de tipo numerico
-		clear
+		limpiar_pantalla
 	
 		mostrar_valores_ingresados
 		
@@ -1112,46 +1173,52 @@ else
 
 	done
 	
+	
+	
 	if [ $# -eq 0 ]; then
-
+		limpiar_pantalla
 		confirmar_respuesta "Iniciando Instalacion. Esta Ud. seguro?"
 		CONFIRMACION=$RETORNO
 	
 
 		if [ "$CONFIRMACION" == true ]; then
+			limpiar_pantalla
+			mostrar_y_registrar "Se confirmo la instacion del sistema." -nm
 			instalar_sistema
 			#guardar archivo Configuracion
 		else
 			finalizar_instalacion 1 ## Instalacion cancelada
 		fi
 	else
+		limpiar_pantalla
 		confirmar_respuesta "¿Continuar con Instalacion de Componentes Ingresados?"
 		CONFIRMACION=$RETORNO
 		
 		# Se instalaran los comandos argumento uno por uno 
 		if [ "$CONFIRMACION" == true ]; then
+			mostrar_y_registrar "Se confirmo la instalacion de componentes." -nm
 			crear_carpetas
 			for COM in "$@"; do
 			
 				existe_componente "$COM"
 				
 				if [ "$RETORNO" == "true" ]; then
-				
+					echo
 					confirmar_respuesta "¿Instalar Componente \"${COM}\"?"
 					CONFIRMACION=$RETORNO
 					
 					if [ "$RETORNO" == true ];then
+						mostrar_y_registrar "Se confirmo la instalacion del componente \"$COM\"." -nm
 						instalar_componente "$COM"
 						echo "$RETORNO"
 					fi
 				else
-					echo "El componente \"$COM\" no es parte de sistema"
+					mostrar_y_registrar "El componente \"$COM\" no es parte de sistema"
 				fi
 			done
 		fi
 		guardar_configuracion
 	fi
-
 
 fi
 
