@@ -123,7 +123,8 @@ function buscar_archivo {
 	
 	rm aux.out
 	rm aux-2.out
-
+	
+	
 	return 0
 
 }
@@ -193,9 +194,8 @@ function leer_entrada {
 
 function cagar_valores_defecto {
 	declare local aux
-	pwd > ruta
-	read aux < ruta
-	rm ruta
+	declare local ruta
+	ruta=`pwd`
 	
 	mostrar_y_registrar "Se establecen las variables con sus valores por defecto." -nm
 	
@@ -276,7 +276,7 @@ function guardar_configuracion {
 	
 	usuario="$USER"
 	
-	fecha_creacion=`date`
+	fecha_creacion=`date +"%0d/%0m/%Y %I:%M%p"`
 	
 	if [ -d "${VARIABLES[CONFDIR]}" ]; then
 		cd "${VARIABLES[CONFDIR]}"
