@@ -71,14 +71,16 @@ if [ -r $LOGDIR/$output ] && [ `stat -c%s $LOGDIR/$output` -gt $LOGSIZE ]; then
 fi
 
 
-mensaje=$(printf "$(grep "$errcode" ListaErrores)" $@)
-if [ ! -z $? ]; then
+mensaje=$(printf "$(grep "$errcode" $BINDIR/ListaErrores)" $@)
+ret=$?
+printf "ret = %s\n" $ret
+if [ $ret -ne 0 ]; then
 	echo "faltan argumentos para el mensaje\n"
 	exit 1
 fi
 fecha=`date +"%D"`
-usr=`who | awk '{print $1}' FS=" "`
-usr=`echo ${usr%%\\*}`
+usr=`who | awk '{print $1}' FS=" " | head -1`
+usr=${usr%%\\*}
 printf "usr = %s\n" "$usr"
 printf "%s$sep%s$sep%s$sep%s$sep%s\n" "$fecha" "$usr" "$errstat" "$cmdname" "$mensaje" >>$LOGDIR/$output
 
