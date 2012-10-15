@@ -69,7 +69,7 @@ RETORNO_2=""
 # Arg0: Mensaje a mostrar
 # Arg1: Numero de etapa (solo se muestran los msj con el mismo numero de etapa)
 function echo_depuracion {
-	if [ "$2" == "2" ]; then
+	if [ "$2" == "3" ]; then
 		echo $1
 	fi
 	return 0
