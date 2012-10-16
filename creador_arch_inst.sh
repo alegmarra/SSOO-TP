@@ -1,5 +1,9 @@
+#!/bin/bash/
+
 
 NOM_ARCH_INST="arch-sistema.dat"
+
+NOM_SCR_INST="InstalaV5.sh"
 
 NOM_SISTEMA="V5grupo07.tgz"
 
@@ -53,6 +57,13 @@ if [ $# -eq 0 ]; then
 	echo "Creado archivo $NOM_SISTEMA."
 	
 	rm ${nom_archivos_script[@]} ${nom_archivos_maestros[@]}
+	
+	if [ -d grupo07 ]; then
+		rm -r -f grupo07/
+	fi
+	mkdir grupo07
+	mv "${NOM_SISTEMA}" grupo07
+	cd grupo07; tar -xvf "${NOM_SISTEMA}"
 	
 else
 	echo "NO se tiene que recibir argumentos."

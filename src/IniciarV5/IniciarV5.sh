@@ -5,7 +5,7 @@
 CONFIG_FILE="./conf/InstalaV5.conf"
 #test: 
 #CONFIG_FILE="InstalaV5.conf"
-VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT)
+VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE)
 COMANDOS=(DetectaV5 BuscarV5 ListarV5 MoverV5 LoguearV5 MirarV5 StopD StartD)
 ARCHIVOS_MAE=(patrones sistemas)
 # Variables para informar al usuario
@@ -87,7 +87,7 @@ verificarSiYaSeInicioElEntorno () {
 }
 
 init () {
-	if [ $# -gt 0] && [ $1 == "-inicializado" ]
+	if [ $# -gt 0 ] && [ "$1" = "-inicializado" ]
 	then
 		verificarSiYaSeInicioElEntorno $1
 	fi	
@@ -162,7 +162,7 @@ verificarSiYaSeInicioElEntorno
 
 setearVariablesDeEntorno
 
-${BINDIR}/LoguearV5.sh -c 101 -f IniciarV5
+${BINDIR}/LoguearV5.sh -c 101 -f IniciarV5 -I I
 
 export PATH=${PATH}:${BINDIR}; echo "@todo: revisar si está bien la variable PATH"
 
