@@ -80,6 +80,9 @@
 
 \section{Hip\'otesis y Aclaraciones Globales}
 
+Asumimos que todos los comandos se ejecutaran despues de haber sido inicializado el sistema con IniciarV5, exceptuando a InstalarV5. Esto es asi dado que se utilizan variables de entorno en los mismos. 
+
+
 \section{Problemas Relevantes}
 
 \subsection{Lectura de expresiones regulares del archivo de patrones}
@@ -99,9 +102,13 @@ El proyecto consiste en un software para procesar archivos que contienen informa
 
 Los archivos correspondientes al proyecto son los siguientes:
 
+- InstalaV5.sh es el modulo de instalacion.
+
+- arch-sistema.dat: contiene los ejecutables y modulos desarrollados.
+
 INSTALACION
 
-Insertar el dispositivo de almacenamiento co el contenido del trabajo práctico.
+Insertar el dispositivo de almacenamiento con el contenido del trabajo práctico.
 
 Crear en el directorio corriente un directorio de trabajo llamado grupo07.
 
@@ -126,6 +133,7 @@ Para llevar a cabo la instalacion por componentes se debe invocar al script del 
 \end{verbatim}
 
 Se pueden instalar mas de un componente de una sola vez solo indicando sus nombres.
+
 Ej: ./InstalaV5.h IniciarV5 patrones
 
 Se puede ir instalando componente por componente para hasta llegar a una instalacion completa del sistema, aunque solo en la primera instalacion por componentes se le pedira al usuario que defina los nombres de los directorios del sistema.
@@ -135,20 +143,27 @@ solo exhibira los componentes instalados y finalizara,en cambio hubiera alguno f
 
 REQUERIMIENTOS
 
-Para la correcta instalación, se deberá tener instalado Bash versión 3 o superior, y Perl versión  o superior.
+Para la correcta instalación, se deberá tener instalado Bash versión 3 o superior, y Perl version 4 o superior.
 
-% Que deja la instalacion y donde
+Los archivos que quedaran en el sistema del usuario son:
+
+- IniciarV5.sh se guardara en la carpeta del grupo.
+
+- InstalaV5.conf en la carpeta de configuraciones definida por CONFDIR.
+
+- Los ejecutables en la carpeta definida por el usuario en BINDIR.
+
+- El log de la instalación en la carpeta definida por LOGDIR
 
 INTRODUCCCION
 
-% primeros pasos para usarlo
+Luego de la instalacion, se debe inicializar las variables de entorno del sistema con el comando IniciarV5 de esta forma:
 
-% comprobar si todo esta correctamente instalado.
+. ./Iniciar.sh
 
-Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubicado en %el directorio de ejecutables especificado durante la instalación.
+Hecha la inicializacion, el demonio se ejecuta. Se pueden obtener reportes de los resultados producidos en las busquedas mediante el comando ListarV5 y consultar los logs con MirarV5.
 
-
-
+Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh
 
 \newpage
 
@@ -170,7 +185,7 @@ Instala el sistema en el equipo. Puede instalarlo por completo o por componentes
 
 		\subsubsection{Archivos}
 			\begin {itemize}
-				\item \textbf{Input} {arch-instala.dat}
+				\item \textbf{Input} {arch-instalar.dat}
 				\item \textbf{Intermedios} {Archivos temporales para hacer operaciones auxiliares en el almacenamiento de la configuración del sistema.}
 				\item \textbf{Output} {InstalaV5.conf, y todos los modulos ejecutables}
 			\end{itemize}
@@ -198,9 +213,9 @@ Para instalar algun modulo:
 
 El modulo IniciarV5 creará todas las carpetas aun cuando se ordene una instalacion parcial.
 
-		\subsubsection{C\'odigo Fuente}
-			Anexo I
 
+		\subsubsection{C\'odigo Fuente}
+			Anexo al final.
 %END subsection
 
 
@@ -236,13 +251,9 @@ El modulo IniciarV5 creará todas las carpetas aun cuando se ordene una instalac
 				Demonizado: nohup DetectaV5.sh 0<\&- 1>/dev/null 2>\&1 \&
 			\end{verbatim}
 
-		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
-
-BLABGLASSFsdfsdfegdasfgadfgadfgwrtdsfasdfasdfa
-
 
 		\subsubsection{C\'odigo Fuente}
-			Anexo III
+			Anexo al final.
 %END subsection
 
 	\subsection{BuscarV5}
@@ -268,10 +279,8 @@ No lleva parámetros, asi que tan sólo es necesaria su ejecución de la forma:
 				\$BINDIR/BuscarV5.sh
 			\end{verbatim}
 
-		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
-
 		\subsubsection{C\'odigo Fuente}
-			Anexo IV
+			Anexo al final.
 %END subsection
 
 	\subsection{ListarV5}
@@ -313,8 +322,9 @@ Uso: ListarV5 [opciones]
 $BINDIR/ListarV5.pl -r 
 \end{verbatim}
 
+
 		\subsubsection{C\'odigo Fuente}
-			Anexo V
+			Anexo al final.
 %END subsection
 
 	\subsection{IniciarV5}
@@ -351,10 +361,9 @@ Para preguntar si el sistema esta inicializado:
 
 Y es necesario guardar el codigo de retorno.
 
-		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
 		\subsubsection{C\'odigo Fuente}
-			Anexo VI
+			Anexo al final.
 %END subsection
 
 	\subsection{LoguearV5}
@@ -385,8 +394,9 @@ Lo utilizan los modulos para registrar mensajes al archivo de log de cada modulo
 \begin{verbatim}
 $./LoguearV5.sh -f  
 \end{verbatim}
+
 		\subsubsection{C\'odigo Fuente}
-			Anexo VII
+			Anexo al final.
 
 %END subsection
 
@@ -422,8 +432,9 @@ MirarV5 -n 10 -p sasapp -s , -f resultados.3
 
 Cuando se invoca este comando se debe indicar el caracter separador correspondiente al archivo de log que se quiere mostrar. El modulo de logueo aplica un separador por defecto (punto y coma), pero este puede cambiarse por otro mediante el flag -s. Luego, al intentar mostrarlo mediante este comando, es obligatorio indicar el separador utilizado, en caso contrario, no se indicaran los resultados de forma correcta.
 
+
 		\subsubsection{C\'odigo Fuente}
-			Anexo VIII
+			Anexo al final.
 
 %END subsection
 
@@ -465,10 +476,9 @@ Cuando se invoca este comando se debe indicar el caracter separador correspondie
 				\$BINDIR/MoverV5.sh <Origen> <Destino> <Comando> [OPCION]
 			\end{verbatim}
 
-		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
 		\subsubsection{C\'odigo Fuente}
-			Anexo IX
+			Anexo al final.
 %END subsection
 
 	\subsection{StartD}
@@ -516,8 +526,9 @@ Cuando se invoca este comando se debe indicar el caracter separador correspondie
 
 			\end{itemize}
 
+
 		\subsubsection{C\'odigo Fuente}
-			Anexo X
+			Anexo al final.
 
 %END subsection
 
@@ -559,10 +570,9 @@ Cuando se invoca este comando se debe indicar el caracter separador correspondie
 				\$BINDIR/StopD.sh <NombreComando.sh>
 			\end{verbatim}
 
-		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
 		\subsubsection{C\'odigo Fuente}
-			Anexo XI
+			Anexo al final.
 %END subsection
 
 	\subsection{DetenerV5}
@@ -595,10 +605,8 @@ Cuando se invoca este comando se debe indicar el caracter separador correspondie
 				\$BINDIR/DetenerV5.sh
 			\end{verbatim}
 
-		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
-
 		\subsubsection{C\'odigo Fuente}
-			Anexo XI
+			Anexo al final.
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Archivos}
