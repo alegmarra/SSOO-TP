@@ -82,6 +82,13 @@
 
 \section{Problemas Relevantes}
 
+\subsection{BuscarV5: Lectura de expresiones regulares del archivo de patrones}
+
+Según el formato del archivo de patrones, la expresión regular a aplicar se ubica en el segundo campo de cada registro del archivo, pero encerrado entre comillas simples. Al leer esta expresión regular, es necesario quitar las comillas simples antes de ingresarlas al comando grep, sino el comportamiento era incorrecto: se interpretaban las comillas simples como caracteres buscados. Se solucionó con una función en el script BuscarV5.sh que recorta el primer y último carácter de un string.
+
+Otro problema relevante fue la lectura de los registros del archivo de patrones. Es necesario usar el comanod read con el flag “-r” para que no interpretara caracteres de escape en las expresiones regulres.
+
+
 \section{Archivo README}
 
 
@@ -593,9 +600,22 @@ Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sól
 	
 		\subsubsection{ListaErrores}
 	
+No especificado en el enunciado. Desarrollado por el equipo para almacenar los mensajes de logueo que usan los módulos, y su formato.
+
 			\begin {itemize}
-				\item \textbf{Tipo} {Archivo auxiliar de Logueo}
+				\item \textbf{Tipo} {Archivo auxiliar de Logueo, permanente}
 				\item \textbf{Directorio} {LoguearV5}
+				 \item \textbf{Justificación:}  este archivo contiene los posibles mensajes de logueo, de forma que el log sea coherente al registrar mensajes con el mismo propósito provenientes de distintos módulos. Para usarlo, cada módulo debe referenciar el mensaje segun un identificador. Si el mensaje llevara nombres o variables, se debe escribir ``\%s'' en los lugares del mensaje que correspondan, y luego pasar esas variables como parámetros extra al usar el módulo de logueo.
+
+
+				Por ejemplo, para el mensaje:
+
+				{\tt 401 Inicio BuscarV5 - Ciclo Nro: \%s - Cantidad de archivos: \%s}
+
+				se necesitan dos variables: número de ciclo y cantidad de archivos. Entonces, desde el módulo que lo usa, BuscarV5, se debe invocar al log de esta forma:
+
+				{\tt \$BINDIR/LoguearV5.sh -c 401 -f BuscarV5 -i I \$CICLO \$CANT\_ARCHIVOS}
+
 				\item \textbf{Estructura} {\textit{MSJ\_ID MensajeDeError}\\
 					Donde: \ 
 					\begin{table}[H]
