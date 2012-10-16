@@ -82,6 +82,12 @@
 
 \section{Problemas Relevantes}
 
+\subsection{BuscarV5: Lectura de expresiones regulares del archivo de patrones}
+
+Según el formato del archivo de patrones, la expresión regular a aplicar se ubica en el segundo campo de cada registro del archivo, pero encerrado entre comillas simples. Al leer esta expresión regular, es necesario quitar las comillas simples antes de ingresarlas al comando grep, sino el comportamiento era incorrecto: se interpretaban las comillas simples como caracteres buscados. Se solucionó con una función en el script BuscarV5.sh que recorta el primer y último carácter de un string.
+
+Otro problema relevante fue la lectura de los registros del archivo de patrones. Es necesario usar el comanod read con el flag “-r” para que no interpretara caracteres de escape en las expresiones regulres.
+
 \section{Archivo README}
 
 
@@ -260,22 +266,40 @@ Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sól
 %BEGIN subsection
 		\subsubsection{Usos}
 			 
+El enunciado requería la opción de poder filtrar los resultados seleccionando los distintos patrones, ciclos y archivos. Quisimos mantener una forma flexible de filtrado pero sin requerír cargar todos los archivos en memoria en el script. Tomando eso en cuanto, se hace una primera iteración sobre los archivos de resultado para obtener las diferentes opciones de filtrados, que pueden ser combinadas de cualquier manera, y luego una segunda iteración para mostrar los resultados aplicando los filtros seleccionados.
 
 		\subsubsection{Archivos}
 			\begin {itemize}
-				\item \textbf{Input} {bla}
-				\item \textbf{Intermedios} {bla}
-				\item \textbf{Output} {bla}
+				\item \textbf{Input} {Los archivos de resultados detallados y globales generados por el comando BuscarV5.sh que se encuentran en el directorio de procesados.}
+				\item \textbf{Intermedios} {No produce}
+				\item \textbf{Output} {Dependiendo de un parametro (-x), genera el informe de los archivos de resultado aplicando los filtros seleccionados en un archivo de salida en el directorio de reportes.}
 			\end{itemize}
 
+
+
 		\subsubsection{Par\'ametros y Opciones}
-			\begin {itemize}
-				\item \textbf{arg1} {bla}
-			\end{itemize}
+		
+Sin parámetros, la apliación muestra información y filtros sobre los resultados globales.
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
 
-		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+\begin{verbatim}
+
+# $BINDIR/ListarV5.pl -h
+Uso: ListarV5 [opciones]
+
+ -g, -global          (default) Consultar los resultados globales.
+ -r, -resultado       Consultar los resultados detallados.
+                      Implica no global.
+ -x, -salida          Grabar el informe en un archivo en lugar de
+                      imprimirlo en pantalla.
+\end{verbatim}
+
+		\subsubsection{Ejemplos de invocación:}
+
+\begin{verbatim}
+$BINDIR/ListarV5.pl -r 
+\end{verbatim}
 
 		\subsubsection{C\'odigo Fuente}
 			Anexo V
@@ -573,20 +597,45 @@ Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sól
 				\item \textbf{Estructura} {bla}
 			\end{itemize}
 
-		\subsubsection{resultados.PAT\_ID}
+
+		\subsubsection{rglobales.PAT\_ID}
 
 			\begin {itemize}
-				\item \textbf{Tipo} {Archivo de Resultados}
+				\item \textbf{Tipo} {Archivo de resultados}
 				\item \textbf{Directorio} {PROCDIR}
-				\item \textbf{Estructura} {bla}
+				\item \textbf{Estructura} {\textit{Ciclo de busqueda, Nombre del archivo, expresion regular, contexto, desde, hasta, cantidad de hallazgos}\\
+					Donde: \ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Tipo & Fuente o Variable correspondiente \\
+						\hline
+							Ciclo de busqueda  & Numérico & SECUENCIA2 \\
+						\hline
+							Nombre del archivo  & Caracteres & Archivo procesado \\
+						\hline
+							Expresion regular  & Caracteres & Archivo de patrones \\
+						\hline
+							Contexto de resultado  & Caracteres & Archivo de patrones \\
+						\hline
+							Desde  & Numérico & Archivo de patrones \\
+						\hline
+							Hasta  & Numérico & Archivo de patrones \\
+						\hline
+							Cantidad de hallazgos  & Numérico & Archivo procesado \\
+
+					\end{tabular}
+					\end{table}
+				}
 			\end{itemize}
-	
+
 		\subsubsection{salida\_xxx}
 
 			\begin {itemize}
 				\item \textbf{Tipo} {Archivo de Reportes}
 				\item \textbf{Directorio} {REPODIR}
-				\item \textbf{Estructura} {\textit{blablabBGAWDFAFAGADFVAFDGAERRGAQGla}\\
+				\item \textbf{Estructura} {\textit{Es un archivo de texto libre, en donde la salida está dividida por patrón y los filtros aplicados en cada patrón. Por cada patrón hay un listado de 3 columnas de campo fijo, donde la primera es el ciclo (10 caracteres), la segunda es el archivo (25 caracteres) y la tercera es el registro RESULTADO del archivo de resultados detallados (sin límite).}\\
 					Donde: (	$^*$campo  opcional )\ 
 					\begin{table}[H]
 					\centering
@@ -607,6 +656,8 @@ Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sól
 	
 		\subsubsection{ListaErrores}
 	
+No especificado en el enunciado. Desarrollado por el equipo para almacenar los mensajes de logueo que usan los módulos, y su formato.
+
 			\begin {itemize}
 				\item \textbf{Tipo} {Archivo auxiliar de Logueo}
 				\item \textbf{Directorio} {LoguearV5}
@@ -628,6 +679,9 @@ Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sól
 					\end{table}
 				}
 			\end{itemize}
+
+\textbf{Justificación:}  este archivo contiene los posibles mensajes de logueo, de forma que el log sea coherente al registrar mensajes con el mismo propósito provenientes de distintos módulos. Para usarlo, cada módulo debe referenciar el mensaje segun un identificador. Si el mensaje llevara nombres o variables, se debe escribir ``\%s'' en los lugares del mensaje que correspondan, y luego pasar esas variables como parámetros extra al usar el módulo de logueo.
+
 
 %%%%%%%%%%%%%%%%%%%%%
 
