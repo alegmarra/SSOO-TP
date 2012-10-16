@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ###################################################################
 ## Script de Instalacion de Sistemas de Administracion de Logueo
 ##
@@ -14,7 +16,7 @@ NOM_ARCH_LOG="InstalaV5.log"
 
 NOM_ARCH_CONFIG="InstalaV5.conf"
 NOM_ARCH_DE_INSTALACION="arch-sistema.dat"
-DIR_ARCH_DE_INSTALACION="arch_instalcion"
+DIR_ARCH_DE_INSTALACION="dir_arch_instalacion"
 
 ESTADO_INSTALACION="I" # 3 estados (INCOMPLETO(I), PARCIAL(P), COMPLETO(C))
 
@@ -37,7 +39,7 @@ DATASIZE=12
 SECUENCIA1=13
 SECUENCIA2=14
 
-NOM_VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE DATASIZE SECUENCIA1 SECUENCIA2)
+declare -a NOM_VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE DATASIZE SECUENCIA1 SECUENCIA2)
 
 declare -a DESCRIP_DIR=( [$CONFDIR]="Directorio donde se encuentran los archivos de Configuracion del Sistema" \
 	[$BINDIR]="directorio de archivos ejecutables" \
@@ -61,7 +63,7 @@ declare -a DESCRIP_DIR_RES=( ["$CONFDIR"]="Libreria del Sistema" \
 	[$LOGDIR]="Logs de auditoria del Sistema" \
 	)
 
-declare -A VARIABLES=( [$CONFDIR]="conf" )
+declare -a VARIABLES=( [$CONFDIR]="conf" )
 
 DIR_INSTALADOS=false
 
@@ -1035,6 +1037,7 @@ function comprobar_arch_de_instalacion {
 	if [ -f "$NOM_ARCH_DE_INSTALACION" ]; then
 		if [ ! -d "$DIR_ARCH_DE_INSTALACION" ];then
 			mkdir "$DIR_ARCH_DE_INSTALACION"
+			echo "Se creo carpeta $DIR_ARCH_DE_INSTALACION"
 		fi
 		
 		tar -xf "$NOM_ARCH_DE_INSTALACION" -C "$DIR_ARCH_DE_INSTALACION"
@@ -1052,7 +1055,7 @@ function comprobar_arch_de_instalacion {
 
 ########################################################################
 ##
-##
+## Finaliza el script de instalacion, registrandolo en el log
 ##
 
 function finalizar_instalacion {
@@ -1069,8 +1072,7 @@ function finalizar_instalacion {
 		rm "${DIR_ARCH_DE_INSTALACION}/"*
 		rmdir "${DIR_ARCH_DE_INSTALACION}"
 	else
-		echo "Error al eliminar carpeta de archivos de instalación"
-
+		echo "Error al eliminar carpeta de archivos de instalación: $DIR_ARCH_DE_INSTALACION"
 	fi
 	
 	## Agrega los registros nuevos al registro de log
@@ -1093,7 +1095,7 @@ function finalizar_instalacion {
 		fi		
 	fi
 	
-	#xexit 0
+	exit 0
 }
 
 function limpiar_pantalla {
