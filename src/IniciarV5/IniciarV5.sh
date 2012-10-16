@@ -144,7 +144,6 @@ invocarDetecta () {
 }
 
 fin () {
-echo "estoy por loguear el 103"
 	${BINDIR}/LoguearV5.sh -c 103 -f IniciarV5 -i I
 }
 
