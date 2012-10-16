@@ -84,6 +84,50 @@
 
 \section{Archivo README}
 
+
+Este es el README del trabajo práctico correspondiente al segundo cuatrimestre del año 2012 de la materia 75.08 Sistemas Operativos, grupo 7.
+ 
+ARCHIVOS DEL PROYECTO
+ 
+El proyecto consiste en un software para procesar archivos que contienen información de logueo provenientes de diferentes sistemas. El programa valida los archivos, aplica patrones de busqueda y genera archivos de resultados con las coincidencias. Tambien mueve los archivos procesados a otras carpetas de almacenamiento de archivos procesados con éxito. Permite efectuar consultas sobre lo procesado, y generar reportes.
+
+Los archivos correspondientes al proyecto son los siguientes:
+
+README
+
+INSTALACION
+
+Insertar el dispositivo de almacenamiento co el contenido del trabajo práctico.
+
+Crear en el directorio corriente un directorio de trabajo.
+
+Copiar el archivo *.tgz en esa carpeta.
+
+Descomprimir el *.tgz de manera de generar un *.tar.
+
+Extraer los archivos del tar.
+
+% algo mas
+
+REQUERIMIENTOS
+
+Para la correcta instalación, se deberá tener instalado Bash versión 3 o superior, y Perl versión  o superior.
+
+% Que deja la instalacion y donde
+
+INTRODUCCCION
+
+% primeros pasos para usarlo
+
+% comprobar si todo esta correctamente instalado.
+
+Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubicado en %el directorio de ejecutables especificado durante la instalación.
+
+
+
+
+\newpage
+
 \section{Listado de Comandos y Funciones}
 %a. Nombre
 %b. Justificación, solo si el comando fue agregado por Uds. (se debe explicar para que se lo
@@ -189,17 +233,20 @@
 
 		\subsubsection{Archivos}
 			\begin {itemize}
-				\item \textbf{Input} {bla}
-				\item \textbf{Intermedios} {bla}
-				\item \textbf{Output} {bla}
+				\item \textbf{Input} {Los archivos que sean aceptados y que se encuentren en el directorio de aceptados, el archivo de configuración producido por el modulo de inicialización, y el archivo de patrones.}
+				\item \textbf{Intermedios} {No produce.}
+				\item \textbf{Output} {los archivos de resultados detallados y globales para los patrones. Se guardaran en la carpeta de procesados.}
 			\end{itemize}
 
 		\subsubsection{Par\'ametros y Opciones}
-			\begin {itemize}
-				\item \textbf{arg1} {bla}
-			\end{itemize}
+			 No posee argumentos de ejecución ni opciones. Cuando se ejecuta, comienza a procesar los archivos.
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sólo es necesaria su ejecución de la forma:\\
+
+{\bf Ejemplo de invocación:} 
+\$BINDIR/BuscarV5.sh
+
 
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
@@ -446,7 +493,7 @@
 						Valor 	& Caracteres 	& Contenido de la variable \\
 						\hline
 						\multirow{2}{*}{Usuario} & Caracteres & Login del usuario que realiza la grabacion. \\
-											 &			& *COMANDO, ARCHIVO y DIRECTORIOS no guardan usuario\\
+											 &			&\small{ *COMANDO, ARCHIVO y DIRECTORIOS no guardan usuario}\\
 						\hline
 						Fecha	& dd/mm/aaaa hh:mm 	&	Fecha y hora del momento de registro. \\
 						\hline
@@ -522,7 +569,7 @@
 				\item \textbf{Tipo} {Archivo Maestro}
 				\item \textbf{Directorio} {MAEDIR}
 				\item \textbf{Estructura} {\textit{SIS\_ID;NombreSistema;FechaDeAlta;FechaDeBaja$^*$}\\
-					Donde: (	$^*$campo  opcional )\ 
+					Donde: (	$^*$campo  cd ..opcional )\ 
 					\begin{table}[H]
 					\centering
 					\begin{tabular}{| c | c | c |}
