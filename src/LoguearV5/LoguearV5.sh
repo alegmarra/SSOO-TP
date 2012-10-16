@@ -17,10 +17,6 @@ errstat=
 cmdname=
 sep=";"
 
-# TODO: limpiar estas variables cuando este hecha la parte de IniciarV5
-GRUPO="."
-LOGSIZE=2000000
-
 while getopts c:f:i:hs: opt
 do 
 	case "$opt" in
