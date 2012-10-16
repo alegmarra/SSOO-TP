@@ -225,11 +225,11 @@ fi
 # Coloco paths DE PRUEBA
 # @TODO usar el path correcto
 ##
-export ARRDIR="./tests/arribos"
-export MAEDIR="./tests/maestros"
-export RECHDIR="./tests/rechazados"
-export ACEPDIR="./tests/aceptados"
-export BINDIR="./tests"
+#export ARRDIR="./tests/arribos"
+#export MAEDIR="./tests/maestros"
+#export RECHDIR="./tests/rechazados"
+#export ACEPDIR="./tests/aceptados"
+#export BINDIR="./tests"
 export SLEEPTIME="2" #segundos
 export pName="DetectaV5.sh"
 
@@ -243,7 +243,7 @@ $BINDIR/LoguearV5.sh -c "301" -i "I" -f "$pName"
 # Verificar si la inicializacion de ambiente
 # se realizo anteriormente:
 ##
-$BINDIR/IniciarV5.sh "-inicializado" > /dev/null
+$GRUPO/IniciarV5.sh "-inicializado" > /dev/null
 INICIALIZADO=$? # atrapo el codigo de retorno de IniciarV5
 if [ $INICIALIZADO -eq 0 ]; then
         
@@ -251,7 +251,7 @@ if [ $INICIALIZADO -eq 0 ]; then
 	$BINDIR/LoguearV5.sh -c "001" -i "SE" -f "$pName"
 
 	echo "El sistema no fue inicializado.
-	      Debe inicializarlo antes con el comando $BINDIR/IniciarV5."
+	      Debe inicializarlo antes con el comando $GRUPO/IniciarV5."
         exit 1
 fi
 

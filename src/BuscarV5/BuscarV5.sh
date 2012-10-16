@@ -123,7 +123,7 @@ encontrar_numero_de_linea () {
 
 # Verificar si la inicializacion de ambiente
 # se realizo anteriormente:
-$BINDIR/IniciarV5.sh -inicializado > /dev/null
+$GRUPO/IniciarV5.sh -inicializado > /dev/null
 INICIALIZADO=$? # atrapo el codigo de retorno de IniciarV5
 if [ $INICIALIZADO -eq 0 ]; then
 	echo "El sistema no fue inicializado.
