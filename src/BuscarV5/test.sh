@@ -8,9 +8,9 @@ MAEDIR=./ArchivosMaestros
 RECHDIR=./Rechazados
 
 # Mover todos los archivos de la carpeta de procesados al comienzo
-mv ./Procesados/*_* ./Aceptados/ > /dev/null
-mv ./Rechazados/*_* ./Aceptados/ > /dev/null
-rm ./Procesados/*
+#~ mv ./Procesados/*_* ./Aceptados/ > /dev/null
+#~ mv ./Rechazados/*_* ./Aceptados/ > /dev/null
+#~ rm ./Procesados/*
 
 export BINDIR
 export ACEPDIR
