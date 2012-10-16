@@ -170,31 +170,6 @@ Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubica
 
 %END subsection
 
-	\subsection{IniciarV5}
-%BEGIN subsection
-		\subsubsection{Usos}
-			 InstalaV5
-
-		\subsubsection{Archivos}
-			\begin {itemize}
-				\item \textbf{Input} {bla}
-				\item \textbf{Intermedios} {bla}
-				\item \textbf{Output} {bla}
-			\end{itemize}
-
-		\subsubsection{Par\'ametros y Opciones}
-			\begin {itemize}
-				\item \textbf{arg1} {bla}
-			\end{itemize}
-	
-		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
-
-		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
-
-		\subsubsection{C\'odigo Fuente}
-			Anexo II
-%END subsection
-
 
 	\subsection{DetectaV5}
 %BEGIN subsection
@@ -311,20 +286,35 @@ $BINDIR/ListarV5.pl -r
 %BEGIN subsection
 		\subsubsection{Usos}
 
+El usuario lo ejecuta manualmente para inicializar las variables de entorno, por ejemplo, BINDIR, LOGDIR, etc. Despues de inicializar el entorno inicia el demonio DetectarV5. Es obligatorio ejecutarlo despues de la instalacion.
 
 		\subsubsection{Archivos}
 			\begin {itemize}
-				\item \textbf{Input} {bla}
-				\item \textbf{Intermedios} {bla}
-				\item \textbf{Output} {bla}
+				\item \textbf{Input} {Lee el archivo InstalaV5.conf}
+				\item \textbf{Intermedios} {No produce}
+				\item \textbf{Output} {No produce}
 			\end{itemize}
 
 		\subsubsection{Par\'ametros y Opciones}
 			\begin {itemize}
-				\item \textbf{arg1} {bla}
+				\item \textbf{-inicializado} {Opcional. Si se utiliza este flag, el modulo devolvera un codigo de retorno distinto dependiendo del estado de la inicializacion del sistema. Si esta inicializado, devuelve 1, sino, devuelve 0.}
 			\end{itemize}
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+
+Para inicializar el sistema:
+
+\begin{verbatim}
+ $BINDIR/IniciarV5.sh 
+\end{verbatim}
+
+Para preguntar si el sistema esta inicializado:
+
+\begin{verbatim}
+ $BINDIR/IniciarV5.sh -inicializado
+\end{verbatim}
+
+Y es necesario guardar el codigo de retorno.
 
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
