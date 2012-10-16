@@ -1,5 +1,4 @@
 #! /bin/bash
-
 #forma correcta de uso
 uso() {
 	echo 'LoguearV5 -c ERRCODE -f CALLFUNC -i ERRSTAT [optionals]'
