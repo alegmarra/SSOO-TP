@@ -52,15 +52,16 @@ fi
 
 output=`cat $file`
 
-if [ ! -z $n ]
-then
-	output=`echo "$output" | tail -n $n`
-fi
-
 if [ ! -z $pattern ]
 then
 	output=`echo "$output" | grep $pattern $file`
 fi
+
+if [ ! -z $n ]
+then
+        output=`echo "$output" | tail --lines=$n`
+fi
+
 
 no=`echo $output | awk -F"$sep" -v l=\`echo $output | awk 'END{print NR}'\` '
 {A[NR]=length($1)" "length($2)" "length($3)" "length($4)" "length($5)}
@@ -72,5 +73,6 @@ END{for(i=0;i<l;++i)
 {if(B[4]>max4){max4=B[4]}}
 {if(B[5]>max5){max5=B[5]}}
 }{print max1" "max2" "max3" "max4" "max5}}'`
+IFS=^M
 echo FECHA USR EST RESP MENSAJE | awk -v var="$no" '{split(var,A," ")}{printf "%-"A[1]"s %-"A[2]"s %-"A[3]"s %-"A[4]"s %-"A[5]"s\n",$1,$2,$3,$4,$5}'
 echo $output | awk -F"$sep" -v var="$no" '{split(var,A," ")}{printf "%-"A[1]"s %-"A[2]"s %-"A[3]"s %-"A[4]"s %-"A[5]"s\n",$1,$2,$3,$4,$5}'
