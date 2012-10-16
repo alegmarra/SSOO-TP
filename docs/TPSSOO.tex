@@ -342,7 +342,7 @@ Lo utilizan los modulos para registrar mensajes al archivo de log de cada modulo
 			\begin {itemize}
 				\item \textbf{Input} {El script utiliza un archivo para obtener un template de mensaje de error. Dicho archivo se llama ListaErrores y se debe encontrar en el directorio BINDIR.}
 				\item \textbf{Intermedios} {No produce}
-				\item \textbf{Output} {La salida del log estara situada en la ruta LOGDIR/comando_invocante.LOGEXT.}
+				\item \textbf{Output} {La salida del log estara situada en la ruta LOGDIR/comando\_invocante.LOGEXT.}
 			\end{itemize}
 
 		\subsubsection{Par\'ametros y Opciones}
@@ -507,12 +507,46 @@ $./LoguearV5.sh -f
 			\end{itemize}
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
-
+			Se ejecuta desde el comando DetenerV5 para frenar la ejecuci\'on del sistema. 
+	
+			 Puede llamarse manualmente para detener procesos en particular.
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
 		\subsubsection{C\'odigo Fuente}
 			Anexo XI
 %END subsection
+
+	\subsection{DetenerV5}
+%BEGIN subsection
+		\subsubsection{Usos}
+			Detiene todos los procesos en ejecuci\'on propios del sistema.
+		\subsubsection{Justificaci\'on}
+			As\'i como IniciarV5 se encarga de disparar los procesos propios del funcionamiento del sistema, este comando DetenerV5 automatiza el uso de StopD para eliminar todos los procesos en ejecuci\'on (por ej, DetectaV5 o BuscarV5). 
+
+		\subsubsection{Archivos}
+			\begin {itemize}
+				\item \textbf{Input } {Ninguno}
+				\item \textbf{Intermedios } {Ninguno}
+				\item \textbf{Output } {Ninguno}
+			\end{itemize}
+
+		\subsubsection{Par\'ametros y Opciones}
+			\begin {itemize}
+				\item \textbf{Par\'ametros} { Ninguno }
+				\item \textbf{Opciones}{
+					\begin{itemize}
+						\item {-h }{Muestra la ayuda del comando} 
+					\end{itemize}
+				}
+			\end{itemize}
+	
+		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+			Se invoca manualmente para detener la ejecuci\'on del sistema.
+
+		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+		\subsubsection{C\'odigo Fuente}
+			Anexo XI
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Archivos}
