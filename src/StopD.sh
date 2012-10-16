@@ -6,7 +6,7 @@ ayuda () {
 
 # Chequeo de ejecución del  proceso. 
 
-if [[ "$#" -lt 1 ]]; then 
+if [ "$#" -lt 1 ]; then 
 	ayuda
 	exit 1
 fi

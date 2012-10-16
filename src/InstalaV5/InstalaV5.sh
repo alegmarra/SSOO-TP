@@ -829,7 +829,11 @@ function instalar_componente {
 		if [ -d "${VARIABLES[$BINDIR]}" ]; then
 			if [ "${COM_INSTALADOS[${!comp_a_inst}]}" == false ]; then
 				## Copiar el desde la fuente el archivo orignal a la carpeta de maestros
-				cp ${dir}/${comp_a_inst}* "${VARIABLES[$BINDIR]}"
+				if [ ${!comp_a_inst} -eq $IniciarV5 ];then
+					cp ${dir}/${comp_a_inst}* "${VARIABLES[$GRUPO]}"
+				else
+					cp ${dir}/${comp_a_inst}* "${VARIABLES[$BINDIR]}"
+				fi
 				COM_INSTALADOS[${!comp_a_inst}]="true"
 				RETORNO="Comando \"${comp_a_inst}\" instalado correctamente."
 			else
@@ -1034,6 +1038,7 @@ function comprobar_arch_de_instalacion {
 		fi
 		
 		tar -xf "$NOM_ARCH_DE_INSTALACION" -C "$DIR_ARCH_DE_INSTALACION"
+		chmod +x "$DIR_ARCH_DE_INSTALACION"/*
 
 	else
 		mostrar_y_registrar "Falta archivo de Instalacion \"${NOM_ARCH_DE_INSTALACION}\""
