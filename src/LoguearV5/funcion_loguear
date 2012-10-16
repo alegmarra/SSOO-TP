@@ -1,0 +1,23 @@
+LoguearV5
+
+LoguearV5 -c CODE -f FUNC -i EST [opcionales]
+
+Archivos:
+El script utiliza un archivo para obtener un template de mensaje de error. Dicho archivo se llama ListaErrores y se debe encontrar en el directorio BINDIR.
+La salida del log estara situada en la ruta LOGDIR/comando_invocante.LOGEXT.
+
+Parametros:
+-Parametros obligatorios:
+	-f FUNC Este parametro indica la funcion invocante. Del mismo se desprende la ruta de salida de log.
+	-c CODE Este parametro indica el codigo de error que se quiere loguear. El mismo se utiliza para determinar el mensaje de error a mostrar. Dicho mensaje se toma desde ListaErrores.
+	La convencion de codigos de error se encuentra explicitadas en el archivo de ListarErrores.
+	-i EST Es el estado del error a loguear. Puede ser I (informativo), A (alerta), E (error) y SE (error severo)
+
+-Parametros opcionales:
+	Son todos los parametros adicionales necesarios para imprimir el template del mensaje. Sin los mismos, no se podra hacer la impresion del log.
+
+Ejemplos:
+
+Un ejemplo de invocacion es, desde el BuscarV5:
+
+sh $BINDIR/LoguearV5.sh -f BuscarV5 -c 402 -i I "MiArchivo"

@@ -141,7 +141,7 @@ verificarSiLaInstalacionEstaCompleta () {
 }
 
 invocarDetecta () {
-	${BINDIR}/StartD.sh DetectaV5.sh -D
+	${BINDIR}/StartD.sh -D DetectaV5.sh
 	if [ -z $? ]
 	then
 		PID=0
@@ -151,7 +151,7 @@ invocarDetecta () {
 }
 
 fin () {
-	${BINDIR}/LoguearV5.sh -c 103 -f IniciarV5 -i
+	${BINDIR}/LoguearV5.sh -c 103 -f IniciarV5 -i I
 }
 
 ### MAIN ###
