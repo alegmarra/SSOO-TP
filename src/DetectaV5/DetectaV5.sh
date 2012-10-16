@@ -2,7 +2,7 @@
 
 #####################################################################
 # DetectaV5.sh
-# 
+#
 # El propósito de este comando es detectar la llegada de archivos al directorio ARRIDIR, efectuar la
 # validación del nombre del archivo que detecta y ponerlo a disposición del siguiente paso. Si el
 # archivo no es válido, debe rechazarlo.
@@ -24,26 +24,26 @@ ayuda () {
 
 ####################################################################
 # validarFormato
-# @brief Verifica que el nombre del archivo tenga los tipos y cantidad de 
+# @brief Verifica que el nombre del archivo tenga los tipos y cantidad de
 #        campos correctos
 # @arg1  Nombre de archivo
 ####################################################################
 
 validarFormato () {
-	
+
 	if echo "${1##*/}" | grep "[a-zA-Z0-9]*_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$" > /dev/null
 	then
 		return 0
-	else 
-		return 1 
+	else
+		return 1
 	fi
 }
 
 
 ####################################################################
 # validarSIS_ID
-# @brief Verifica que exista el sistema referenciado en el nombre 
-#        
+# @brief Verifica que exista el sistema referenciado en el nombre
+#
 # @arg1  Nombre de archivo con formato válido
 ####################################################################
 
@@ -51,7 +51,7 @@ validarSIS_ID () {
 
 	id=${1##*/}
 
-	num=`grep "^${id%_*};[^;]\+;[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\};*" ${MAEDIR}/sistemas | wc -l`
+	num=`grep "^${id%_*},[^,]\+,[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\},*" ${MAEDIR}/sistemas | wc -l`
 
 	if [ $num  -gt 0 ];then
 		return 0
@@ -64,8 +64,8 @@ validarSIS_ID () {
 ####################################################################
 # validarFecha
 # @brief Verifica que la fecha sea válida y se corresponda con el rango
-#	 de fechas que maneja el sistema SIS_ID 
-#        
+#	 de fechas que maneja el sistema SIS_ID
+#
 # @arg1  Nombre de archivo con formato válido
 ####################################################################
 
@@ -74,29 +74,31 @@ validarFecha () {
 	local file=${1##*/}
 	id=${file%_*}
 	fecha=${file#*_}
-	
-	# Si cumple el formato de fecha 
+
+	# Si cumple el formato de fecha
 	if echo "${fecha}" | grep "^[12][09][0-9][0-9]-[01][0-9]-[0-3][0-9]$" > /dev/null
 	then
 		fecha=${fecha//-/}
-	
+
 		# Si es una fecha menor al dia de hoy
 		if [ ${fecha} -le `date +"%Y%m%d"` ]
 		then
 
-			reg=`grep "^${id%_*};[^;]\+;[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\};*" ${MAEDIR}/sistemas`
-			
-			regFechas=${reg#*;*;}
-			alta=${regFechas%;*}
-			baja=${regFechas#*;}
+			reg=`grep "^${id%_*},[^,]\+,[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\},*" ${MAEDIR}/sistemas`
+
+			regFechas=${reg#*,*,}
+			alta=${regFechas%,*}
+			baja=${regFechas#*,}
 
 			# Si es mayor a la fecha de alta del sistema
-			if [ ${fecha} -ge ${alta//-/} ]; 
+			alta=$(echo "$alta" | sed s/[^0-9]//g)
+			if [ ${fecha} -ge ${alta} ];
 			then
-				if [ ! -z "$baja" ]; 
+				baja=$(echo "$baja" | sed s/[^0-9]//g)
+				if [ ! -z $baja ];
 				then
-					if [ ${fecha} -le ${baja//-/} ]; 
-					then 
+					if [ ${fecha} -le ${baja} ];
+					then
 						# Fecha valida
 						return 0
 					else
@@ -116,36 +118,36 @@ validarFecha () {
 
 ####################################################################
 # procesarArribos
-# @brief Busca archivos nuevos en ARRDIR y los procesa
+# @brief Busca archivos nuevos en ARRIDIR y los procesa
 ####################################################################
 procesarArribos () {
 
 
 	# Si hay archivos en la carpeta de arribos
-	arribos=`find "$ARRDIR" -maxdepth 1 -type f -regex ${ARRDIR%/}"/.*" | wc -l`
+	arribos=`find "$ARRIDIR" -maxdepth 1 -type f -regex ${ARRIDIR%/}"/.*" | wc -l`
 
 	if [ $arribos -gt 0 ]; then
-	
+
 		# Log inicio procesado de archivos
 		$BINDIR/LoguearV5.sh -c "302" -i "I" -f "$pName" "$arribos"
-	
-		
+
+
 		# Por cada uno de los archivos en el directorio de arribos
-		for file in `find "$ARRDIR" -maxdepth 1 -type f -regex ${ARRDIR%/}"/.*"`
-		do	
+		for file in `find "$ARRIDIR" -maxdepth 1 -type f -regex ${ARRIDIR%/}"/.*"`
+		do
 			validarFormato "$file"
 			if [ "$?" -eq 0  ];then
-			
+
 				validarSIS_ID "$file"
 				if [ "$?" -eq 0  ]; then
 
 					validarFecha "$file"
 					if [ "$?" -eq 0  ]; then
 					# Archivo válido, pasa a carpeta de aceptados
-				
+
 						$BINDIR/MoverV5.sh "$file" "$ACEPDIR" "$pName" "-l"
-						# Log de exito			
-						$BINDIR/LoguearV5.sh -c "303" -i "I" -f "$pName" "$file" 
+						# Log de exito
+						$BINDIR/LoguearV5.sh -c "303" -i "I" -f "$pName" "$file"
 
 					else
 					# Fecha invalida
@@ -154,7 +156,7 @@ procesarArribos () {
 						# Log de rechazo. Fecha incorrecta
 						$BINDIR/LoguearV5.sh -c "306" -i "I" -f "$pName" "$file"
 					fi
-		
+
 				else
 				# SIS_ID invalido
 					$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
@@ -176,48 +178,48 @@ procesarArribos () {
 
 
 ####################################################################
-# procesarAaceptados 
+# procesarAaceptados
 # @brief Busca archivos nuevos en ACEPDIR y ejecuta BuscarV5
 ####################################################################
 
 procesarAceptados () {
-	
+
 	aceptados=`find "$ACEPDIR" -maxdepth 1 -type f -regex ${ACEPDIR%/}"/.*" | wc -l`
- 
+
 	if [ $aceptados -gt 0 ]; then
-	
+
 		pCallName="BuscarV5.sh"
 		pID=`ps -C "$pCallName" -o "pid="`
-		
+
 		# Si BuscarV5 no se encuentra en ejecución
 		if [ -z ${pID} ]; then
 			$BINDIR/$pCallName &
-	
+
 			pID=`ps -C "$pCallName" -o "pid="`
-			# Log llamado a BuscarV5	
-			$BINDIR/LoguearV5.sh -c "006" -i "I" -f "$pName" "$pCallName" "$pID" 
-		
-		else 
-		
+			# Log llamado a BuscarV5
+			$BINDIR/LoguearV5.sh -c "006" -i "I" -f "$pName" "$pCallName" "$pID"
+
+		else
+
 			$BINDIR/LoguearV5.sh -c "007" -i "E" -f "$pName" "$pCallName" "${pID/$'\n'}"
-		
+
 			echo ""$pCallName" ya se encuentra en ejecucion. Proceso ${pID/$'\n'}"
 		fi
-		
+
 	fi
 }
 
 
 
 ####################################################################
-# MAIN 
+# MAIN
 ####################################################################
 
 ##
 # En caso de comando de ayuda
 ##
-if [ "$1" = "-h" ]; then 
-	ayuda 
+if [ "$1" = "-h" ]; then
+	ayuda
 	exit 1
 fi
 
@@ -225,7 +227,7 @@ fi
 # Coloco paths DE PRUEBA
 # @TODO usar el path correcto
 ##
-#export ARRDIR="./tests/arribos"
+#export ARRIDIR="./tests/arribos"
 #export MAEDIR="./tests/maestros"
 #export RECHDIR="./tests/rechazados"
 #export ACEPDIR="./tests/aceptados"
@@ -246,8 +248,8 @@ $BINDIR/LoguearV5.sh -c "301" -i "I" -f "$pName"
 $GRUPO/IniciarV5.sh "-inicializado" > /dev/null
 INICIALIZADO=$? # atrapo el codigo de retorno de IniciarV5
 if [ $INICIALIZADO -eq 0 ]; then
-        
-	
+
+
 	$BINDIR/LoguearV5.sh -c "001" -i "SE" -f "$pName"
 
 	echo "El sistema no fue inicializado.
@@ -256,16 +258,16 @@ if [ $INICIALIZADO -eq 0 ]; then
 fi
 
 ##
-# Chequeo de ejecución única del proceso. 
+# Chequeo de ejecución única del proceso.
 ##
 
 if [ `ps -C "$pName" -o "pid=" | wc -l` -gt 2 ]; then
 
-	prevID=` ps -C "$pName" -o "pid=" ` 
+	prevID=` ps -C "$pName" -o "pid=" `
 	prevID=${prevID%[^0-9]*}
-	
+
 	$BINDIR/LoguearV5.sh -c "007" -i "SE" -f "$pName" "$pName" "$prevID"
-	
+
 	echo "DetectaV5 ya se encuentra en ejecucion. Proceso $prevID "
 
 	exit 1
@@ -278,23 +280,23 @@ fi
 ##
 while true; do
 
-	# Verifica existencia de ARRDIR
-	if [ -d "$ARRDIR" ]; then
+	# Verifica existencia de ARRIDIR
+	if [ -d "$ARRIDIR" ]; then
 
-		procesarArribos	
+		procesarArribos
 
 	else
-		# Log Maestro no encontrado 
-		$BINDIR/LoguearV5.sh -c "003" -i "E" -f "$pName" "$ARRDIR"
+		# Log Maestro no encontrado
+		$BINDIR/LoguearV5.sh -c "003" -i "E" -f "$pName" "$ARRIDIR"
 	fi
-	
+
 	# Verifica existencia de ACEPDIR
 	if [ -d "$ACEPDIR" ]; then
-	
+
 		procesarAceptados
 	else
-	
-		# Log Maestro no encontrado 
+
+		# Log Maestro no encontrado
 		$BINDIR/LoguearV5.sh -c "003" -i "E" -f "$pName" "$ACEPDIR"
 	fi
 
