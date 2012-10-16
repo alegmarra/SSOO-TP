@@ -1,6 +1,5 @@
 #!/bin/bash
 
-BINDIR="./testBin"
 
 # Dispara el proceso @arg1 con las condiciones indicadas en @arg2
 
