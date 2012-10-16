@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.9.12)  16 OCT 2012 04:49
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.9.12)  16 OCT 2012 10:57
 entering extended mode
  %&-line parsing enabled.
 **Empresa.tex
@@ -1113,30 +1113,39 @@ File: ./logos/logo_fiuba.pdf Graphic file (type pdf)
 <use ./logos/logo_fiuba.pdf> [8]
 File: ./logos/logo_fiuba.pdf Graphic file (type pdf)
  <use ./logos/logo_fiuba.pdf> [9]
-File: ./logos/logo_fiuba.pdf Graphic file (type pdf)
+LaTeX Font Info:    Font shape `T1/pbk/m/it' in size <10> not available
+(Font)              Font shape `T1/pbk/l/it' tried instead on input line 431.
 
-<use ./logos/logo_fiuba.pdf> [10] AED: lastpage setting LastPage
-File: ./logos/logo_fiuba.pdf Graphic file (type pdf)
+Overfull \hbox (25.1316pt too wide) in paragraph at lines 435--455
+ [][] 
+ []
 
-<use ./logos/logo_fiuba.pdf> [11] (./Empresa.aux) ) 
+File: ./logos/logo_fiuba.pdf Graphic file (type pdf)
+<use ./logos/logo_fiuba.pdf> [10]
+File: ./logos/logo_fiuba.pdf Graphic file (type pdf)
+ <use ./logos/logo_fiuba.pdf> [11]
+AED: lastpage setting LastPage
+File: ./logos/logo_fiuba.pdf Graphic file (type pdf)
+ <use ./logos/logo_fiuba.pdf> [12] (./Empresa.aux) ) 
 Here is how much of TeX's memory you used:
- 9804 strings out of 494999
- 132687 string characters out of 1180816
- 229011 words of memory out of 3000000
- 12640 multiletter control sequences out of 15000+50000
- 16690 words of font info for 42 fonts, out of 3000000 for 9000
+ 9809 strings out of 494999
+ 132736 string characters out of 1180816
+ 229012 words of memory out of 3000000
+ 12642 multiletter control sequences out of 15000+50000
+ 18256 words of font info for 44 fonts, out of 3000000 for 9000
  54 hyphenation exceptions out of 8191
  38i,17n,43p,273b,595s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/share/texmf-texlive/fo
-nts/enc/dvips/base/8r.enc}</usr/share/texmf-texlive/fonts/type1/public/amsfonts
-/cm/cmmi7.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pf
-b></usr/share/texmf-texlive/fonts/type1/urw/bookman/ubkd8a.pfb></usr/share/texm
-f-texlive/fonts/type1/urw/bookman/ubkl8a.pfb></usr/share/texmf-texlive/fonts/ty
-pe1/urw/bookman/ubkl8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/courier/uc
-rr8a.pfb>
-Output written on Empresa.pdf (11 pages, 148627 bytes).
+{/usr/share/texmf-texlive/f
+onts/enc/dvips/base/8r.enc}</usr/share/texmf-texlive/fonts/type1/public/amsfont
+s/cm/cmmi7.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.p
+fb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/sha
+re/texmf-texlive/fonts/type1/urw/bookman/ubkd8a.pfb></usr/share/texmf-texlive/f
+onts/type1/urw/bookman/ubkl8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/boo
+kman/ubkl8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/bookman/ubkli8a.pfb><
+/usr/share/texmf-texlive/fonts/type1/urw/courier/ucrr8a.pfb>
+Output written on Empresa.pdf (12 pages, 174954 bytes).
 PDF statistics:
- 584 PDF objects out of 1000 (max. 8388607)
- 106 named destinations out of 1000 (max. 500000)
+ 597 PDF objects out of 1000 (max. 8388607)
+ 107 named destinations out of 1000 (max. 500000)
  758 words of extra memory for PDF output out of 10000 (max. 10000000)
 

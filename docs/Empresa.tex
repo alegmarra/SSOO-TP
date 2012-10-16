@@ -406,7 +406,6 @@
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
 		\subsubsection{C\'odigo Fuente}
-	
 			 \begin{verbatim}
 				%Pegar Codigo
 			\end{verbatim}
@@ -429,7 +428,32 @@
 			\begin {itemize}
 				\item \textbf{Tipo} {Archivo de Instalaci\'on}
 				\item \textbf{Directorio} {CONFDIR}
-				\item \textbf{Estructura} {bla}
+				\item \textbf{Estructura} {\textit{	Variable=Valor=Usuario=Fecha}\\
+					Donde: \ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Descripcion & Valor \\
+						\hline
+						\multirow{6}{*}{Variable} & \multirow{6}{*}{Caracteres}	& GRUPO, CONFIR, BINDIR, \\
+								{}			  & {}							 & MAEDIR, ARRIDIR, ACEPDIR, \\
+								{}			& 	{}						& RECHDIR, PROCDIR, REPODIR, \\
+								{}			& {}  							& LOGDIR, LOGEXT, LOGSIZE, \\
+								{}			& 	{}						& DATASIZE, SECUENCIA1, SECUENCIA2, \\
+								{}			& {} 							& COMANDO, ARCHIVO, DIRECTORIOS\\ 
+						\hline 
+						Valor 	& Caracteres 	& Contenido de la variable \\
+						\hline
+						\multirow{2}{*}{Usuario} & Caracteres & Login del usuario que realiza la grabacion. \\
+											 &			& *COMANDO, ARCHIVO y DIRECTORIOS no guardan usuario\\
+						\hline
+						Fecha	& dd/mm/aaaa hh:mm 	&	Fecha y hora del momento de registro. \\
+						\hline
+	
+					\end{tabular}
+					\end{table}
+				}
 			\end{itemize}
 		
 		\subsubsection{<Comando>.logext}
@@ -437,7 +461,28 @@
 			\begin {itemize}
 				\item \textbf{Tipo} {Archivo de Log}
 				\item \textbf{Directorio} {LOGDIR}
-				\item \textbf{Estructura} {bla}
+				\item \textbf{Estructura} {	\textit{Fecha;Usuario;TipoMensaje;Comando;Mensaje}\\
+					Donde: \ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Descripcion & Valor \\
+						\hline
+							Fecha  &dd/mm/aaaa &	Fecha del día de registro. \\
+						\hline 
+						 Usuario & Caracteres 	&  Login del usuario que graba el registro\\
+						\hline
+						Tipo de Mensaje	 &	Caracteres	& 	I, A, E, SE \\
+						\hline
+						Comando & Caracteres & Nombre del comando que produce el evento de log \\
+						\hline
+						Mensaje &  Caracteres & Mensajes estandarizados provenientes de ListaErrores \\
+							\hline
+
+					\end{tabular}
+					\end{table}
+				}
 			\end{itemize}
 
 		\subsubsection{Patrones}
@@ -445,7 +490,30 @@
 			\begin {itemize}
 				\item \textbf{Tipo} {Archivo Maestro}
 				\item \textbf{Directorio} {MAEDIR}
-				\item \textbf{Estructura} {bla}
+				\item \textbf{Estructura} {\textit{ID,REGEXP,SIS\_ID,Contexto,InicioContexto,FinContexto}\\
+					Donde: \ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Tipo & Variable\\
+						\hline
+							ID patrón  & Numérico & PAT\_ID \\
+						\hline 
+						 REGXEP a aplicar& Caracteres 	& PAT\_EXP\\
+						\hline
+						Código Sistema  &	Caracteres	& SIS\_ID\\
+						\hline
+						Contexto del Resultado & Caracter (C , L ) & PAT\_CON\\
+						\hline
+						Inicio del Contexto & Numérico & DESDE\\
+							\hline
+						Fin del Contexto & Numérico & HASTA\\
+							\hline
+
+					\end{tabular}
+					\end{table}
+				}
 			\end{itemize}
 
 		\subsubsection{Sistemas}
@@ -453,7 +521,25 @@
 			\begin {itemize}
 				\item \textbf{Tipo} {Archivo Maestro}
 				\item \textbf{Directorio} {MAEDIR}
-				\item \textbf{Estructura} {bla}
+				\item \textbf{Estructura} {\textit{SIS\_ID;NombreSistema;FechaDeAlta;FechaDeBaja$^*$}\\
+					Donde: (	$^*$campo  opcional )\ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Tipo & Variable\\
+						\hline
+							Código de Sistema & Caracteres & SIS\_ID \\
+						\hline 
+						 Nombre de Sistema & Caracteres 	& SIS\_NOM\\
+						\hline
+						Fecha de Alta & aaaa-mm-dd & SIS\_ALTA\\
+						\hline
+						Fecha de Baja $^*$& aaaa-mm-dd & SIS\_BAJA\\
+						\hline
+					\end{tabular}
+					\end{table}
+				}
 			\end{itemize}
 
 		\subsubsection{rglobales. PAT\_ID}
@@ -477,7 +563,20 @@
 			\begin {itemize}
 				\item \textbf{Tipo} {Archivo de Reportes}
 				\item \textbf{Directorio} {REPODIR}
-				\item \textbf{Estructura} {bla}
+				\item \textbf{Estructura} {\textit{blablabBGAWDFAFAGADFVAFDGAERRGAQGla}\\
+					Donde: (	$^*$campo  opcional )\ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Descripción & Fuente	\\
+						\hline
+							Línea de Reporte  & Caracteres & Proceso Listar\\
+						\hline 
+						
+					\end{tabular}
+					\end{table}
+				}
 			\end{itemize}
 	
 
@@ -487,8 +586,24 @@
 	
 			\begin {itemize}
 				\item \textbf{Tipo} {Archivo auxiliar de Logueo}
-				\item \textbf{Directorio} {LoguearV5 ????}
-				\item \textbf{Estructura} {bla}
+				\item \textbf{Directorio} {LoguearV5}
+				\item \textbf{Estructura} {\textit{MSJ\_ID MensajeDeError}\\
+					Donde: \ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Tipo & Variable\\
+						\hline
+						\multirow{2}{*}{MSJ\_ID } & \multirow{2}{*}{Caracteres} & Número de ID del Mensaje\\
+						{} & {} & Una secuencia XYY por comando \\
+						\hline 
+						\multirow{2}{*}{Mensaje de Error} & \multirow{2}{*}{Caracteres} & Mensaje Normalizado \\ 
+						{} & {} &  Puede recibir parámetros \\
+						\hline
+					\end{tabular}
+					\end{table}
+				}
 			\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%

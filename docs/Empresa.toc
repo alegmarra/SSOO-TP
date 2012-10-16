@@ -85,11 +85,11 @@
 \contentsline {subsection}{\numberline {6.1}Definidos en Enunciado}{10}{subsection.6.1}
 \contentsline {subsubsection}{\numberline {6.1.1}InstalaV5.conf}{10}{subsubsection.6.1.1}
 \contentsline {subsubsection}{\numberline {6.1.2}<Comando>.logext}{10}{subsubsection.6.1.2}
-\contentsline {subsubsection}{\numberline {6.1.3}Patrones}{10}{subsubsection.6.1.3}
-\contentsline {subsubsection}{\numberline {6.1.4}Sistemas}{10}{subsubsection.6.1.4}
-\contentsline {subsubsection}{\numberline {6.1.5}rglobales. PAT\_ID}{10}{subsubsection.6.1.5}
-\contentsline {subsubsection}{\numberline {6.1.6}resultados.PAT\_ID}{11}{subsubsection.6.1.6}
-\contentsline {subsubsection}{\numberline {6.1.7}salida\_xxx}{11}{subsubsection.6.1.7}
-\contentsline {subsection}{\numberline {6.2}Auxiliares}{11}{subsection.6.2}
-\contentsline {subsubsection}{\numberline {6.2.1}ListaErrores}{11}{subsubsection.6.2.1}
-\contentsline {section}{\numberline {7}Ap\'endice A}{11}{section.7}
+\contentsline {subsubsection}{\numberline {6.1.3}Patrones}{11}{subsubsection.6.1.3}
+\contentsline {subsubsection}{\numberline {6.1.4}Sistemas}{11}{subsubsection.6.1.4}
+\contentsline {subsubsection}{\numberline {6.1.5}rglobales. PAT\_ID}{11}{subsubsection.6.1.5}
+\contentsline {subsubsection}{\numberline {6.1.6}resultados.PAT\_ID}{12}{subsubsection.6.1.6}
+\contentsline {subsubsection}{\numberline {6.1.7}salida\_xxx}{12}{subsubsection.6.1.7}
+\contentsline {subsection}{\numberline {6.2}Auxiliares}{12}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}ListaErrores}{12}{subsubsection.6.2.1}
+\contentsline {section}{\numberline {7}Ap\'endice A}{12}{section.7}
