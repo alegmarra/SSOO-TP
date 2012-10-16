@@ -30,8 +30,8 @@ ayuda () {
 ####################################################################
 
 validarFormato () {
-
-	if  [ "`expr "${1##*/}" : [[:alnum:]+]_[0-9]{4}-[0-9]{2}-[0-9]{2}$`" -lt 13 ]
+	
+	if echo "${1##*/}" | grep "[a-zA-Z0-9]*_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$" > /dev/null
 	then
 		return 0
 	else 
@@ -72,12 +72,11 @@ validarSIS_ID () {
 validarFecha () {
 
 	local file=${1##*/}
-
 	id=${file%_*}
 	fecha=${file#*_}
 	
 	# Si cumple el formato de fecha 
-	if  [ "`expr "${fecha}" : ^[12][09][0-9]+-[01][0-9]-[0-3][0-9]$ `" -lt 10 ]
+	if echo "${fecha}" | grep "^[12][09][0-9][0-9]-[01][0-9]-[0-3][0-9]$" > /dev/null
 	then
 		fecha=${fecha//-/}
 	
@@ -96,7 +95,6 @@ validarFecha () {
 			then
 				if [ ! -z "$baja" ]; 
 				then
-					# Si es menor a la fecha de baja del sistema
 					if [ ${fecha} -le ${baja//-/} ]; 
 					then 
 						# Fecha valida
@@ -154,7 +152,7 @@ procesarArribos () {
 						$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
 
 						# Log de rechazo. Fecha incorrecta
-						$BINDIR/LoguearV5.sh -c "305" -i "I" -f "$pName" "$file"
+						$BINDIR/LoguearV5.sh -c "306" -i "I" -f "$pName" "$file"
 					fi
 		
 				else
@@ -162,14 +160,14 @@ procesarArribos () {
 					$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
 
 					# Log de rechazo. SIS_ID Inválido
-					$BINDIR/LoguearV5.sh -c "304" -i "I" -f "$pName" "$file"
+					$BINDIR/LoguearV5.sh -c "305" -i "I" -f "$pName" "$file"
 				fi
 			else
 			# Formato invalido
 				$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
 
 				# Log de rechazo. Formato de archivo Inválido
-				$BINDIR/LoguearV5.sh -c "303" -i "I" -f "$pName" "$file"
+				$BINDIR/LoguearV5.sh -c "304" -i "I" -f "$pName" "$file"
 			fi
 		done
 	fi
