@@ -57,7 +57,7 @@ sub hash_vacio {
 #
 sub hash_selection {
 	my $hashref = shift;
-	@keys = sort keys $hashref;
+	@keys = sort keys %$hashref;
 	my $finish = 0;
 	while( ! $finish ) {
 		print "\n";
@@ -76,12 +76,12 @@ sub hash_selection {
 	    	$finish = 1;
 	    }
 		if ($opcion =~ /^t$/) {
-	    	foreach (keys $hashref) {
+	    	foreach (keys %$hashref) {
 	    		$hashref->{$_} = 1;
 	    	}
 	    }
 		if ($opcion =~ /^n$/) {
-	    	foreach (keys $hashref) {
+	    	foreach (keys %$hashref) {
 	    		$hashref->{$_} = 0;
 	    	}
 	    }
@@ -106,7 +106,7 @@ sub hash_selection {
 #
 sub global_max {
 	my $hash = shift;
-	my @sorted_keys = sort {$hash->{$b} <=> $hash->{$a}} keys $hash;
+	my @sorted_keys = sort {$hash->{$b} <=> $hash->{$a}} keys %$hash;
 	return @sorted_keys ? "$sorted_keys[0] ($hash->{$sorted_keys[0]})" : 'Ninguno';
 }
 
@@ -117,7 +117,7 @@ sub global_max {
 sub global_cero {
 	my $hash = shift;
 	my @list = ();
-	foreach $key (keys $hash) {
+	foreach $key (keys %$hash) {
 		if (!$hash->{$key}) {
 			push(@list, "$key");
 		}
@@ -136,7 +136,7 @@ sub global_cero {
 #
 sub global_max5 {
 	my $hash = shift;
-	my @sorted_keys = sort {$hash->{$b} <=> $hash->{$a}} keys $hash;
+	my @sorted_keys = sort {$hash->{$b} <=> $hash->{$a}} keys %$hash;
 	my $max = @sorted_keys >= 5 ? 4 : @sorted_keys-1;
 	my @list = ();
 	foreach (@sorted_keys[0..$max]) {
@@ -152,7 +152,7 @@ sub global_max5 {
 
 sub global_min5 {
 	my $hash = shift;
-	my @sorted_keys = sort {$hash->{$a} <=> $hash->{$b}} keys $hash;
+	my @sorted_keys = sort {$hash->{$a} <=> $hash->{$b}} keys %$hash;
 	my $max = @sorted_keys >= 5 ? 4 : @sorted_keys-1;
 	my @list = ();
 	foreach (@sorted_keys[0..$max]) {
@@ -229,7 +229,7 @@ if ( $opciones{resultado} ) {
 	    }
 		if ($opcion =~ /^i$/) {
 			if ( hash_vacio(%patterns) or hash_vacio(%ciclos) or hash_vacio(%archivos) ) {
-				print color 'bright_red' ;
+				print color 'red' ;
 				print "\nDebe seleccionar al menos un patrón, un ciclo y un archivo para poder realizar\nla consulta.\n";
 				print color 'reset';
 				next;
@@ -311,7 +311,8 @@ else {
 		# filtro por el rango de hallazgos
 		if (defined $rango_x and defined $rango_y) {
 			foreach $key (keys %hallazgos) {
-				foreach $item (keys $hallazgos{$key}) {
+				my $hash_tmp = $hallazgos{$key};
+				foreach $item (keys %$hash_tmp) {
 					if ($hallazgos{$key}{$item} < $rango_x or $hallazgos{$key}{$item} > $rango_y) {
 						delete $hallazgos{$key}{$item};
 					}
