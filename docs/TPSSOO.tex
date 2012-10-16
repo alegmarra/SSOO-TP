@@ -226,7 +226,8 @@ Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubica
 	\subsection{BuscarV5}
 %BEGIN subsection
 		\subsubsection{Usos}
-			 
+		
+		 Este modulo procesa los archivos que se encuentren en la carpeta de aceptados, aplica sobre ellos los patrones del archivo maestro de patrones y mueve los archivos procesados a la carpeta de procesados. 
 
 		\subsubsection{Archivos}
 			\begin {itemize}
@@ -256,19 +257,36 @@ Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sól
 		\subsubsection{Usos}
 			 
 
+El enunciado requería la opción de poder filtrar los resultados seleccionando los distintos patrones, ciclos y archivos. Quisimos mantener una forma flexible de filtrado pero sin requerír cargar todos los archivos en memoria en el script. Tomando eso en cuanto, se hace una primera iteración sobre los archivos de resultado para obtener las diferentes opciones de filtrados, que pueden ser combinadas de cualquier manera, y luego una segunda iteración para mostrar los resultados aplicando los filtros seleccionados.
+
 		\subsubsection{Archivos}
 			\begin {itemize}
-				\item \textbf{Input} {bla}
-				\item \textbf{Intermedios} {bla}
-				\item \textbf{Output} {bla}
+				\item \textbf{Input} {Los archivos de resultados detallados y globales generados por el comando BuscarV5.sh que se encuentran en el directorio de procesados.}
+				\item \textbf{Intermedios} {No produce}
+				\item \textbf{Output} {Dependiendo de un parametro (-x), genera el informe de los archivos de resultado aplicando los filtros seleccionados en un archivo de salida en el directorio de reportes.}
 			\end{itemize}
 
 		\subsubsection{Par\'ametros y Opciones}
-			\begin {itemize}
-				\item \textbf{arg1} {bla}
-			\end{itemize}
+			
+Sin parámetros, la apliación muestra información y filtros sobre los resultados globales.
+
+\begin{verbatim}
+# $BINDIR/ListarV5.pl -h
+
+Uso: ListarV5 [opciones]
+        -g, -global          (default) Consultar los resultados globales.
+        -r, -resultado       Consultar los resultados detallados.
+                             Implica no global.
+        -x, -salida          Grabar el informe en un archivo en lugar de
+                             imprimirlo en pantalla.
+\end{verbatim}
 	
-		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+		\subsubsection{Ejemplo de invocación}
+
+
+\begin{verbatim}
+# $BINDIR/ListarV5.pl -r
+\end{verbatim}
 
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
@@ -577,9 +595,10 @@ Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sól
 		\subsubsection{salida\_xxx}
 
 			\begin {itemize}
+				\item \textbf{Nombre: } {salida\_YYYYMMDDHHMMSS}
 				\item \textbf{Tipo} {Archivo de Reportes}
-				\item \textbf{Directorio} {REPODIR}
-				\item \textbf{Estructura} {\textit{blablabBGAWDFAFAGADFVAFDGAERRGAQGla}\\
+				\item \textbf{Directorio} { \$REPODIR}
+				\item \textbf{Estructura} {\textit{Es un archivo de texto libre, en donde la salida está dividida por patrón y los filtros aplicados en cada patrón. Por cada patrón hay un listado de 3 columnas de campo fijo, donde la primera es el ciclo (10 caracteres), la segunda es el archivo (25 caracteres) y la tercera es el registro RESULTADO del archivo de resultados detallados (sin límite).}\\
 					Donde: (	$^*$campo  opcional )\ 
 					\begin{table}[H]
 					\centering
