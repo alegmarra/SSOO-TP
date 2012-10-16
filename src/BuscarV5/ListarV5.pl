@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl 
 use Getopt::Long;
 use Term::ANSIColor;
 use Data::Dumper;
@@ -15,6 +15,12 @@ GetOptions( \%opciones, 'ayuda|help|h|?', 'global|g', 'resultado|r', 'salida|x')
 # validao opciones de comand line
 if (@ARGV > 0 or defined $opciones{ayuda}) {
 	usage();
+}
+
+# valido variables de entorno
+if (! defined $ENV{'MAEDIR'} or ! defined $ENV{'REPODIR'} ) {
+	print "No se han encontrado las variables de entorno necesarias.\n";
+	exit 1;
 }
 
 # función de ayuda

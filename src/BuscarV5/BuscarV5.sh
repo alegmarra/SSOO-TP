@@ -38,11 +38,7 @@ chomp () {
 # Uso: Para convertir 'texto' -> texto
 # VAR=`recortar_comillas $VAR`
 recortar_comillas () {
-	LONG=`expr length "$1"`
-	AUX=`expr substr "$1" 2 $LONG`
-	LONG=`expr $LONG - 2`
-	RES=`expr substr "$AUX" 1 $LONG`
-	echo "$RES"
+	echo "$1" | sed s/^\'// | sed s/\'$// 
 }
 
 # Funcion que imprime alguna linea de un archivo.
@@ -151,7 +147,7 @@ CANT_ARCHIVOS=`find "$ACEPDIR" -type f | wc -l`
 CICLO=`grep -e "SECUENCIA2" < "$CONFDIR/InstalaV5.conf" | cut -d= -f2`
 CICLO=`expr $CICLO + 1`
 
-$BINDIR/LoguearV5.sh -c "101" -f "BuscarV5" -i "I" "$CICLO" "$CANT_ARCHIVOS"
+$BINDIR/LoguearV5.sh -c "401" -f "BuscarV5" -i "I" "$CICLO" "$CANT_ARCHIVOS"
 
 # COMIENZO A PROCESAR LOS ARCHIVOS
 TOTAL_ARCHIVOS=`find "$ACEPDIR" -type f -print | wc -l`
@@ -159,7 +155,7 @@ CANT_ARCHS_CON_HALLAZGOS="0"
 ARCHS_SIN_PATRON="0"
 for archivo in `find "$ACEPDIR" -type f -print`
 do
-	$BINDIR/LoguearV5.sh -c "102" -f "BuscarV5" -i "I" "$archivo"
+	$BINDIR/LoguearV5.sh -c "402" -f "BuscarV5" -i "I" "$archivo"
 
 	# Analizar si el archivo esta duplicado en PROCDIR,
 	# en tal caso rechazarlo.
@@ -170,7 +166,7 @@ do
 	# Comprobar si el archivo esta en la carpeta de procesados
 	if [ -e "$PROCDIR/$NOMBRE" ]; then
 		# El archivo esta duplicado
-		$BINDIR/LoguearV5.sh -c "103" -f "BuscarV5" -i "E" "$NOMBRE"
+		$BINDIR/LoguearV5.sh -c "403" -f "BuscarV5" -i "E" "$NOMBRE"
 		$BINDIR/MoverV5.sh "$archivo" "$RECHDIR" "BuscarV5"
 	else
 		# El archivo no fue procesado. Determinar el codigo de sistema:
@@ -184,11 +180,11 @@ do
 		CANT_PATRONES=`grep -c -e "$COD_SIS" < "$MAEDIR/patrones"`  # | wc -l`
 		if [ $CANT_PATRONES -eq 0 ]; then
 			# No hay patrones aplicables al archivo
-			$BINDIR/LoguearV5.sh -c "104" -f "BuscarV5" -i "E"
+			$BINDIR/LoguearV5.sh -c "404" -f "BuscarV5" -i "E"
 			ARCHS_SIN_PATRON=`expr $ARCHS_SIN_PATRON + 1`
 		else
 			# Si se encontraron patrones, los proceso:
-			while read linea_patron
+			while read -r linea_patron
 			do
 				if echo "$linea_patron" | grep -e "$COD_SIS" > /dev/null
 				then
@@ -199,7 +195,7 @@ do
 					PAT_ID=`echo "$linea_patron" | cut -d, -f1`
 
 					# Determinar le expresion regular
-					EXPR_REG=`echo "$linea_patron" | cut -d, -f2`
+					EXPR_REG=$(echo "$linea_patron" | cut -d, -f2)
 					# Elimino las comillas que envuelven a la expresion regular
 					# en la linea del archivo de patrones:
 					EXPR_REG=`recortar_comillas "$EXPR_REG"`
@@ -219,7 +215,7 @@ do
 					# de sistema a las lineas del archivo:
 					CANT_HALLAZGOS='0'
 					NUM_LINEA='1'
-					while read linea # lectura linea a linea del archivo de entrada de datos
+					while read -r linea # lectura linea a linea del archivo de entrada de datos
 					do
 						if echo "$linea" | grep -e "$EXPR_REG" > /dev/null
 						then
@@ -282,10 +278,10 @@ do
 done
 # FIN DE TODOS LOS ARCHIVOS
 ARCHS_SIN_HALLAZGOS=`expr $TOTAL_ARCHIVOS - $CANT_ARCHS_CON_HALLAZGOS`
-$BINDIR/LoguearV5.sh -c "105" -f "BuscarV5" -i "I" $CICLO
-$BINDIR/LoguearV5.sh -c "106" -f "BuscarV5" -i "I" $CANT_ARCHS_CON_HALLAZGOS
-$BINDIR/LoguearV5.sh -c "107" -f "BuscarV5" -i "I" $ARCHS_SIN_HALLAZGOS
-$BINDIR/LoguearV5.sh -c "108" -f "BuscarV5" -i "I" $ARCHS_SIN_PATRON
+$BINDIR/LoguearV5.sh -c "405" -f "BuscarV5" -i "I" $CICLO
+$BINDIR/LoguearV5.sh -c "406" -f "BuscarV5" -i "I" $CANT_ARCHS_CON_HALLAZGOS
+$BINDIR/LoguearV5.sh -c "407" -f "BuscarV5" -i "I" $ARCHS_SIN_HALLAZGOS
+$BINDIR/LoguearV5.sh -c "408" -f "BuscarV5" -i "I" $ARCHS_SIN_PATRON
 
 # Actualizo el numero de ciclo el en archivo de configuracion
 LINEA_CICLO=`grep -e "SECUENCIA2" < "$CONFDIR/InstalaV5.conf"`

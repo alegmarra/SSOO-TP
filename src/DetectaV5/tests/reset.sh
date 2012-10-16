@@ -1,4 +1,6 @@
 #!/bin/bash
 
-mv -f ./rechazados/* ./arribos
-mv -f ./aceptados/* ./arribos
+rm ./rechazados/*
+rm ./aceptados/* 
+
+rm -r ../logdir/

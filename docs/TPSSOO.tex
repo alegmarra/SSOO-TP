@@ -1,0 +1,664 @@
+\documentclass[a4paper,10pt,titlepage]{article}
+\usepackage[paperwidth=180mm,paperheight=285mm,left=1.5cm,top=3cm,right=0.5cm,bottom=1cm,head=2.0cm,includefoot]{geometry}
+\usepackage[a4,frame,center,noinfo,horigin=-0.75in]{crop}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,activeacute]{babel}
+\usepackage{lastpage}
+\usepackage{comment}
+\usepackage{fancyhdr}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{bookman}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{longtable}
+\usepackage{moreverb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{ulem}
+\usepackage[pdfborder={0 0 0 0}]{hyperref}
+\usepackage{fixltx2e}
+\usepackage{array}
+\usepackage{float}
+\restylefloat{table}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{t1enc}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{slashbox} %slash para la tabla
+\usepackage{colortbl} %tablas con colores
+\usepackage{pdfpages} % to import PDF pages
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{rotating}
+
+
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{1pt}
+\renewcommand{\baselinestretch}{1.5}
+%\titleformat{\section}[hang]{\Huge }{}{0px}{\centering \hspace{1ex}}{}
+
+\begin{document}
+
+\pagestyle{fancy}
+%\chead{Grupo 7\\ }
+\lhead{\includegraphics[scale=0.06]{./logos/logo_fiuba.pdf} 75-08 Sistemas Operativos}
+\lfoot{Grupo 7}
+\rfoot{ P\'agina \thepage \hspace{0.5pt} de \pageref{LastPage}}
+\cfoot{$2^{do}$ Cuatrimestre 2012}
+\tableofcontents
+\newpage
+
+%documento
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Estructura general de la carpeta	%
+%	Caratula 
+%	Planilla del Docente
+%	Indice
+%	Hip\'otesis y aclaraciones globales
+%	Problemas Relevantes
+%	Archivo README
+%	Listado de Comandos y Funciones
+%		-a
+%		...
+%		-g
+%	Archivos
+%		-a
+%		-b
+%		-c	
+%	Ap\'endice A
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Planilla Docente} % Meter algun truco usando una imagen en vez de la tabla
+
+%\section{Casos}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Hip\'otesis y Aclaraciones Globales}
+
+\section{Problemas Relevantes}
+
+\subsection{BuscarV5: Lectura de expresiones regulares del archivo de patrones}
+
+Según el formato del archivo de patrones, la expresión regular a aplicar se ubica en el segundo campo de cada registro del archivo, pero encerrado entre comillas simples. Al leer esta expresión regular, es necesario quitar las comillas simples antes de ingresarlas al comando grep, sino el comportamiento era incorrecto: se interpretaban las comillas simples como caracteres buscados. Se solucionó con una función en el script BuscarV5.sh que recorta el primer y último carácter de un string.
+
+Otro problema relevante fue la lectura de los registros del archivo de patrones. Es necesario usar el comanod read con el flag “-r” para que no interpretara caracteres de escape en las expresiones regulres.
+
+
+\section{Archivo README}
+
+
+Este es el README del trabajo práctico correspondiente al segundo cuatrimestre del año 2012 de la materia 75.08 Sistemas Operativos, grupo 7.
+ 
+ARCHIVOS DEL PROYECTO
+ 
+El proyecto consiste en un software para procesar archivos que contienen información de logueo provenientes de diferentes sistemas. El programa valida los archivos, aplica patrones de busqueda y genera archivos de resultados con las coincidencias. Tambien mueve los archivos procesados a otras carpetas de almacenamiento de archivos procesados con éxito. Permite efectuar consultas sobre lo procesado, y generar reportes.
+
+Los archivos correspondientes al proyecto son los siguientes:
+
+README
+
+INSTALACION
+
+Insertar el dispositivo de almacenamiento co el contenido del trabajo práctico.
+
+Crear en el directorio corriente un directorio de trabajo.
+
+Copiar el archivo *.tgz en esa carpeta.
+
+Descomprimir el *.tgz de manera de generar un *.tar.
+
+Extraer los archivos del tar.
+
+% algo mas
+
+REQUERIMIENTOS
+
+Para la correcta instalación, se deberá tener instalado Bash versión 3 o superior, y Perl versión  o superior.
+
+% Que deja la instalacion y donde
+
+INTRODUCCCION
+
+% primeros pasos para usarlo
+
+% comprobar si todo esta correctamente instalado.
+
+Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubicado en %el directorio de ejecutables especificado durante la instalación.
+
+
+
+
+\newpage
+
+\section{Listado de Comandos y Funciones}
+%a. Nombre
+%b. Justificación, solo si el comando fue agregado por Uds. (se debe explicar para que se lo
+%usa y dónde)
+%c. Archivos de Input, Intermedios y de Output
+%d. Parámetros y Opciones
+%e. Invocación Manual y/o automática con ejemplos
+%f. Hipótesis y Aclaraciones especificas del comando
+%g. Código fuente
+
+	\subsection{InstalaV5}
+%BEGIN subsection
+		\subsubsection{Usos}
+			 InstalaV5
+
+		\subsubsection{Archivos}
+			\begin {itemize}
+				\item \textbf{Input} {bla}
+				\item \textbf{Intermedios} {bla}
+				\item \textbf{Output} {bla}
+			\end{itemize}
+
+		\subsubsection{Par\'ametros y Opciones}
+			\begin {itemize}
+				\item \textbf{arg1} {bla}
+			\end{itemize}
+	
+		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+
+		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+		\subsubsection{C\'odigo Fuente}
+			Anexo I
+
+%END subsection
+
+	\subsection{IniciarV5}
+%BEGIN subsection
+		\subsubsection{Usos}
+			 InstalaV5
+
+		\subsubsection{Archivos}
+			\begin {itemize}
+				\item \textbf{Input} {bla}
+				\item \textbf{Intermedios} {bla}
+				\item \textbf{Output} {bla}
+			\end{itemize}
+
+		\subsubsection{Par\'ametros y Opciones}
+			\begin {itemize}
+				\item \textbf{arg1} {bla}
+			\end{itemize}
+	
+		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+
+		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+		\subsubsection{C\'odigo Fuente}
+			Anexo II
+%END subsection
+
+
+	\subsection{DetectaV5}
+%BEGIN subsection
+		\subsubsection{Usos}
+		Este comando es el encargado de 
+			 
+
+		\subsubsection{Archivos}
+			\begin {itemize}
+				\item \textbf{Input} {bla}
+				\item \textbf{Intermedios} {bla}
+				\item \textbf{Output} {bla}
+			\end{itemize}
+
+		\subsubsection{Par\'ametros y Opciones}
+			\begin {itemize}
+				\item \textbf{arg1} {bla}
+			\end{itemize}
+	
+		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+
+		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+		\subsubsection{C\'odigo Fuente}
+			Anexo III
+%END subsection
+
+	\subsection{BuscarV5}
+%BEGIN subsection
+		\subsubsection{Usos}
+		
+		 Este modulo procesa los archivos que se encuentren en la carpeta de aceptados, aplica sobre ellos los patrones del archivo maestro de patrones y mueve los archivos procesados a la carpeta de procesados. 
+
+		\subsubsection{Archivos}
+			\begin {itemize}
+				\item \textbf{Input} {Los archivos que sean aceptados y que se encuentren en el directorio de aceptados, el archivo de configuración producido por el modulo de inicialización, y el archivo de patrones.}
+				\item \textbf{Intermedios} {No produce.}
+				\item \textbf{Output} {los archivos de resultados detallados y globales para los patrones. Se guardaran en la carpeta de procesados.}
+			\end{itemize}
+
+		\subsubsection{Par\'ametros y Opciones}
+			 No posee argumentos de ejecución ni opciones. Cuando se ejecuta, comienza a procesar los archivos.
+	
+		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sólo es necesaria su ejecución de la forma:\\
+
+{\bf Ejemplo de invocación:} 
+\$BINDIR/BuscarV5.sh
+
+
+		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+		\subsubsection{C\'odigo Fuente}
+			Anexo IV
+%END subsection
+
+	\subsection{ListarV5}
+%BEGIN subsection
+		\subsubsection{Usos}
+			 
+
+El enunciado requería la opción de poder filtrar los resultados seleccionando los distintos patrones, ciclos y archivos. Quisimos mantener una forma flexible de filtrado pero sin requerír cargar todos los archivos en memoria en el script. Tomando eso en cuanto, se hace una primera iteración sobre los archivos de resultado para obtener las diferentes opciones de filtrados, que pueden ser combinadas de cualquier manera, y luego una segunda iteración para mostrar los resultados aplicando los filtros seleccionados.
+
+		\subsubsection{Archivos}
+			\begin {itemize}
+				\item \textbf{Input} {Los archivos de resultados detallados y globales generados por el comando BuscarV5.sh que se encuentran en el directorio de procesados.}
+				\item \textbf{Intermedios} {No produce}
+				\item \textbf{Output} {Dependiendo de un parametro (-x), genera el informe de los archivos de resultado aplicando los filtros seleccionados en un archivo de salida en el directorio de reportes.}
+			\end{itemize}
+
+		\subsubsection{Par\'ametros y Opciones}
+			
+Sin parámetros, la apliación muestra información y filtros sobre los resultados globales.
+
+\begin{verbatim}
+# $BINDIR/ListarV5.pl -h
+
+Uso: ListarV5 [opciones]
+        -g, -global          (default) Consultar los resultados globales.
+        -r, -resultado       Consultar los resultados detallados.
+                             Implica no global.
+        -x, -salida          Grabar el informe en un archivo en lugar de
+                             imprimirlo en pantalla.
+\end{verbatim}
+	
+		\subsubsection{Ejemplo de invocación}
+
+
+\begin{verbatim}
+# $BINDIR/ListarV5.pl -r
+\end{verbatim}
+
+		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+		\subsubsection{C\'odigo Fuente}
+			Anexo V
+%END subsection
+
+	\subsection{IniciarV5}
+%BEGIN subsection
+		\subsubsection{Usos}
+
+
+		\subsubsection{Archivos}
+			\begin {itemize}
+				\item \textbf{Input} {bla}
+				\item \textbf{Intermedios} {bla}
+				\item \textbf{Output} {bla}
+			\end{itemize}
+
+		\subsubsection{Par\'ametros y Opciones}
+			\begin {itemize}
+				\item \textbf{arg1} {bla}
+			\end{itemize}
+	
+		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+
+		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+		\subsubsection{C\'odigo Fuente}
+			Anexo VI
+%END subsection
+
+	\subsection{LoguearV5}
+%BEGIN subsection
+		\subsubsection{Usos}
+
+
+		\subsubsection{Archivos}
+			\begin {itemize}
+				\item \textbf{Input} {bla}
+				\item \textbf{Intermedios} {bla}
+				\item \textbf{Output} {bla}
+			\end{itemize}
+
+		\subsubsection{Par\'ametros y Opciones}
+			\begin {itemize}
+				\item \textbf{arg1} {bla}
+			\end{itemize}
+	
+		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+
+		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+		\subsubsection{C\'odigo Fuente}
+			Anexo VII
+
+%END subsection
+
+	\subsection{MirarV5}
+%BEGIN subsection
+		\subsubsection{Usos}
+			 
+		\subsubsection{Archivos}
+			\begin {itemize}
+				\item \textbf{Input} {bla}
+				\item \textbf{Intermedios} {bla}
+				\item \textbf{Output} {bla}
+			\end{itemize}
+
+		\subsubsection{Par\'ametros y Opciones}
+			\begin {itemize}
+				\item \textbf{arg1} {bla}
+			\end{itemize}
+	
+		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+
+		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+		\subsubsection{C\'odigo Fuente}
+			Anexo VIII
+
+%END subsection
+
+	\subsection{MoverV5}
+%BEGIN subsection
+		\subsubsection{Usos}
+
+
+		\subsubsection{Archivos}
+			\begin {itemize}
+				\item \textbf{Input} {bla}
+				\item \textbf{Intermedios} {bla}
+				\item \textbf{Output} {bla}
+			\end{itemize}
+
+		\subsubsection{Par\'ametros y Opciones}
+			\begin {itemize}
+				\item \textbf{arg1} {bla}
+			\end{itemize}
+	
+		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+
+		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+		\subsubsection{C\'odigo Fuente}
+			Anexo IX
+%END subsection
+
+	\subsection{StartD}
+%BEGIN subsection
+		\subsubsection{Usos}
+
+
+		\subsubsection{Archivos}
+			\begin {itemize}
+				\item \textbf{Input} {bla}
+				\item \textbf{Intermedios} {bla}
+				\item \textbf{Output} {bla}
+			\end{itemize}
+
+		\subsubsection{Par\'ametros y Opciones}
+			\begin {itemize}
+				\item \textbf{arg1} {bla}
+			\end{itemize}
+	
+		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+
+		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+		\subsubsection{C\'odigo Fuente}
+			Anexo X
+
+%END subsection
+
+	\subsection{StopD}
+%BEGIN subsection
+		\subsubsection{Usos}
+
+
+		\subsubsection{Archivos}
+			\begin {itemize}
+				\item \textbf{Input} {bla}
+				\item \textbf{Intermedios} {bla}
+				\item \textbf{Output} {bla}
+			\end{itemize}
+
+		\subsubsection{Par\'ametros y Opciones}
+			\begin {itemize}
+				\item \textbf{arg1} {bla}
+			\end{itemize}
+	
+		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+
+		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+		\subsubsection{C\'odigo Fuente}
+			Anexo XI
+%END subsection
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Archivos}
+% Si ya están definidos en el enunciado
+% a. Directorio, nombre y estructura
+% Si son nuevas estructuras
+% a. Nombre del Archivo y tipo de archivo (permanente o temporal)
+% b. Justificación
+% c. Estructura
+
+	\subsection{Definidos en Enunciado}
+		
+		\subsubsection{InstalaV5.conf}
+
+			\begin {itemize}
+				\item \textbf{Tipo} {Archivo de Instalaci\'on}
+				\item \textbf{Directorio} {CONFDIR}
+				\item \textbf{Estructura} {\textit{	Variable=Valor=Usuario=Fecha}\\
+					Donde: \ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Descripcion & Valor \\
+						\hline
+						\multirow{6}{*}{Variable} & \multirow{6}{*}{Caracteres}	& GRUPO, CONFIR, BINDIR, \\
+								{}			  & {}							 & MAEDIR, ARRIDIR, ACEPDIR, \\
+								{}			& 	{}						& RECHDIR, PROCDIR, REPODIR, \\
+								{}			& {}  							& LOGDIR, LOGEXT, LOGSIZE, \\
+								{}			& 	{}						& DATASIZE, SECUENCIA1, SECUENCIA2, \\
+								{}			& {} 							& COMANDO, ARCHIVO, DIRECTORIOS\\ 
+						\hline 
+						Valor 	& Caracteres 	& Contenido de la variable \\
+						\hline
+						\multirow{2}{*}{Usuario} & Caracteres & Login del usuario que realiza la grabacion. \\
+											 &			&\small{ *COMANDO, ARCHIVO y DIRECTORIOS no guardan usuario}\\
+						\hline
+						Fecha	& dd/mm/aaaa hh:mm 	&	Fecha y hora del momento de registro. \\
+						\hline
+	
+					\end{tabular}
+					\end{table}
+				}
+			\end{itemize}
+		
+		\subsubsection{<Comando>.logext}
+
+			\begin {itemize}
+				\item \textbf{Tipo} {Archivo de Log}
+				\item \textbf{Directorio} {LOGDIR}
+				\item \textbf{Estructura} {	\textit{Fecha;Usuario;TipoMensaje;Comando;Mensaje}\\
+					Donde: \ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Descripcion & Valor \\
+						\hline
+							Fecha  &dd/mm/aaaa &	Fecha del día de registro. \\
+						\hline 
+						 Usuario & Caracteres 	&  Login del usuario que graba el registro\\
+						\hline
+						Tipo de Mensaje	 &	Caracteres	& 	I, A, E, SE \\
+						\hline
+						Comando & Caracteres & Nombre del comando que produce el evento de log \\
+						\hline
+						Mensaje &  Caracteres & Mensajes estandarizados provenientes de ListaErrores \\
+							\hline
+
+					\end{tabular}
+					\end{table}
+				}
+			\end{itemize}
+
+		\subsubsection{Patrones}
+
+			\begin {itemize}
+				\item \textbf{Tipo} {Archivo Maestro}
+				\item \textbf{Directorio} {MAEDIR}
+				\item \textbf{Estructura} {\textit{ID,REGEXP,SIS\_ID,Contexto,InicioContexto,FinContexto}\\
+					Donde: \ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Tipo & Variable\\
+						\hline
+							ID patrón  & Numérico & PAT\_ID \\
+						\hline 
+						 REGXEP a aplicar& Caracteres 	& PAT\_EXP\\
+						\hline
+						Código Sistema  &	Caracteres	& SIS\_ID\\
+						\hline
+						Contexto del Resultado & Caracter (C , L ) & PAT\_CON\\
+						\hline
+						Inicio del Contexto & Numérico & DESDE\\
+							\hline
+						Fin del Contexto & Numérico & HASTA\\
+							\hline
+
+					\end{tabular}
+					\end{table}
+				}
+			\end{itemize}
+
+		\subsubsection{Sistemas}
+
+			\begin {itemize}
+				\item \textbf{Tipo} {Archivo Maestro}
+				\item \textbf{Directorio} {MAEDIR}
+				\item \textbf{Estructura} {\textit{SIS\_ID;NombreSistema;FechaDeAlta;FechaDeBaja$^*$}\\
+					Donde: (	$^*$campo  cd ..opcional )\ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Tipo & Variable\\
+						\hline
+							Código de Sistema & Caracteres & SIS\_ID \\
+						\hline 
+						 Nombre de Sistema & Caracteres 	& SIS\_NOM\\
+						\hline
+						Fecha de Alta & aaaa-mm-dd & SIS\_ALTA\\
+						\hline
+						Fecha de Baja $^*$& aaaa-mm-dd & SIS\_BAJA\\
+						\hline
+					\end{tabular}
+					\end{table}
+				}
+			\end{itemize}
+
+		\subsubsection{rglobales. PAT\_ID}
+
+			\begin {itemize}
+				\item \textbf{Tipo} {Archivo de Resultados}
+				\item \textbf{Directorio} {PROCDIR}
+				\item \textbf{Estructura} {bla}
+			\end{itemize}
+
+		\subsubsection{resultados.PAT\_ID}
+
+			\begin {itemize}
+				\item \textbf{Tipo} {Archivo de Resultados}
+				\item \textbf{Directorio} {PROCDIR}
+				\item \textbf{Estructura} {bla}
+			\end{itemize}
+	
+		\subsubsection{salida\_xxx}
+
+			\begin {itemize}
+				\item \textbf{Nombre: } {salida\_YYYYMMDDHHMMSS}
+				\item \textbf{Tipo} {Archivo de Reportes}
+				\item \textbf{Directorio} { \$REPODIR}
+				\item \textbf{Estructura} {\textit{Es un archivo de texto libre, en donde la salida está dividida por patrón y los filtros aplicados en cada patrón. Por cada patrón hay un listado de 3 columnas de campo fijo, donde la primera es el ciclo (10 caracteres), la segunda es el archivo (25 caracteres) y la tercera es el registro RESULTADO del archivo de resultados detallados (sin límite).}\\
+					Donde: (	$^*$campo  opcional )\ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Descripción & Fuente	\\
+						\hline
+							Línea de Reporte  & Caracteres & Proceso Listar\\
+						\hline 
+						
+					\end{tabular}
+					\end{table}
+				}
+			\end{itemize}
+	
+
+	\subsection{Auxiliares}
+	
+		\subsubsection{ListaErrores}
+	
+No especificado en el enunciado. Desarrollado por el equipo para almacenar los mensajes de logueo que usan los módulos, y su formato.
+
+			\begin {itemize}
+				\item \textbf{Tipo} {Archivo auxiliar de Logueo, permanente}
+				\item \textbf{Directorio} {LoguearV5}
+				 \item \textbf{Justificación:}  este archivo contiene los posibles mensajes de logueo, de forma que el log sea coherente al registrar mensajes con el mismo propósito provenientes de distintos módulos. Para usarlo, cada módulo debe referenciar el mensaje segun un identificador. Si el mensaje llevara nombres o variables, se debe escribir ``\%s'' en los lugares del mensaje que correspondan, y luego pasar esas variables como parámetros extra al usar el módulo de logueo.
+
+
+				Por ejemplo, para el mensaje:
+
+				{\tt 401 Inicio BuscarV5 - Ciclo Nro: \%s - Cantidad de archivos: \%s}
+
+				se necesitan dos variables: número de ciclo y cantidad de archivos. Entonces, desde el módulo que lo usa, BuscarV5, se debe invocar al log de esta forma:
+
+				{\tt \$BINDIR/LoguearV5.sh -c 401 -f BuscarV5 -i I \$CICLO \$CANT\_ARCHIVOS}
+
+				\item \textbf{Estructura} {\textit{MSJ\_ID MensajeDeError}\\
+					Donde: \ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Tipo & Variable\\
+						\hline
+						\multirow{2}{*}{MSJ\_ID } & \multirow{2}{*}{Caracteres} & Número de ID del Mensaje\\
+						{} & {} & Una secuencia XYY por comando \\
+						\hline 
+						\multirow{2}{*}{Mensaje de Error} & \multirow{2}{*}{Caracteres} & Mensaje Normalizado \\ 
+						{} & {} &  Puede recibir parámetros \\
+						\hline
+					\end{tabular}
+					\end{table}
+				}
+			\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\section{Ap\'endice A}
+
+
+\end{document}

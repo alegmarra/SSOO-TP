@@ -144,22 +144,27 @@ function mostrar_y_registrar {
 ## Arg0: nombre del archivo a buscar
 ## RETORNO: ruta completa del archivo encontrado, desde el directorio actual.
 
-function buscar_archivo {
-	declare local a_buscar=$1
+function buscar_archivo_config {
+	#declare local a_buscar=$1
 
-	find > aux.out
+	#find > aux.out
 
-	grep ".*${a_buscar}$" aux.out > aux-2.out  
+	#grep ".*${a_buscar}$" aux.out > aux-2.out  
 
-	if [ $? -eq 0 ];then
-		read RETORNO < aux-2.out
+	#if [ $? -eq 0 ];then
+		#read RETORNO < aux-2.out
+	#else
+		#RETORNO=""
+	#fi
+	
+	#rm aux.out
+	#rm aux-2.out
+	
+	if [ -f "${VARIABLES[$CONFDIR]}/$NOM_ARCH_CONFIG" ];then
+		RETORNO="${VARIABLES[$CONFDIR]}/$NOM_ARCH_CONFIG"
 	else
 		RETORNO=""
-	fi
-	
-	rm aux.out
-	rm aux-2.out
-	
+	fi	
 	
 	return 0
 
@@ -294,10 +299,10 @@ function mostrar_valores_ingresados {
 	mostrar_y_registrar "Finaliza el proceso de muestreo de valores ingresados por el usuario." -nm
 }
 
-################################################################
+########################################################################
 ##
-## Guarda la configuracion del sistema
-
+## Guarda la configuracion del sistema dentro del directorio del sistema
+##
 function guardar_configuracion {
 	declare local var
 	declare local fecha_creacion
@@ -340,7 +345,7 @@ function guardar_configuracion {
 				mv aux "$NOM_ARCH_CONFIG"
 				
 			elif [ -n "${DESCRIP_DIR[${!var}]}" ]; then
-				echo_depuracion "Se va a guardar \"$valor\" para \"$var\"" 3
+
 				if [ "${!var}" == "$GRUPO" ]; then
 					registro="${var}=${VARIABLES[$GRUPO]}=$usuario=${fecha_creacion}"
 				else
@@ -353,6 +358,10 @@ function guardar_configuracion {
 			fi
 					
 		done
+		
+		cd ..
+		mostrar_y_registrar "Se guardaron todas las variables del sistema." -nm
+		cd "${VARIABLES[$CONFDIR]}"
 		
 		# Guardo las datos de instalacion particulares
 		for var in "${NOM_COM[@]}"; do
@@ -368,6 +377,10 @@ function guardar_configuracion {
 
 		done
 		
+		cd ..
+		mostrar_y_registrar "Se guardaron los comandos instalados del sistema." -nm
+		cd "${VARIABLES[$CONFDIR]}"
+		
 		for var in "${ARCH_MAESTROS[@]}"; do
 			
 			if [ "${ARCH_MAE_INSTALADOS[${!var}]}" == "true" ]; then
@@ -380,6 +393,10 @@ function guardar_configuracion {
 			fi
 
 		done
+		
+		cd ..
+		mostrar_y_registrar "Se guardaron los archivos maestros instalados del sistema." -nm
+		cd "${VARIABLES[$CONFDIR]}"
 		
 		if [ "$DIR_INSTALADOS" == "true" ]; then
 			grep "^DIRECTORIOS=INSTALADOS=.*" "$NOM_ARCH_CONFIG" > aux
@@ -411,8 +428,6 @@ function guardar_configuracion {
 ##
 function cargar_configuracion {
 		
-	echo_depuracion "Se estan por cargar las variables" 0
-
 	mostrar_y_registrar "Se inicia la carga de la configuracion del sistema." -nm
 
 	declare local ruta_arch=$1
@@ -430,22 +445,22 @@ function cargar_configuracion {
 		grupo=`grep "^GRUPO" "$ruta_arch" | cut -d "=" -f 2` 
 		
 		VARIABLES[$GRUPO]="$grupo"
-		echo_depuracion "+++Grupo: $grupo" 2
+
 		
 		for nom_var in "${NOM_VARIABLES[@]}"; do
 			dir_instalado=`grep "^${nom_var}.*" "$ruta_arch" | cut -d "=" -f 2`
 			
-			echo_depuracion "++Se esta por cargar: $dir_instalado" 2
+
 			
 			if [ "${!nom_var}" != "$GRUPO" ] && [ -n "${DESCRIP_DIR[${!nom_var}]}" ]
 			then
 				VARIABLES[${!nom_var}]="${dir_instalado/${grupo}\/}"
-				echo_depuracion "Variable: $nom_var = ${VARIABLES[${!nom_var}]}" 0
+
 			else
 				VARIABLES[${!nom_var}]="${dir_instalado}"
 			fi
 			
-			echo_depuracion "-----++++Se cargo: ${VARIABLES[${!nom_var}]}" 2
+
 		done
 		
 	
@@ -481,7 +496,6 @@ function cargar_configuracion {
 		
 		if [ $? -eq 0 ]; then
 			DIR_INSTALADOS=true
-			echo_depuracion "Se Instalaron los directorios Correctamente" 1
 		fi
 		
 		rm comandos.dat
@@ -706,14 +720,19 @@ function instalar_sistema {
 	crear_carpetas
 	
 	echo "Instalando Archivos Maestros..."
+	mostrar_y_registrar "Se inicia la instalacion de los archivos maestros." -nm
 	for comp_a_inst in "${ARCH_MAESTROS[@]}"; do
 		instalar_componente "$comp_a_inst"
 	done
+	mostrar_y_registrar "Finaliza la instalacion de los archivos maestros." -nm
 
 	echo "Instalando Programas y Funciones..."
+	
+	mostrar_y_registrar "Se inicia la instalacion de los comandos." -nm
 	for comp_a_inst in "${NOM_COM[@]}"; do
 		instalar_componente "$comp_a_inst"
 	done
+	mostrar_y_registrar "Finaliza la instalacion de los comandos." -nm
 	
 	echo "Actualizando la configuracion del sistema..."
 	guardar_configuracion
@@ -1097,13 +1116,13 @@ comprobar_arch_de_instalacion
 
 echo "Instalacion de Sistema V-FIVE"
 
-buscar_archivo "$NOM_ARCH_CONFIG"
+buscar_archivo_config 
 
 if [ -n "$RETORNO" ]; then	
 	#########################################################
 	## Se inicia la instalacion con otra ya hecha previamente
 	#########################################################
-	echo_depuracion "Se entro al modo de completar" 1
+
 	ruta_arch_config=$RETORNO
 	
 	
