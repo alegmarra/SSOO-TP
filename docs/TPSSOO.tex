@@ -336,23 +336,30 @@ $BINDIR/ListarV5.pl -r
 %BEGIN subsection
 		\subsubsection{Usos}
 
+Lo utilizan los modulos para registrar mensajes al archivo de log de cada modulo.
 
 		\subsubsection{Archivos}
 			\begin {itemize}
-				\item \textbf{Input} {bla}
-				\item \textbf{Intermedios} {bla}
-				\item \textbf{Output} {bla}
+				\item \textbf{Input} {El script utiliza un archivo para obtener un template de mensaje de error. Dicho archivo se llama ListaErrores y se debe encontrar en el directorio BINDIR.}
+				\item \textbf{Intermedios} {No produce}
+				\item \textbf{Output} {La salida del log estara situada en la ruta LOGDIR/comando_invocante.LOGEXT.}
 			\end{itemize}
 
 		\subsubsection{Par\'ametros y Opciones}
+{\bf Parametros obligatorios:}
 			\begin {itemize}
-				\item \textbf{arg1} {bla}
+				\item \textbf{-f FUNC} {Este parametro indica la funcion invocante. Del mismo se desprende la ruta de salida de log.}
+				\item \textbf{-c CODE} { Este parametro indica el codigo de error que se quiere loguear. El mismo se utiliza para determinar el mensaje de error a mostrar. Dicho mensaje se toma desde ListaErrores. La convencion de codigos de error se encuentra explicitadas en el archivo de ListarErrores.}
+				\item \textbf{-i EST } {Es el estado del error a loguear. Puede ser I (informativo), A (alerta), E (error) y SE (error severo)}
 			\end{itemize}
+
+{\bf Parametro opcionales:} Son todos los parametros adicionales necesarios para imprimir el template del mensaje. Sin los mismos, no se podra hacer la impresion del log.
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
 
-		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
-
+\begin{verbatim}
+$./LoguearV5.sh -f  
+\end{verbatim}
 		\subsubsection{C\'odigo Fuente}
 			Anexo VII
 

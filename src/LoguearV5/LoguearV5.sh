@@ -1,5 +1,4 @@
 #! /bin/bash
-
 #forma correcta de uso
 uso() {
 	echo 'LoguearV5 -c ERRCODE -f CALLFUNC -i ERRSTAT [optionals]'
@@ -17,10 +16,6 @@ errcode=
 errstat=
 cmdname=
 sep=";"
-
-# TODO: limpiar estas variables cuando este hecha la parte de IniciarV5
-GRUPO="."
-LOGSIZE=2000000
 
 while getopts c:f:i:hs: opt
 do 
