@@ -17,6 +17,12 @@ if (@ARGV > 0 or defined $opciones{ayuda}) {
 	usage();
 }
 
+# valido variables de entorno
+if (! defined $ENV{'MAEDIR'} or ! defined $ENV{'REPODIR'} ) {
+	print "No se han encontrado las variables de entorno necesarias.\n";
+	exit 1;
+}
+
 # función de ayuda
 sub usage
 {
