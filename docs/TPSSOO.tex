@@ -82,7 +82,7 @@
 
 \section{Problemas Relevantes}
 
-\subsection{BuscarV5: Lectura de expresiones regulares del archivo de patrones}
+\subsection{Lectura de expresiones regulares del archivo de patrones}
 
 Según el formato del archivo de patrones, la expresión regular a aplicar se ubica en el segundo campo de cada registro del archivo, pero encerrado entre comillas simples. Al leer esta expresión regular, es necesario quitar las comillas simples antes de ingresarlas al comando grep, sino el comportamiento era incorrecto: se interpretaban las comillas simples como caracteres buscados. Se solucionó con una función en el script BuscarV5.sh que recorta el primer y último carácter de un string.
 
@@ -224,6 +224,9 @@ Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubica
 			No es ejecutado manualmente. 
 
 			Su ejecuci\'on est\'a a cargo del comando IniciarV5, a trav\'es del comando StartD.
+			\begin{verbatim}
+				Demonizado: nohup DetectaV5.sh 0<\&- 1>/dev/null 2>\&1 \&
+			\end{verbatim}
 
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
@@ -253,10 +256,9 @@ BLABGLASSFsdfsdfegdasfgadfgadfgwrtdsfasdfasdfa
 Es automática por el módulo DetectarV5. 
 
 No lleva parámetros, asi que tan sólo es necesaria su ejecución de la forma:
-
-{\bf Ejemplo de invocación:} 
-\$BINDIR/BuscarV5.sh
-
+			\begin{verbatim}
+				\$BINDIR/BuscarV5.sh
+			\end{verbatim}
 
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
@@ -368,22 +370,34 @@ $./LoguearV5.sh -f
 	\subsection{MirarV5}
 %BEGIN subsection
 		\subsubsection{Usos}
+
+Lo utiliza el usuario para observar los archivos de logs en un formato amigable.
 			 
 		\subsubsection{Archivos}
 			\begin {itemize}
-				\item \textbf{Input} {bla}
-				\item \textbf{Interm edios} {bla}
-				\item \textbf{Output} {bla}
+				\item \textbf{Input} {Los archivos de logs presentes en LOGDIR}
+				\item \textbf{Intermedios} {No produce}
+				\item \textbf{Output} {No produce}
 			\end{itemize}
 
 		\subsubsection{Par\'ametros y Opciones}
 			\begin {itemize}
-				\item \textbf{arg1} {bla}
+				\item \textbf{-n LINEAS} {Indica la cantidad de lineas a mostrar en pantalla.}
+				\item \textbf{-p PATRON} {Aplica una expresion regular para filtrar el log.}
+				\item \textbf{-s SEPARADOR} {Establece el caracter separador del archivo de log a procesar.}
 			\end{itemize}
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
 
+Lo invoca el usuario manualmente, por ejemplo, de esta forma:
+
+\begin{verbatim}
+MirarV5 -n 10 -p sasapp -s , -f resultados.3
+\end{verbatim}
+
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+Cuando se invoca este comando se debe indicar el caracter separador correspondiente al archivo de log que se quiere mostrar. El modulo de logueo aplica un separador por defecto (punto y coma), pero este puede cambiarse por otro mediante el flag -s. Luego, al intentar mostrarlo mediante este comando, es obligatorio indicar el separador utilizado, en caso contrario, no se indicaran los resultados de forma correcta.
 
 		\subsubsection{C\'odigo Fuente}
 			Anexo VIII
@@ -424,7 +438,10 @@ $./LoguearV5.sh -f
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
 			Puede invocarse manualmente, aunque su forma normal de invocaci\'on es desde otros comandos (por ej: DetectaV5, BuscarV5, etc.)
-			
+			\begin{verbatim}
+				\$BINDIR/MoverV5.sh <Origen> <Destino> <Comando> [OPCION]
+			\end{verbatim}
+
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
 		\subsubsection{C\'odigo Fuente}
@@ -465,6 +482,10 @@ $./LoguearV5.sh -f
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
 			Se invoca desde el comando IniciarV5, para disparar el comando DetectaV5 en forma de demonio.
 				
+			\begin{verbatim}
+				\$BINDIR/StartD.sh [OPCION] <NombreComando.sh> <Argumentos>
+			\end{verbatim}
+
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 			\begin{itemize}
 				\item {}{Siempre debe aclararse el formato de ejecuci\'on (F, B o D).}
@@ -510,6 +531,11 @@ $./LoguearV5.sh -f
 			Se ejecuta desde el comando DetenerV5 para frenar la ejecuci\'on del sistema. 
 	
 			 Puede llamarse manualmente para detener procesos en particular.
+
+			\begin{verbatim}
+				\$BINDIR/StopD.sh <NombreComando.sh>
+			\end{verbatim}
+
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
 		\subsubsection{C\'odigo Fuente}
@@ -542,6 +568,9 @@ $./LoguearV5.sh -f
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
 			Se invoca manualmente para detener la ejecuci\'on del sistema.
+			\begin{verbatim}
+				\$BINDIR/DetenerV5.sh
+			\end{verbatim}
 
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
