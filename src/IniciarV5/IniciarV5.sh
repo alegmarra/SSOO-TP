@@ -66,16 +66,18 @@ verificarSiYaSeInicioElEntorno () {
 			((++CANT_INICIALIZADAS))
 		fi
 	done
-	if [ -z `expr ${#VARIABLES[@]} - ${CANT_INICIALIZADAS}` ]
+	if [ `expr ${#VARIABLES[@]} - ${CANT_INICIALIZADAS}` -eq 0 ]
 	then
-		if [ -z $# ]
+		if [ $# -eq 0 ]
 		then
 			mostrarVariables 
 			echo "Estado del Sistema: INICIALIZADO"
 			echo "No es posible efectuar una reinicialización del sistema"
 			echo "Proceso de Inicialización Cancelado"			
+		else
+			exit 1
 		fi
-		exit 0
+		return 1
 	fi
 }
 
@@ -153,16 +155,19 @@ init $1
 
 verificarSiYaSeInicioElEntorno
 
-setearVariablesDeEntorno
-${BINDIR}/LoguearV5.sh -c 101 -f IniciarV5 -i I
+if [ $? -ne 1 ]
+then
+	setearVariablesDeEntorno
+	${BINDIR}/LoguearV5.sh -c 101 -f IniciarV5 -i I
 
-export PATH=${PATH}:${BINDIR}
+	export PATH=${PATH}:${BINDIR}
 
-verificarSiLaInstalacionEstaCompleta
+	verificarSiLaInstalacionEstaCompleta
 
-mostrarVariables
+	mostrarVariables
 
-invocarDetecta
+	invocarDetecta
 
-fin
+	fin
+fi
 
