@@ -193,24 +193,36 @@ Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubica
 	\subsection{DetectaV5}
 %BEGIN subsection
 		\subsubsection{Usos}
-		Este comando es el encargado de 
-			 
+		Este comando es el encargado de procesar los archivos presentes en la carpeta de \textbf{arribos}, verificando que tengan un formato correcto, es decir, que se correspondan con alg\'un sistema y a su vez, la fecha comunicada en su nombre para dicho sistema sean las correctas. 
+
+	En caso de que los archivos sean v\'alidos, los mueve al directorio de \textbf{aceptados}. En caso contrario, son movidos al directorio de \textbf{rechazados}. 
+
+		Una vez realizados estos pasos, invoca al comando BuscarV5.
+
+		El comando DetectaV5 se ejecuta en forma de demonio, por lo que una vez terminado un ciclo, se duerme por un tiempo \$SLEEPTIME.			 
 
 		\subsubsection{Archivos}
 			\begin {itemize}
-				\item \textbf{Input} {bla}
-				\item \textbf{Intermedios} {bla}
-				\item \textbf{Output} {bla}
+				\item \textbf{Input} {Todo archivo presente en \$ARRDIR }
+				\item \textbf{Intermedios} {Ninguno}
+				\item \textbf{Output} {Redistribuye los archivos de input entre \$ACEPDIR y \$RECHDIR, seg\'un corresponda.}
 			\end{itemize}
 
 		\subsubsection{Par\'ametros y Opciones}
 			\begin {itemize}
-				\item \textbf{arg1} {bla}
+				\item \textbf{Par\'ametros: }{Ninguno}
+				\item \textbf{Opci\'ones: } {\textit{-h}: Muestra el mensaje de ayuda para el comando.}
 			\end{itemize}
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+			No es ejecutado manualmente. 
+
+			Su ejecuci\'on est\'a a cargo del comando IniciarV5, a trav\'es del comando StartD.
 
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+BLABGLASSFsdfsdfegdasfgadfgadfgwrtdsfasdfasdfadsafdgqwefkkweorwaejnsfNALUFGANRFUAENR
+
 
 		\subsubsection{C\'odigo Fuente}
 			Anexo III
@@ -348,7 +360,9 @@ Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sól
 	\subsection{MoverV5}
 %BEGIN subsection
 		\subsubsection{Usos}
+			Se utiliza en los movimientos de archivos dentro del sistema. Todo comando que mueva archivos de una carpeta a otra, debe hacerlo a trav\'es de MoverV5.
 
+			Tiene como caracter\'istica por sobre el comando nativo de shell, la validaci\'on de los par\'ametros, y el auto renombramiento en secuencia en caso de que el archivo de origen ya exista en la carpeta destino.
 
 		\subsubsection{Archivos}
 			\begin {itemize}
