@@ -107,7 +107,7 @@ loguear=false
 ##
 # Argumentos obligatorios
 ##
-if [[ "$#" -lt 3 ]]; then
+if [ "$#" -lt 3 ]; then
 	echo "Cantidad de argumentos inválida"
 	ayuda 
 
@@ -119,10 +119,13 @@ fi
 ##
 # Argumento de log opcional
 ##
-if [[ $4 == "-l" ]]; then
 
-	loguear=true
-fi
+case $4 in
+	-l) loguear=true;
+	;;
+	-h) ayuda ; exit 1;
+	;;
+esac
 
 # Asignacion de rutas
 origen="$1"
@@ -134,7 +137,7 @@ caller="$3"
 argumentosValidos "$origen" "$destino"
 sonValidos="$?" 
 
-if [[ "$sonValidos" -eq 0 ]]; then
+if [ "$sonValidos" -eq 0 ]; then
 	
 	##
 	# Intenta mover el archivo
