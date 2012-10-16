@@ -221,7 +221,7 @@ Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubica
 
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
-BLABGLASSFsdfsdfegdasfgadfgadfgwrtdsfasdfasdfadsafdgqwefkkweorwaejnsfNALUFGANRFUAENR
+BLABGLASSFsdfsdfegdasfgadfgadfgwrtdsfasdfasdfa
 
 
 		\subsubsection{C\'odigo Fuente}
@@ -244,7 +244,9 @@ BLABGLASSFsdfsdfegdasfgadfgadfgwrtdsfasdfasdfadsafdgqwefkkweorwaejnsfNALUFGANRFU
 			 No posee argumentos de ejecución ni opciones. Cuando se ejecuta, comienza a procesar los archivos.
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
-Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sólo es necesaria su ejecución de la forma:\\
+Es automática por el módulo DetectarV5. 
+
+No lleva parámetros, asi que tan sólo es necesaria su ejecución de la forma:
 
 {\bf Ejemplo de invocación:} 
 \$BINDIR/BuscarV5.sh
@@ -375,19 +377,23 @@ Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sól
 			\begin {itemize}
 				\item \textbf{Par\'ametros} {
 					\begin{itemize}
-						\item {@arg1}{Archivo de Origen (ruta completa)} 
-						\item {@arg2}{Ruta de Destino } 
-						\item {@arg3}{Comando Invocante} 
-						\item {@arg4}{Opcional} 
+						\item {@arg1 }{Archivo de Origen (ruta completa)} 
+						\item {@arg2 }{Ruta de Destino } 
+						\item {@arg3 }{Comando Invocante} 
+						\item {@arg4 }{Opcional} 
 					\end{itemize}
 				}
 				\item \textbf{Opciones}{
-
+					\begin{itemize}
+						\item {-h }{Muestra la ayuda del comando} 
+						\item {-l }{Habilita el logueo de los movimientos} 
+					\end{itemize}
 				}
 			\end{itemize}
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
-
+			Puede invocarse manualmente, aunque su forma normal de invocaci\'on es desde otros comandos (por ej: DetectaV5, BuscarV5, etc.)
+			
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
 		\subsubsection{C\'odigo Fuente}
@@ -397,23 +403,43 @@ Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sól
 	\subsection{StartD}
 %BEGIN subsection
 		\subsubsection{Usos}
-
+			Permite la ejecuci\'on sencilla de comandos en modos demonio o segundo plano. Puede disparar cualquier comando, reciba este argumentos o no, en primer plano, segundo plano o demonizado.
 
 		\subsubsection{Archivos}
 			\begin {itemize}
-				\item \textbf{Input} {bla}
-				\item \textbf{Intermedios} {bla}
-				\item \textbf{Output} {bla}
+				\item \textbf{Input} {Ninguno}
+				\item \textbf{Intermedios} {Ninguno}
+				\item \textbf{Output} {Ninguno}
 			\end{itemize}
 
 		\subsubsection{Par\'ametros y Opciones}
 			\begin {itemize}
-				\item \textbf{arg1} {bla}
+				\item \textbf{Par\'ametros} {
+					\begin{itemize}
+						\item {@arg1 }{Opci\'on forma de ejecuci\'on} 
+						\item {@arg2 }{Nombre del comando a ejecutar} 
+						\item {@arg3 }{Opcional, argumentos del comando a ejecutar} 
+					\end{itemize}
+				}
+				\item \textbf{Opciones}{
+					\begin{itemize}
+						\item {-h }{Muestra la ayuda del comando} 
+						\item {-F }{Ejecuta @arg2 en primer plano} 
+						\item {-B }{Ejecuta @arg2 en segundo plano}
+						\item {-D }{Ejecuta @arg2 demonizado}
+					\end{itemize}
+				}
 			\end{itemize}
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
-
+			Se invoca desde el comando IniciarV5, para disparar el comando DetectaV5 en forma de demonio.
+				
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+			\begin{itemize}
+				\item {}{Siempre debe aclararse el formato de ejecuci\'on (F, B o D).}
+				\item{}{En caso de ejecutar el comando @arg2 en primer plano, StartD no termina hasta que el comando invocado termine}
+
+			\end{itemize}
 
 		\subsubsection{C\'odigo Fuente}
 			Anexo X
