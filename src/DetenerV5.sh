@@ -12,9 +12,6 @@ if [ ! -z $1 ]; then
 fi
 
 
-# CAMBIAR CAMBIAR CAMBIAR CAMBIAR
-BINDIR=./testBin
-
 for comando in `find "$BINDIR" -maxdepth 1 -type f -regex ${BINDIR%/}"/.*"`
 do
 	if [ ! ${comando##*/} = "StopD.sh" ]; then
@@ -23,4 +20,12 @@ do
 	
 done
 
-exit 0
+PATH=`echo ${PATH} | sed "s_\:${BINDIR}__g"`
+
+VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE)
+
+for i in "${VARIABLES[@]}"
+do	
+	unset `echo ${i}`
+done
+

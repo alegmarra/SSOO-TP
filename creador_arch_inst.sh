@@ -1,4 +1,4 @@
-#!/bin/bash/
+#!/bin/bash
 
 
 NOM_ARCH_INST="arch-sistema.dat"
@@ -18,6 +18,7 @@ if [ $# -eq 0 ]; then
 	 LoguearV5.sh \
 	 MirarV5.sh \
 	 StopD.sh \
+	 DetenerV5.sh \
 	 StartD.sh)
 	
 	
@@ -30,6 +31,7 @@ if [ $# -eq 0 ]; then
 	 src/LoguearV5/LoguearV5.sh \
 	 src/MirarV5/MirarV5.sh \
 	 src/StopD.sh \
+	 src/DetenerV5.sh \
 	 src/StartD.sh)
 	 
 	nom_archivos_maestros=(sistemas \

@@ -78,11 +78,12 @@ LoguearV5=5
 MirarV5=6
 StopD=7
 StartD=8
+DetenerV5=11
 
-NOM_COM=(IniciarV5 DetectaV5 BuscarV5 ListarV5 MoverV5 LoguearV5 MirarV5 StopD StartD)
+NOM_COM=(IniciarV5 DetectaV5 BuscarV5 ListarV5 MoverV5 LoguearV5 MirarV5 StopD StartD DetenerV5)
 declare -a COM_INSTALADOS=( [${!NOM_COM[0]}]=false [${!NOM_COM[1]}]=false [${!NOM_COM[2]}]=false [${!NOM_COM[3]}]=false \
 	[${!NOM_COM[3]}]=false [${!NOM_COM[4]}]=false [${!NOM_COM[5]}]=false [${!NOM_COM[6]}]=false \
-	[${!NOM_COM[7]}]=false [${!NOM_COM[8]}]=false)
+	[${!NOM_COM[7]}]=false [${!NOM_COM[8]}]=false [${!NOM_COM[9]}]=false)
 
 
 # Variables agregadas para que funcione con bash 3.0
@@ -562,7 +563,7 @@ function hay_espacio_suficiente {
 	## ...
 	## compara si se esta en otra particion
 	
-	tam_actual=`df --block-size 1000000 | grep "$particion_disco" | awk '{ print $4 }'`
+	tam_actual=`df --block-size 1000000 | grep "$particion_disco" | awk '{ print $4 }' | head -1`
 	
 	
 	if [ $tam_a_comp -le $tam_actual ];then
@@ -831,7 +832,7 @@ function instalar_componente {
 		if [ -d "${VARIABLES[$BINDIR]}" ]; then
 			if [ "${COM_INSTALADOS[${!comp_a_inst}]}" == false ]; then
 				## Copiar el desde la fuente el archivo orignal a la carpeta de maestros
-				if [ ${!comp_a_inst} -eq $IniciarV5 ];then
+				if [ ${!comp_a_inst} -eq $IniciarV5 ] || [ ${!comp_a_inst} -eq $DetenerV5 ];then
 					cp ${dir}/${comp_a_inst}* "${VARIABLES[$GRUPO]}"
 				else
 					cp ${dir}/${comp_a_inst}* "${VARIABLES[$BINDIR]}"
