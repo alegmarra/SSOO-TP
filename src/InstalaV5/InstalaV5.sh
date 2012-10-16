@@ -18,41 +18,77 @@ DIR_ARCH_DE_INSTALACION="arch_instalcion"
 
 ESTADO_INSTALACION="I" # 3 estados (INCOMPLETO(I), PARCIAL(P), COMPLETO(C))
 
+
+# Declaracion de Variables para que sea compatible con bash 3.0
+
+GRUPO=0
+CONFDIR=1
+BINDIR=2
+MAEDIR=3
+ARRIDIR=4
+ACEPDIR=5
+RECHDIR=6
+PROCDIR=7
+REPODIR=8
+LOGDIR=9
+LOGEXT=10
+LOGSIZE=11
+DATASIZE=12
+SECUENCIA1=13
+SECUENCIA2=14
+
 NOM_VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE DATASIZE SECUENCIA1 SECUENCIA2)
 
-declare -A DESCRIP_DIR=( ["CONFDIR"]="Directorio donde se encuentran los archivos de Configuracion del Sistema" \
-	["BINDIR"]="directorio de archivos ejecutables" \
-	["MAEDIR"]="directorio de archivos Maestros" \
-	["ARRIDIR"]="directorio de arribo de archivos externos" \
-	["ACEPDIR"]="directorio de grabacion de archivos rechazados" \
-	["RECHDIR"]="directorio de grabacion de los archivos externos aceptados" \
-	["PROCDIR"]="directorio de grabacion de los archivos procesados" \
-	["REPODIR"]="directorio de grabacion de los reportes de salida" \
-	["LOGDIR"]="directorio de grabacion de los logs del sistema" \
+declare -a DESCRIP_DIR=( [$CONFDIR]="Directorio donde se encuentran los archivos de Configuracion del Sistema" \
+	[$BINDIR]="directorio de archivos ejecutables" \
+	[$MAEDIR]="directorio de archivos Maestros" \
+	[$ARRIDIR]="directorio de arribo de archivos externos" \
+	[$ACEPDIR]="directorio de grabacion de archivos rechazados" \
+	[$RECHDIR]="directorio de grabacion de los archivos externos aceptados" \
+	[$PROCDIR]="directorio de grabacion de los archivos procesados" \
+	[$REPODIR]="directorio de grabacion de los reportes de salida" \
+	[$LOGDIR]="directorio de grabacion de los logs del sistema" \
 	)
 
-declare -A DESCRIP_DIR_RES=( ["CONFDIR"]="Libreria del Sistema" \
-	["BINDIR"]="Ejecutables" \
-	["MAEDIR"]="Archivos Maestros" \
-	["ARRIDIR"]="Arribo de archivos externos" \
-	["ACEPDIR"]="Archivos Externo Aceptados" \
-	["RECHDIR"]="Archivos Externos Rechazados" \
-	["PROCDIR"]="Archivos procesado" \
-	["REPODIR"]="Reportes de Salida" \
-	["LOGDIR"]="Logs de auditoria del Sistema" \
+declare -a DESCRIP_DIR_RES=( ["$CONFDIR"]="Libreria del Sistema" \
+	[$BINDIR]="Ejecutables" \
+	[$MAEDIR]="Archivos Maestros" \
+	[$ARRIDIR]="Arribo de archivos externos" \
+	[$ACEPDIR]="Archivos Externo Aceptados" \
+	[$RECHDIR]="Archivos Externos Rechazados" \
+	[$PROCDIR]="Archivos procesado" \
+	[$REPODIR]="Reportes de Salida" \
+	[$LOGDIR]="Logs de auditoria del Sistema" \
 	)
 
-declare -A VARIABLES=( ["BINDIR"]="grupo07" ["CONFDIR"]="config" )
+declare -A VARIABLES=( [$CONFDIR]="conf" )
 
 DIR_INSTALADOS=false
 
+# Variables agregadas para que funcione con bash 3.0
+
+IniciarV5=0
+DetectaV5=1
+BuscarV5=2
+ListarV5=3
+MoverV5=4
+LoguearV5=5
+MirarV5=6
+StopD=7
+StartD=8
+
 NOM_COM=(IniciarV5 DetectaV5 BuscarV5 ListarV5 MoverV5 LoguearV5 MirarV5 StopD StartD)
-declare -A COM_INSTALADOS=( ["${NOM_COM[0]}"]=false ["${NOM_COM[1]}"]=false ["${NOM_COM[2]}"]=false ["${NOM_COM[3]}"]=false \
-	["${NOM_COM[3]}"]=false ["${NOM_COM[4]}"]=false ["${NOM_COM[5]}"]=false ["${NOM_COM[6]}"]=false \
-	["${NOM_COM[7]}"]=false ["${NOM_COM[8]}"]=false)
+declare -a COM_INSTALADOS=( [${!NOM_COM[0]}]=false [${!NOM_COM[1]}]=false [${!NOM_COM[2]}]=false [${!NOM_COM[3]}]=false \
+	[${!NOM_COM[3]}]=false [${!NOM_COM[4]}]=false [${!NOM_COM[5]}]=false [${!NOM_COM[6]}]=false \
+	[${!NOM_COM[7]}]=false [${!NOM_COM[8]}]=false)
+
+
+# Variables agregadas para que funcione con bash 3.0
+patrones=9
+sistemas=10
 
 ARCH_MAESTROS=( patrones sistemas )
-declare -A ARCH_MAE_INSTALADOS=( ["${ARCH_MAESTROS[0]}"]=false ["${ARCH_MAESTROS[1]}"]=false )
+declare -a ARCH_MAE_INSTALADOS=( [${!ARCH_MAESTROS[0]}]=false [${!ARCH_MAESTROS[1]}]=false )
 
 ## Variables utilizadas para los valores de retorno de una funcion
 RETORNO=""
@@ -139,7 +175,7 @@ function crear_carpetas {
 	
 	mostrar_y_registrar "Se inicia la creacion de directorios." -nm
 	
-	for nom_var in "${NOM_VARIABLES[@]}";do
+	for nom_var in "${!NOM_VARIABLES[@]}";do
 	
 		if [ -n  "${DESCRIP_DIR[$nom_var]}" ]; then
 			nom_dir="${VARIABLES[$nom_var]}"
@@ -157,8 +193,8 @@ function crear_carpetas {
 	## copia el archivo de errores a BINDIR
 	
 	if [ -f "${DIR_ARCH_DE_INSTALACION}/$NOM_ARCH_ERRORES" ]; then
-		cp "${DIR_ARCH_DE_INSTALACION}/$NOM_ARCH_ERRORES" "${VARIABLES[BINDIR]}"
-		mostrar_y_registrar "Copiado archivo de errores al directorio ${VARIABLES[BINDIR]}." -nm
+		cp "${DIR_ARCH_DE_INSTALACION}/$NOM_ARCH_ERRORES" "${VARIABLES[$BINDIR]}"
+		mostrar_y_registrar "Copiado archivo de errores al directorio ${VARIABLES[$BINDIR]}." -nm
 	fi
 
 	return 0
@@ -193,29 +229,28 @@ function leer_entrada {
 ##
 
 function cagar_valores_defecto {
-	declare local aux
 	declare local ruta
 	ruta=`pwd`
 	
 	mostrar_y_registrar "Se establecen las variables con sus valores por defecto." -nm
 	
-	VARIABLES["GRUPO"]="$aux"
-	VARIABLES["CONFDIR"]="conf"
-	VARIABLES["BINDIR"]="bin"
-	VARIABLES["MAEDIR"]="mae"
-	VARIABLES["ARRIDIR"]="arribos"
-	VARIABLES["ACEPDIR"]="aceptados"
-	VARIABLES["RECHDIR"]="rechazados"
-	VARIABLES["PROCDIR"]="procesados"
-	VARIABLES["REPODIR"]="reportes"
-	VARIABLES["LOGDIR"]="log"
+	VARIABLES[$GRUPO]="$ruta"
+	VARIABLES[$CONFDIR]="conf"
+	VARIABLES[$BINDIR]="bin"
+	VARIABLES[$MAEDIR]="mae"
+	VARIABLES[$ARRIDIR]="arribos"
+	VARIABLES[$ACEPDIR]="aceptados"
+	VARIABLES[$RECHDIR]="rechazados"
+	VARIABLES[$PROCDIR]="procesados"
+	VARIABLES[$REPODIR]="reportes"
+	VARIABLES[$LOGDIR]="log"
 
-	VARIABLES["LOGEXT"]="log"
-	VARIABLES["LOGSIZE"]=400
-	VARIABLES["DATASIZE"]=150
+	VARIABLES[$LOGEXT]="log"
+	VARIABLES[$LOGSIZE]=400
+	VARIABLES[$DATASIZE]=150
 
-	VARIABLES["SECUENCIA1"]=0
-	VARIABLES["SECUENCIA2"]=0
+	VARIABLES[$SECUENCIA1]=0
+	VARIABLES[$SECUENCIA2]=0
 	
 	mostrar_y_registrar "Fin de establecer las variables con sus valores por defecto." -nm
 	
@@ -233,7 +268,7 @@ function mostrar_valores_ingresados {
 	
 	mostrar_y_registrar "Se inicia el proceso de muestreo de valores ingresados por el usuario." -nm
 	
-	for nom_var in "${NOM_VARIABLES[@]}"; do
+	for nom_var in "${!NOM_VARIABLES[@]}"; do
 		
 		descripcion="${DESCRIP_DIR[$nom_var]}"
 		
@@ -241,8 +276,8 @@ function mostrar_valores_ingresados {
 		if [ -n "$descripcion" ]; then
 			echo "-${descripcion}: "${VARIABLES[$nom_var]}
 			echo
-			if [ "$nom_var" == "ARRIDIR" ]; then
-				echo "--Espacio para el arribo de archivos externos: ${VARIABLES[DATASIZE]} Mb"
+			if [ "$nom_var" == "$ARRIDIR" ]; then
+				echo "--Espacio para el arribo de archivos externos: ${VARIABLES[$DATASIZE]} Mb"
 				echo
 			fi
 			
@@ -250,10 +285,10 @@ function mostrar_valores_ingresados {
 
 	done
 	
-	echo "-Logs de auditoria del Sistema: ${VARIABLES[LOGDIR]}/<comando>.${VARIABLES[LOGEXT]}"
+	echo "-Logs de auditoria del Sistema: ${VARIABLES[$LOGDIR]}/<comando>.${VARIABLES[$LOGEXT]}"
 	echo
 
-	echo "--Tamaño maximo para los archivo de log del sistema: ${VARIABLES[LOGSIZE]} kb"
+	echo "--Tamaño maximo para los archivo de log del sistema: ${VARIABLES[$LOGSIZE]} kb"
 
 	
 	mostrar_y_registrar "Finaliza el proceso de muestreo de valores ingresados por el usuario." -nm
@@ -270,16 +305,14 @@ function guardar_configuracion {
 	declare local valor
 	declare local usuario
 	
-	
 	mostrar_y_registrar "Se incia el proceso de almacenamiento de la configuracion del sistema." -nm
-	
 	
 	usuario="$USER"
 	
 	fecha_creacion=`date +"%0d/%0m/%Y %I:%M%p"`
 	
-	if [ -d "${VARIABLES[CONFDIR]}" ]; then
-		cd "${VARIABLES[CONFDIR]}"
+	if [ -d "${VARIABLES[$CONFDIR]}" ]; then
+		cd "${VARIABLES[$CONFDIR]}"
 		if [ ! -f "$NOM_ARCH_CONFIG" ]; then
 			: > "$NOM_ARCH_CONFIG"
 		fi
@@ -287,16 +320,18 @@ function guardar_configuracion {
 		# Guarda los Variables principales
 		
 		for var in "${NOM_VARIABLES[@]}";do
-			valor="${VARIABLES[$var]}"
+		
+			valor="${VARIABLES[${!var}]}"
 			grep "^${var}.*" "$NOM_ARCH_CONFIG" > aux
+			
 			
 			
 			if [ $? -eq 0 ]; then
 				# Sustituyo el nuevo registro por el viejo por ER (expresiones regulares)
 				# el simbolo separador de la Expresion regular es +
 
-				if [ -n "${DESCRIP_DIR[$var]}" ]; then
-					sed "s+${var}=\(.*\)=\(.*\)=\(.*\)+${var}=${VARIABLES[GRUPO]}/${valor}=\2=${fecha_creacion}+" \
+				if [ -n "${DESCRIP_DIR[${!var}]}" ]; then
+					sed "s+${var}=\(.*\)=\(.*\)=\(.*\)+${var}=${VARIABLES[$GRUPO]}/${valor}=\2=${fecha_creacion}+" \
 					"$NOM_ARCH_CONFIG" > aux
 				else
 					sed "s+${var}=\(.*\)=\(.*\)=\(.*\)+${var}=${valor}=\2=${fecha_creacion}+" \
@@ -304,40 +339,38 @@ function guardar_configuracion {
 				fi
 				mv aux "$NOM_ARCH_CONFIG"
 				
-			elif [ -n "${DESCRIP_DIR[$var]}" ]; then
-				if [ "$var" == "GRUPO" ]; then
-					registro="${var}=${VARIABLES[GRUPO]}=$usuario=${fecha_creacion}"
+			elif [ -n "${DESCRIP_DIR[${!var}]}" ]; then
+				echo_depuracion "Se va a guardar \"$valor\" para \"$var\"" 3
+				if [ "${!var}" == "$GRUPO" ]; then
+					registro="${var}=${VARIABLES[$GRUPO]}=$usuario=${fecha_creacion}"
 				else
-					registro="${var}=${VARIABLES[GRUPO]}/${valor}=$usuario=${fecha_creacion}"
+					registro="${var}=${VARIABLES[$GRUPO]}/${valor}=$usuario=${fecha_creacion}"
 				fi
 				echo "$registro" >> "$NOM_ARCH_CONFIG"
 			else
 				registro="${var}=${valor}=$usuario=${fecha_creacion}"
 				echo "$registro" >> "$NOM_ARCH_CONFIG"
 			fi
-			
-			
+					
 		done
 		
 		# Guardo las datos de instalacion particulares
 		for var in "${NOM_COM[@]}"; do
 			
-			if [ "${COM_INSTALADOS[$var]}" == "true" ]; then
-				echo_depuracion "---se va a guardar $var" 1
+			if [ "${COM_INSTALADOS[${!var}]}" == "true" ]; then
 				grep "^COMANDO=${var}.*" "$NOM_ARCH_CONFIG" > aux
 				
 				if [ "$?" != "0" ]; then				
 					registro="COMANDO=${var}=INSTALADO=$fecha_creacion"
 					echo "$registro" >> "$NOM_ARCH_CONFIG"
-					echo_depuracion "+++se guardo$var" 1
 				fi
 			fi
 
 		done
 		
-		for var in "${NOM_COM[@]}"; do
+		for var in "${ARCH_MAESTROS[@]}"; do
 			
-			if [ "${ARCH_MAE_INSTALADOS[$var]}" == "true" ]; then
+			if [ "${ARCH_MAE_INSTALADOS[${!var}]}" == "true" ]; then
 				grep "^ARCHIVO=${var}.*" "$NOM_ARCH_CONFIG" > aux
 				
 				if [ "$?" !=  "0" ]; then
@@ -391,14 +424,12 @@ function cargar_configuracion {
 
 	declare local nom_arch
 	declare local arch_instalado
-	declare local grupo
-	
-	
+	declare local grupo	
 	
 	if [ -f "$ruta_arch" ]; then
 		grupo=`grep "^GRUPO" "$ruta_arch" | cut -d "=" -f 2` 
 		
-		VARIABLES["GRUPO"]="$grupo"
+		VARIABLES[$GRUPO]="$grupo"
 		echo_depuracion "+++Grupo: $grupo" 2
 		
 		for nom_var in "${NOM_VARIABLES[@]}"; do
@@ -406,15 +437,15 @@ function cargar_configuracion {
 			
 			echo_depuracion "++Se esta por cargar: $dir_instalado" 2
 			
-			if [ "$nom_var" != "GRUPO" ] && [ -n "${DESCRIP_DIR[$nom_var]}" ]
+			if [ "${!nom_var}" != "$GRUPO" ] && [ -n "${DESCRIP_DIR[${!nom_var}]}" ]
 			then
-				VARIABLES["$nom_var"]="${dir_instalado/${grupo}\/}"
-				echo_depuracion "Variable: $nom_var = ${VARIABLES[$nom_var]}" 0
+				VARIABLES[${!nom_var}]="${dir_instalado/${grupo}\/}"
+				echo_depuracion "Variable: $nom_var = ${VARIABLES[${!nom_var}]}" 0
 			else
-				VARIABLES["$nom_var"]="${dir_instalado}"
+				VARIABLES[${!nom_var}]="${dir_instalado}"
 			fi
 			
-			echo_depuracion "-----++++Se cargo: ${VARIABLES[$nom_var]}" 2
+			echo_depuracion "-----++++Se cargo: ${VARIABLES[${!nom_var}]}" 2
 		done
 		
 	
@@ -425,10 +456,11 @@ function cargar_configuracion {
 			cut -d "=" -f 3 aux > aux2
 			read com_instalado < aux2
 
+
 			if [ "${com_instalado}" == "INSTALADO" ]; then
-				COM_INSTALADOS[${nom_com}]=true
+				COM_INSTALADOS[${!nom_com}]=true
 			else
-				COM_INSTALADOS[${nom_com}]=false
+				COM_INSTALADOS[${!nom_com}]=false
 			fi
 		done
 	
@@ -441,7 +473,7 @@ function cargar_configuracion {
 			read arch_instalado < aux2
 
 			if [ "${arch_instalado}" == "INSTALADO" ]; then
-				ARCH_MAE_INSTALADOS[${nom_arch}]=true
+				ARCH_MAE_INSTALADOS[${!nom_arch}]=true
 			fi
 		done
 		
@@ -477,19 +509,16 @@ function establecer_variables {
 
 	for nom_var in "${NOM_VARIABLES[@]}"; do
 
-		echo_depuracion "$nom_var"
-		echo_depuracion "${DESCRIP_DIR[$nom_var]}"
-
-		mensaje=${DESCRIP_DIR[$nom_var]}
+		mensaje=${DESCRIP_DIR[${!nom_var}]}
 		
-		if [ -n "${mensaje}" ] && [ "$nom_var" != "LOGDIR" ] && [ "$nom_var" != "CONFDIR" ]
+		if [ -n "${mensaje}" ] && [ "${!nom_var}" != "$LOGDIR" ] && [ "${!nom_var}" != "$CONFDIR" ]
 		then
 			
 			mensaje="Definir el "${mensaje}
 				
-			leer_entrada "$mensaje" "${VARIABLES[$nom_var]}"
+			leer_entrada "$mensaje" "${VARIABLES[${!nom_var}]}"
 			VARIABLES[$nom_var]=$RETORNO
-			mostrar_y_registrar "Definido el valor \"$RETORNO\" para variable \"$nom_var\"" -nm
+			mostrar_y_registrar "Definido el valor \"$RETORNO\" para variable \"${nom_var}\"" -nm
 
 		fi
 	done;
@@ -519,7 +548,6 @@ function hay_espacio_suficiente {
 	
 	tam_actual=`df --block-size 1000000 | grep "$particion_disco" | awk '{ print $4 }'`
 	
-	echo_depuracion "++++Tamanio libre actual de disco: $tam_actual Mb" 2
 	
 	if [ $tam_a_comp -le $tam_actual ];then
 		RETORNO=true
@@ -550,14 +578,14 @@ function establecer_variables_num {
 
 	while [ "$espacio_suficiente" == false ]; do
 
-		leer_entrada "$msj" "${VARIABLES[DATASIZE]}"
+		leer_entrada "$msj" "${VARIABLES[$DATASIZE]}"
 		valor=$RETORNO
 		
 		hay_espacio_suficiente $valor
 		
 		if [ "$RETORNO" == "true" ]; then
 			espacio_suficiente=true
-			VARIABLES["DATASIZE"]=$valor	
+			VARIABLES[$DATASIZE]=$valor	
 			mostrar_y_registrar "Definido $valor Mb para espacio de arch de arribo." -nm	
 		else
 						
@@ -580,8 +608,8 @@ function establecer_variables_num {
 	
 	
 	msj="Defina el tamaño maximo para los archivos de log, en Kb"
-	leer_entrada "$msj" "${VARIABLES[LOGSIZE]}"
-	VARIABLES["LOGSIZE"]=$RETORNO
+	leer_entrada "$msj" "${VARIABLES[$LOGSIZE]}"
+	VARIABLES["$LOGSIZE"]=$RETORNO
 	mostrar_y_registrar "Definido $RETORNO Kb para tamaño max de archivos de log." -nm
 	
 	mostrar_y_registrar "Se finalizo el proceso de definir las variables globales de tipo numerico del sistema." -nm
@@ -680,13 +708,11 @@ function instalar_sistema {
 	echo "Instalando Archivos Maestros..."
 	for comp_a_inst in "${ARCH_MAESTROS[@]}"; do
 		instalar_componente "$comp_a_inst"
-
 	done
 
 	echo "Instalando Programas y Funciones..."
 	for comp_a_inst in "${NOM_COM[@]}"; do
 		instalar_componente "$comp_a_inst"
-
 	done
 	
 	echo "Actualizando la configuracion del sistema..."
@@ -715,22 +741,16 @@ function reparar_sistema {
 	echo
 	
 	for com in "${NOM_COM[@]}"; do
-		
-		if [ "${COM_INSTALADOS[$com]}" == false ]; then
+		if [ "${COM_INSTALADOS[${!com}]}" == false ]; then
 			instalar_componente "$com"
-			# loguear componente instalado
-			COM_INSTALADOS["$com"]=true
-
 		fi
 
 	done
 
 	for arch in "${ARCH_MAESTROS[@]}"; do
-	
-		if [ "${ARCH_MAE_INSTALADOS[$com]}" == false ]; then
+		if [ "${ARCH_MAE_INSTALADOS[${!arch}]}" == false ]; then
 			instalar_componente "$arch"
 		fi
-		
 	done
 	
 	mostrar_y_registrar "Finaliza la repacion del sistema." -nm
@@ -786,12 +806,12 @@ function instalar_componente {
 	declare local comp_a_inst=$1
 	declare local dir="$DIR_ARCH_DE_INSTALACION"
 
-	if [ -n "${COM_INSTALADOS[$comp_a_inst]}" ]; then
-		if [ -d "${VARIABLES[BINDIR]}" ]; then
-			if [ "${COM_INSTALADOS[$comp_a_inst]}" == false ]; then
+	if [ -n "${COM_INSTALADOS[${!comp_a_inst}]}" ]; then
+		if [ -d "${VARIABLES[$BINDIR]}" ]; then
+			if [ "${COM_INSTALADOS[${!comp_a_inst}]}" == false ]; then
 				## Copiar el desde la fuente el archivo orignal a la carpeta de maestros
-				cp ${dir}/${comp_a_inst}* "${VARIABLES[BINDIR]}"
-				COM_INSTALADOS["$comp_a_inst"]="true"
+				cp ${dir}/${comp_a_inst}* "${VARIABLES[$BINDIR]}"
+				COM_INSTALADOS[${!comp_a_inst}]="true"
 				RETORNO="Comando \"${comp_a_inst}\" instalado correctamente."
 			else
 				RETORNO="Comando \"${comp_a_inst}\" ya se encuentra instalado."
@@ -800,12 +820,12 @@ function instalar_componente {
 			RETORNO="Falta la carpeta de los ejecutables para instalar el comando \"${comp_a_inst}\"."
 		fi
 
-	elif [ -n "${ARCH_MAE_INSTALADOS[$comp_a_inst]}" ]; then
-		if [ -d "${VARIABLES[MAEDIR]}" ]; then
-			if [ "${ARCH_MAE_INSTALADOS[$comp_a_inst]}" == false ]; then
+	elif [ -n "${ARCH_MAE_INSTALADOS[${!comp_a_inst}]}" ]; then
+		if [ -d "${VARIABLES[$MAEDIR]}" ]; then
+			if [ "${ARCH_MAE_INSTALADOS[${!comp_a_inst}]}" == false ]; then
 				## Copiar el desde la fuente el archivo orignal a la carpeta de maestros
-				cp ${dir}/${comp_a_inst}* "${VARIABLES[MAEDIR]}"
-				ARCH_MAE_INSTALADOS["$comp_a_inst"]="true"
+				cp ${dir}/${comp_a_inst}* "${VARIABLES[$MAEDIR]}"
+				ARCH_MAE_INSTALADOS[${!comp_a_inst}]="true"
 				RETORNO="Archivo \"${comp_a_inst}\" instalado correctamente."
 			else
 				RETORNO="Archivo \"${comp_a_inst}\" ya se encuentra instalado."
@@ -832,22 +852,22 @@ function mostrar_dir_instalados {
 	declare local nom_var	
 	declare local grupo
 	
-	grupo="${VARIABLES[GRUPO]}"
+	grupo="${VARIABLES[$GRUPO]}"
 	
 	
 	
-	for nom_var in "${NOM_VARIABLES[@]}";do
+	for nom_var in "${!NOM_VARIABLES[@]}";do
 	var="${VARIABLES[$nom_var]}"
 		
-		if [ $nom_var != "GRUPO" ];then	
-			if [ $nom_var == "BINDIR" ] || [ $nom_var == "MAEDIR" ] \
-			|| [ $nom_var == "CONFDIR" ]; then
+		if [ $nom_var != $GRUPO ];then	
+			if [ $nom_var == $BINDIR ] || [ $nom_var == $MAEDIR ] \
+			|| [ $nom_var == $CONFDIR ]; then
 			
 				echo "-${DESCRIP_DIR_RES[$nom_var]}: ${grupo}/${var}"
 				ls "$var"
 			
-			elif [ $nom_var == "LOGDIR" ]; then
-				echo "-${DESCRIP_DIR_RES[$nom_var]}: ${var}/<comando>.${VARIABLES[LOGEXT]}"
+			elif [ $nom_var == "$LOGDIR" ]; then
+				echo "-${DESCRIP_DIR_RES[$nom_var]}: ${var}/<comando>.${VARIABLES[$LOGEXT]}"
 			else
 				if [ -n "${DESCRIP_DIR_RES[$nom_var]}" ];then
 					echo "-${DESCRIP_DIR_RES[$nom_var]}: ${var}"
@@ -895,13 +915,13 @@ function mostrar_componentes_instalados {
 		echo "Componentes Faltantes: "
 		
 		for nom_comp in "${NOM_COM[@]}"; do
-			if [ "${COM_INSTALADOS[$nom_comp]}" == "false" ]; then
+			if [ "${COM_INSTALADOS[${!nom_comp}]}" == "false" ]; then
 				echo "-Comando: \"${nom_comp}\""
 			fi
 		done
 		
 		for nom_comp in "${ARCH_MAESTROS[@]}"; do
-			if [ "${ARCH_MAE_INSTALADOS[$nom_comp]}" == "false" ]; then
+			if [ "${ARCH_MAE_INSTALADOS[${!nom_comp}]}" == "false" ]; then
 				echo "-Archivo Maestro: \"${nom_comp}\""
 			fi
 		done
@@ -937,22 +957,21 @@ function verificar_estado_de_instalacion {
 	
 	mostrar_y_registrar "Inicia comprobacion del estado del sistema." -nm
 	
-	for i in "${NOM_COM[@]}";	do
-		var="${NOM_COM[$i]}"
-		if [ "${COM_INSTALADOS[$var]}" == "false" ];then
+	for i in "${!NOM_COM[@]}";	do
+
+		if [ "${COM_INSTALADOS[$i]}" == "false" ];then
 			faltan_componentes=true
-		elif [ "${COM_INSTALADOS[$var]}" == "true" ];then
+		elif [ "${COM_INSTALADOS[$i]}" == "true" ];then
 			hay_componentes=true
 		fi
 	done
 	
 	
-	for i in "${ARCH_MAESTROS[@]}"; do
+	for i in "${!ARCH_MAESTROS[@]}"; do
 	
-		var="${ARCH_MAESTROS[$i]}"
-		if [ "${ARCH_MAE_INSTALADOS[$var]}" == "false" ];then
+		if [ "${ARCH_MAE_INSTALADOS[$i]}" == "false" ];then
 			faltan_componentes=true
-		elif [ "${ARCH_MAE_INSTALADOS[$var]}" == "true" ];then
+		elif [ "${ARCH_MAE_INSTALADOS[$i]}" == "true" ];then
 			hay_componentes=true
 		fi
 	done
@@ -1032,8 +1051,8 @@ function finalizar_instalacion {
 	
 	## Agrega los registros nuevos al registro de log
 	if [ -f "$NOM_ARCH_LOG" ]; then
-		if [ -f "${VARIABLES[CONFDIR]}/$NOM_ARCH_LOG" ]; then
-			cd "${VARIABLES[CONFDIR]}"
+		if [ -f "${VARIABLES[$CONFDIR]}/$NOM_ARCH_LOG" ]; then
+			cd "${VARIABLES[$CONFDIR]}"
 			
 			cat "$NOM_ARCH_LOG" ../"$NOM_ARCH_LOG" > aux
 			mv aux "$NOM_ARCH_LOG"
@@ -1042,15 +1061,15 @@ function finalizar_instalacion {
 			rm "$NOM_ARCH_LOG"
 			
 		else
-			if [ -d "${VARIABLES[CONFDIR]}" ]; then
-				mv "$NOM_ARCH_LOG" "${VARIABLES[CONFDIR]}"
+			if [ -d "${VARIABLES[$CONFDIR]}" ]; then
+				mv "$NOM_ARCH_LOG" "${VARIABLES[$CONFDIR]}"
 			else
 				rm "$NOM_ARCH_LOG"
 			fi			
 		fi		
 	fi
 	
-	exit 0
+	#xexit 0
 }
 
 function limpiar_pantalla {
@@ -1106,7 +1125,7 @@ if [ -n "$RETORNO" ]; then
 				reparar_sistema
 			fi
 		else
-			limpiar_pantalla
+			
 			confirmar_respuesta "¿Continuar con instalacion de Componentes Ingresados?"
 			
 			if [ "$RETORNO" == true ];then
