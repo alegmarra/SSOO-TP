@@ -82,13 +82,6 @@
 
 \section{Problemas Relevantes}
 
-\subsection{BuscarV5: Lectura de expresiones regulares del archivo de patrones}
-
-Según el formato del archivo de patrones, la expresión regular a aplicar se ubica en el segundo campo de cada registro del archivo, pero encerrado entre comillas simples. Al leer esta expresión regular, es necesario quitar las comillas simples antes de ingresarlas al comando grep, sino el comportamiento era incorrecto: se interpretaban las comillas simples como caracteres buscados. Se solucionó con una función en el script BuscarV5.sh que recorta el primer y último carácter de un string.
-
-Otro problema relevante fue la lectura de los registros del archivo de patrones. Es necesario usar el comanod read con el flag “-r” para que no interpretara caracteres de escape en las expresiones regulres.
-
-
 \section{Archivo README}
 
 
@@ -200,24 +193,36 @@ Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubica
 	\subsection{DetectaV5}
 %BEGIN subsection
 		\subsubsection{Usos}
-		Este comando es el encargado de 
-			 
+		Este comando es el encargado de procesar los archivos presentes en la carpeta de \textbf{arribos}, verificando que tengan un formato correcto, es decir, que se correspondan con alg\'un sistema y a su vez, la fecha comunicada en su nombre para dicho sistema sean las correctas. 
+
+	En caso de que los archivos sean v\'alidos, los mueve al directorio de \textbf{aceptados}. En caso contrario, son movidos al directorio de \textbf{rechazados}. 
+
+		Una vez realizados estos pasos, invoca al comando BuscarV5.
+
+		El comando DetectaV5 se ejecuta en forma de demonio, por lo que una vez terminado un ciclo, se duerme por un tiempo \$SLEEPTIME.			 
 
 		\subsubsection{Archivos}
 			\begin {itemize}
-				\item \textbf{Input} {bla}
-				\item \textbf{Intermedios} {bla}
-				\item \textbf{Output} {bla}
+				\item \textbf{Input} {Todo archivo presente en \$ARRDIR }
+				\item \textbf{Intermedios} {Ninguno}
+				\item \textbf{Output} {Redistribuye los archivos de input entre \$ACEPDIR y \$RECHDIR, seg\'un corresponda.}
 			\end{itemize}
 
 		\subsubsection{Par\'ametros y Opciones}
 			\begin {itemize}
-				\item \textbf{arg1} {bla}
+				\item \textbf{Par\'ametros: }{Ninguno}
+				\item \textbf{Opci\'ones: } {\textit{-h}: Muestra el mensaje de ayuda para el comando.}
 			\end{itemize}
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
+			No es ejecutado manualmente. 
+
+			Su ejecuci\'on est\'a a cargo del comando IniciarV5, a trav\'es del comando StartD.
 
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
+
+BLABGLASSFsdfsdfegdasfgadfgadfgwrtdsfasdfasdfadsafdgqwefkkweorwaejnsfNALUFGANRFUAENR
+
 
 		\subsubsection{C\'odigo Fuente}
 			Anexo III
@@ -226,8 +231,7 @@ Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubica
 	\subsection{BuscarV5}
 %BEGIN subsection
 		\subsubsection{Usos}
-		
-		 Este modulo procesa los archivos que se encuentren en la carpeta de aceptados, aplica sobre ellos los patrones del archivo maestro de patrones y mueve los archivos procesados a la carpeta de procesados. 
+			 
 
 		\subsubsection{Archivos}
 			\begin {itemize}
@@ -257,36 +261,19 @@ Es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sól
 		\subsubsection{Usos}
 			 
 
-El enunciado requería la opción de poder filtrar los resultados seleccionando los distintos patrones, ciclos y archivos. Quisimos mantener una forma flexible de filtrado pero sin requerír cargar todos los archivos en memoria en el script. Tomando eso en cuanto, se hace una primera iteración sobre los archivos de resultado para obtener las diferentes opciones de filtrados, que pueden ser combinadas de cualquier manera, y luego una segunda iteración para mostrar los resultados aplicando los filtros seleccionados.
-
 		\subsubsection{Archivos}
 			\begin {itemize}
-				\item \textbf{Input} {Los archivos de resultados detallados y globales generados por el comando BuscarV5.sh que se encuentran en el directorio de procesados.}
-				\item \textbf{Intermedios} {No produce}
-				\item \textbf{Output} {Dependiendo de un parametro (-x), genera el informe de los archivos de resultado aplicando los filtros seleccionados en un archivo de salida en el directorio de reportes.}
+				\item \textbf{Input} {bla}
+				\item \textbf{Intermedios} {bla}
+				\item \textbf{Output} {bla}
 			\end{itemize}
 
 		\subsubsection{Par\'ametros y Opciones}
-			
-Sin parámetros, la apliación muestra información y filtros sobre los resultados globales.
-
-\begin{verbatim}
-# $BINDIR/ListarV5.pl -h
-
-Uso: ListarV5 [opciones]
-        -g, -global          (default) Consultar los resultados globales.
-        -r, -resultado       Consultar los resultados detallados.
-                             Implica no global.
-        -x, -salida          Grabar el informe en un archivo en lugar de
-                             imprimirlo en pantalla.
-\end{verbatim}
+			\begin {itemize}
+				\item \textbf{arg1} {bla}
+			\end{itemize}
 	
-		\subsubsection{Ejemplo de invocación}
-
-
-\begin{verbatim}
-# $BINDIR/ListarV5.pl -r
-\end{verbatim}
+		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
 
 		\subsubsection{Hip\'otesis y Aclaraciones del Comando}
 
@@ -373,18 +360,30 @@ Uso: ListarV5 [opciones]
 	\subsection{MoverV5}
 %BEGIN subsection
 		\subsubsection{Usos}
+			Se utiliza en los movimientos de archivos dentro del sistema. Todo comando que mueva archivos de una carpeta a otra, debe hacerlo a trav\'es de MoverV5.
 
+			Tiene como caracter\'istica por sobre el comando nativo de shell, la validaci\'on de los par\'ametros, y el auto renombramiento en secuencia en caso de que el archivo de origen ya exista en la carpeta destino.
 
 		\subsubsection{Archivos}
 			\begin {itemize}
-				\item \textbf{Input} {bla}
-				\item \textbf{Intermedios} {bla}
-				\item \textbf{Output} {bla}
+				\item \textbf{Input} {Archivo de Origen, Ruta de Destino}
+				\item \textbf{Intermedios} {Ninguno}
+				\item \textbf{Output} {El directorio Destino ahora contiene el Archivo de Origen. La ruta de origen ya no contiene el archivo.}
 			\end{itemize}
 
 		\subsubsection{Par\'ametros y Opciones}
 			\begin {itemize}
-				\item \textbf{arg1} {bla}
+				\item \textbf{Par\'ametros} {
+					\begin{itemize}
+						\item {@arg1}{Archivo de Origen (ruta completa)} 
+						\item {@arg2}{Ruta de Destino } 
+						\item {@arg3}{Comando Invocante} 
+						\item {@arg4}{Opcional} 
+					\end{itemize}
+				}
+				\item \textbf{Opciones}{
+
+				}
 			\end{itemize}
 	
 		\subsubsection{Invocaci\'on Manual/Autom\'atica con ejemplos}
@@ -595,10 +594,9 @@ Uso: ListarV5 [opciones]
 		\subsubsection{salida\_xxx}
 
 			\begin {itemize}
-				\item \textbf{Nombre: } {salida\_YYYYMMDDHHMMSS}
 				\item \textbf{Tipo} {Archivo de Reportes}
-				\item \textbf{Directorio} { \$REPODIR}
-				\item \textbf{Estructura} {\textit{Es un archivo de texto libre, en donde la salida está dividida por patrón y los filtros aplicados en cada patrón. Por cada patrón hay un listado de 3 columnas de campo fijo, donde la primera es el ciclo (10 caracteres), la segunda es el archivo (25 caracteres) y la tercera es el registro RESULTADO del archivo de resultados detallados (sin límite).}\\
+				\item \textbf{Directorio} {REPODIR}
+				\item \textbf{Estructura} {\textit{blablabBGAWDFAFAGADFVAFDGAERRGAQGla}\\
 					Donde: (	$^*$campo  opcional )\ 
 					\begin{table}[H]
 					\centering
@@ -619,22 +617,9 @@ Uso: ListarV5 [opciones]
 	
 		\subsubsection{ListaErrores}
 	
-No especificado en el enunciado. Desarrollado por el equipo para almacenar los mensajes de logueo que usan los módulos, y su formato.
-
 			\begin {itemize}
-				\item \textbf{Tipo} {Archivo auxiliar de Logueo, permanente}
+				\item \textbf{Tipo} {Archivo auxiliar de Logueo}
 				\item \textbf{Directorio} {LoguearV5}
-				 \item \textbf{Justificación:}  este archivo contiene los posibles mensajes de logueo, de forma que el log sea coherente al registrar mensajes con el mismo propósito provenientes de distintos módulos. Para usarlo, cada módulo debe referenciar el mensaje segun un identificador. Si el mensaje llevara nombres o variables, se debe escribir ``\%s'' en los lugares del mensaje que correspondan, y luego pasar esas variables como parámetros extra al usar el módulo de logueo.
-
-
-				Por ejemplo, para el mensaje:
-
-				{\tt 401 Inicio BuscarV5 - Ciclo Nro: \%s - Cantidad de archivos: \%s}
-
-				se necesitan dos variables: número de ciclo y cantidad de archivos. Entonces, desde el módulo que lo usa, BuscarV5, se debe invocar al log de esta forma:
-
-				{\tt \$BINDIR/LoguearV5.sh -c 401 -f BuscarV5 -i I \$CICLO \$CANT\_ARCHIVOS}
-
 				\item \textbf{Estructura} {\textit{MSJ\_ID MensajeDeError}\\
 					Donde: \ 
 					\begin{table}[H]
