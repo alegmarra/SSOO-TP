@@ -5,3 +5,5 @@
 5,'Caused by',soapp1,linea,1,1
 6,'real time',sasapp,caracter,85,97
 7,'cpu time',sasapp,caracter,85,97
+8,'azul$',prueba01,caracter,1,5
+9,'^rojo',prueba02,linea,2,3
