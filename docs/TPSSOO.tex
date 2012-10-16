@@ -578,7 +578,13 @@ Cuando se invoca este comando se debe indicar el caracter separador correspondie
 	\subsection{DetenerV5}
 %BEGIN subsection
 		\subsubsection{Usos}
-			Detiene todos los procesos en ejecuci\'on propios del sistema.
+			Detiene todos los procesos en ejecuci\'on propios del sistema, elimina todas las variables de ambiente, y limpia la variable PATH.
+			Tambi\'en como el IniciarV5, se debe invocar en foregroud, es decir:
+
+			\begin{verbatim}
+				. ./DetenerV5.sh
+			\end{verbatim}
+		
 		\subsubsection{Justificaci\'on}
 			As\'i como IniciarV5 se encarga de disparar los procesos propios del funcionamiento del sistema, este comando DetenerV5 automatiza el uso de StopD para eliminar todos los procesos en ejecuci\'on (por ej, DetectaV5 o BuscarV5). 
 
