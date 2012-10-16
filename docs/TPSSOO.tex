@@ -637,14 +637,6 @@ $BINDIR/ListarV5.pl -r
 				}
 			\end{itemize}
 
-		\subsubsection{rglobales. PAT\_ID}
-
-			\begin {itemize}
-				\item \textbf{Tipo} {Archivo de Resultados}
-				\item \textbf{Directorio} {PROCDIR}
-				\item \textbf{Estructura} {bla}
-			\end{itemize}
-
 
 		\subsubsection{rglobales.PAT\_ID}
 
@@ -672,11 +664,40 @@ $BINDIR/ListarV5.pl -r
 							Hasta  & Numérico & Archivo de patrones \\
 						\hline
 							Cantidad de hallazgos  & Numérico & Archivo procesado \\
-
+						\hline    
 					\end{tabular}
 					\end{table}
 				}
 			\end{itemize}
+
+
+		\subsubsection{resultados.PAT\_ID}
+
+			\begin {itemize}
+				\item \textbf{Tipo} {Archivo de resultados}
+				\item \textbf{Directorio} {PROCDIR}
+				\item \textbf{Estructura} {\textit{Ciclo de busqueda, Nombre del archivo, numero de registro, resultado}\\
+					Donde: \ 
+					\begin{table}[H]
+					\centering
+					\begin{tabular}{| c | c | c |}
+						\hline
+						Campos 	& Tipo & Fuente o Variable correspondiente \\
+						\hline
+							Ciclo de busqueda  & Numérico & SECUENCIA2 \\
+						\hline
+							Nombre del archivo  & Caracteres & Nombre del archivo procesado \\
+						\hline
+							Numero de registro  & Numérico & Archivo procesado \\
+						\hline
+							resultado  & Caracteres & Archivo procesado \\
+						\hline
+					\end{tabular}
+					\end{table}
+				}
+			\end{itemize}
+
+En el caso de procesar un contexto linea, se agregan al archivo tantos registros com lineas se indiquen segun los campos DESDE y HASTA. En el caso de un contexto caracter, siempre se agrega un solo registro.
 
 		\subsubsection{salida\_xxx}
 
