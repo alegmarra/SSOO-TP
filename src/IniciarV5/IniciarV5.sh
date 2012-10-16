@@ -1,10 +1,6 @@
 #!/bin/bash 
 
-#@todo: dejar sólo la válida, esta es la posta:
-#@todo: decirle a Migue que el Iniciar va en $GRUPO
 CONFIG_FILE="./conf/InstalaV5.conf"
-#test: 
-#CONFIG_FILE="InstalaV5.conf"
 VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE)
 COMANDOS=(DetectaV5 BuscarV5 ListarV5 MoverV5 LoguearV5 MirarV5 StopD StartD)
 ARCHIVOS_MAE=(patrones sistemas)
@@ -22,9 +18,6 @@ DESCRIPCIONES[7]="Archivos procesados: "
 DESCRIPCIONES[8]="Reportes de salida: "
 DESCRIPCIONES[9]="Logs de auditoría del sistema: "
 ###
-CONFDIR="."
-BINDIR="../IniciarV5"
-MAEDIR="../../src/IniciarV5"
 
 mostrarDescripcionYListarArchivos () {
 	echo ${DESCRIPCIONES[$1]} ${!VARIABLES[${i}]}
@@ -142,7 +135,7 @@ verificarSiLaInstalacionEstaCompleta () {
 
 invocarDetecta () {
 	${BINDIR}/StartD.sh -D DetectaV5.sh
-	if [ -z $? ]
+	if [ $? -eq 0 ]
 	then
 		PID=0
 		verificarProceso "DetectaV5.sh" ${PID}
@@ -151,6 +144,7 @@ invocarDetecta () {
 }
 
 fin () {
+echo "estoy por loguear el 103"
 	${BINDIR}/LoguearV5.sh -c 103 -f IniciarV5 -i I
 }
 
@@ -161,10 +155,9 @@ init $1
 verificarSiYaSeInicioElEntorno
 
 setearVariablesDeEntorno
+${BINDIR}/LoguearV5.sh -c 101 -f IniciarV5 -i I
 
-${BINDIR}/LoguearV5.sh -c 101 -f IniciarV5 -I I
-
-export PATH=${PATH}:${BINDIR}; echo "@todo: revisar si está bien la variable PATH"
+export PATH=${PATH}:${BINDIR}
 
 verificarSiLaInstalacionEstaCompleta
 
