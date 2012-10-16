@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 CONFIG_FILE="./conf/InstalaV5.conf"
 VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE)
@@ -21,7 +21,7 @@ DESCRIPCIONES[9]="Logs de auditoría del sistema: "
 
 mostrarDescripcionYListarArchivos () {
 	echo ${DESCRIPCIONES[$1]} ${!VARIABLES[${i}]}
-	ls -l ${!VARIABLES[${1}]} | awk '{ print $8 }' | grep --color=never '..*' # grep para evitar líneas vacías		
+	ls -l ${!VARIABLES[${1}]} | awk '{ print $8 }' | grep --color=never '..*' # grep para evitar líneas vacías
 }
 
 # Verifica que un proceso de nombre $1 esté corriendo, y guarda en $2 el PID
@@ -30,7 +30,7 @@ mostrarDescripcionYListarArchivos () {
 verificarProceso () {
 	if [[ `ps -C "$1" -o "pid=" | wc -l` -gt 2 ]]; then
 
-		local prevID=` ps -C "$1" -o "pid=" ` 
+		local prevID=` ps -C "$1" -o "pid=" `
 		$2=${prevID/[^0-9]*$$}
 
 	fi
@@ -52,8 +52,8 @@ mostrarVariables () {
 	echo ${DESCRIPCIONES[9]} "$LOGDIR/<comando>.$LOGEXT"
 }
 
-# Verifica si todas las variables de ambiente están seteadas. 
-# Si recibe un parámetro, está siendo consultado desde afuera. 
+# Verifica si todas las variables de ambiente están seteadas.
+# Si recibe un parámetro, está siendo consultado desde afuera.
 # Entonces, al detectar que todas las variables están inicializadas, y no
 # está siendo consultado, informa los valores de esas variables. Si lo están
 # consultando, no informa nada. De todas formas, sale con exit 0
@@ -70,10 +70,10 @@ verificarSiYaSeInicioElEntorno () {
 	then
 		if [ $# -eq 0 ]
 		then
-			mostrarVariables 
+			mostrarVariables
 			echo "Estado del Sistema: INICIALIZADO"
 			echo "No es posible efectuar una reinicialización del sistema"
-			echo "Proceso de Inicialización Cancelado"			
+			echo "Proceso de Inicialización Cancelado"
 		else
 			exit 1
 		fi
@@ -85,12 +85,12 @@ init () {
 	if [ $# -gt 0 ] && [ "$1" = "-inicializado" ]
 	then
 		verificarSiYaSeInicioElEntorno $1
-	fi	
+	fi
 }
 
 setearVariablesDeEntorno () {
 	for i in "${VARIABLES[@]}"
-	do	
+	do
 		TEMP=`grep "^${i}" ${CONFIG_FILE} | awk 'BEGIN { FS="="; } { print $2 }'`
 		export `echo ${i}`=${TEMP}
 	done
@@ -99,7 +99,7 @@ setearVariablesDeEntorno () {
 verificarSiLaInstalacionEstaCompleta () {
 	local FALTANTES=()
 	local i=0
-	
+
 	for CMD in ${COMANDOS[@]}
 	do
 		ls ${BINDIR} | grep ${CMD} > /dev/null
@@ -131,7 +131,7 @@ verificarSiLaInstalacionEstaCompleta () {
 		done
 		echo "Estado de la instalación: INCOMPLETA"
 		echo "Proceso de Inicialización Cancelado"
-		exit 1
+		return 1
 	fi
 }
 
@@ -164,10 +164,13 @@ then
 
 	verificarSiLaInstalacionEstaCompleta
 
-	mostrarVariables
+	if [ $? -ne 1 ]
+	then
+		mostrarVariables
 
-	invocarDetecta
+		invocarDetecta
 
-	fin
+		fin
+	fi
 fi
 

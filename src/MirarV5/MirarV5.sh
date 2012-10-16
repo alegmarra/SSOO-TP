@@ -1,4 +1,4 @@
-#!/bin/bash/
+#!/bin/bash
 
 uso() {
 	echo 'MirarV5 [-n cant_lineas] [-p patron] [-s separador] -f archivo_log'
