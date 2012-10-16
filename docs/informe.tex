@@ -1,0 +1,281 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage[spanish]{babel}
+
+%\linespread{1.5}
+
+\pagestyle{myheadings}
+\markboth{TP 1 Sitemas operativos}{Grupo 7 - Tema V} % Para doble faz
+%\markright{Encabezado derecho.} % Para una carilla.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Portada
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\title{
+  Trabajo Práctico 1 \\
+  \vspace{0.5cm}
+  Sistemas operativos \\
+  \vspace{1cm}
+  Segundo cuatrimestre 2012 \\
+  \vspace{2cm}
+  \emph{Software para procesar archivos de logging} \\
+  \vspace{2cm}
+  \begin{table}[h]
+  \centering
+  \begin{tabular}{|@{ \hspace{3cm} } c @{ \hspace{3cm} }| @{ \hspace{0.5cm} } c @{ \hspace{0.5cm} } |}
+  \hline
+  Apellido y nombre  & Padrón \\
+  \hline
+	Alejandro Garcia Marra  &	\\
+  \hline
+	Miguel Torres  &	\\
+  \hline
+	Sebastián Bogado  &	\\
+  \hline
+	Ariel Barreiro  &	\\
+  \hline
+	Ignacio Garay  &	\\
+  \hline
+	Javier Choque  &	\\
+  \hline
+  \end{tabular}
+  \end{table}
+}
+
+
+% Aquí podemos escribir la fecha de realización del trabajo práctico. La fecha actual se escribe con \today. Si no se quiere incluir la fecha, dejar la instrucción en blanco.
+\date{ \today }
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Hipótesis y aclaraciones globales}
+
+\section{Problemas relevantes}
+
+\subsection{BuscarV5: Lectura de expresiones regulares del archivo de patrones}
+
+Según el formato del archivo de patrones, la expresión regular a aplicar se ubica en el segundo campo de cada registro del archivo, pero encerrado entre comillas simples. Al leer esta expresión regular, es necesario quitar las comillas simples antes de ingresarlas al comando grep, sino el comportamiento era incorrecto: se interpretaban las comillas simples como caracteres buscados. Se solucionó con una función en el script BuscarV5.sh que recorta el primer y último carácter de un string.
+
+Otro problema relevante fue la lectura de los registros del archivo de patrones. Es necesario usar el comanod read con el flag “-r” para que no interpretara caracteres de escape en las expresiones regulres.
+
+\section{Archivo README}
+
+Este es el README del trabajo práctico correspondiente al segundo cuatrimestre del año 2012 de la materia 75.08 Sistemas Operativos, grupo 7.
+ 
+ARCHIVOS DEL PROYECTO
+ 
+El proyecto consiste en un software para procesar archivos que contienen información de logueo provenientes de diferentes sistemas. El programa valida los archivos, aplica patrones de busqueda y genera archivos de resultados con las coincidencias. Tambien mueve los archivos procesados a otras carpetas de almacenamiento de archivos procesados con éxito. Permite efectuar consultas sobre lo procesado, y generar reportes.
+
+Los archivos correspondientes al proyecto son los siguientes:
+
+README
+
+INSTALACION
+
+Insertar el dispositivo de almacenamiento co el contenido del trabajo práctico.
+
+Crear en el directorio corriente un directorio de trabajo.
+
+Copiar el archivo *.tgz en esa carpeta.
+
+Descomprimir el *.tgz de manera de generar un *.tar.
+
+Extraer los archivos del tar.
+
+% algo mas
+
+REQUERIMIENTOS
+
+Para la correcta instalación, se deberá tener instalado Bash versión 3 o superior, y Perl versión  o superior.
+
+% Que deja la instalacion y donde
+
+INTRODUCCCION
+
+% primeros pasos para usarlo
+
+% comprobar si todo esta correctamente instalado.
+
+Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubicado en %el directorio de ejecutables especificado durante la instalación.
+
+\section{Listado de comandos y funciones}
+
+\subsection{ BuscarV5.sh }
+
+{\bf Archivos de input:} Los archivos que sean aceptados y que se encuentren en el directorio de aceptados, el archivo de configuración producido por el modulo de inicialización, y el archivo de patrones.
+
+{\bf Archivos intermedios:} No produce.
+
+{\bf Archivos de output:} los archivos de resultados detallados y globales para los patrones. Se guardaran en la carpeta de procesados.
+
+{\bf Parámetros y opciones:} No posee argumentos de ejecución ni opciones. Cuando se ejecuta, comienza a procesar los archivos.
+
+{\bf Ejemplo de invocación:} es automática por el módulo DetectarV5. No lleva parámetros, asi que tan sólo es necesaria su ejecución de la forma:
+
+\$BINDIR/BuscarV5.sh
+
+
+
+\subsection{ DetectaV5.sh }
+
+{\bf Archivos de input:} 
+
+{\bf Archivos intermedios:} 
+
+{\bf Archivos de output:} 
+
+{\bf Parámetros y opciones:} 
+
+{\bf Ejemplo de invocación:} 
+
+
+\subsection{ InstalaV5.sh }
+
+{\bf Archivos de input:} 
+
+{\bf Archivos intermedios:} 
+
+{\bf Archivos de output:} 
+
+{\bf Parámetros y opciones:} 
+
+{\bf Ejemplo de invocación:} 
+
+
+\subsection{  MirarV5.sh }
+
+{\bf Archivos de input:} 
+
+{\bf Archivos intermedios:} 
+
+{\bf Archivos de output:} 
+
+{\bf Parámetros y opciones:} 
+
+{\bf Ejemplo de invocación:} 
+
+
+\subsection{ StartD.sh }
+
+{\bf Archivos de input:} 
+
+{\bf Archivos intermedios:} 
+
+{\bf Archivos de output:} 
+
+{\bf Parámetros y opciones:} 
+
+{\bf Ejemplo de invocación:} 
+
+
+\subsection{ StopD.sh }
+
+{\bf Archivos de input:} 
+
+{\bf Archivos intermedios:} 
+
+{\bf Archivos de output:} 
+
+{\bf Parámetros y opciones:} 
+
+{\bf Ejemplo de invocación:} 
+
+
+\subsection{ LoguearV5.sh }
+
+{\bf Archivos de input:} 
+
+{\bf Archivos intermedios:} 
+
+{\bf Archivos de output:} 
+
+{\bf Parámetros y opciones:} 
+
+{\bf Ejemplo de invocación:} 
+
+
+\subsection { MoverV5.sh }
+
+{\bf Archivos de input:} 
+
+{\bf Archivos intermedios:} 
+
+{\bf Archivos de output:} 
+
+{\bf Parámetros y opciones:} 
+
+{\bf Ejemplo de invocación:} 
+
+
+\subsection{  IniciarV5.sh }
+
+{\bf Archivos de input:} 
+
+{\bf Archivos intermedios:} 
+
+{\bf Archivos de output:} 
+
+{\bf Parámetros y opciones:} 
+
+{\bf Ejemplo de invocación:} 
+
+\section{Archivos}
+
+\subsection{Archivo maestro de patrones}
+
+{\bf Nombre:} patrones
+
+{\bf Directorio:} \$MAEDIR
+
+{\bf Estructura:} registros de la forma ID\_PATRON (numérico), EXPR\_REG (caracteres), ID\_SISTEMA (caracteres), CONTEXTO (linea ó caracter), DESDE (numerico), HASTA (numerico), separados por comas.
+
+\subsection{Archivos de resultados detallados}
+
+{\bf Nombre:} resultados.ID\_PATRON
+
+{\bf Directorio:} \$PROCDIR
+
+{\bf Estructura:} registros de la forma CICLO\_BUSQUEDA (numérico), NOMBRE\_ARCHIVO (alfanumérico), NUM\_REGISTRO (numerico), RESULTADO (alfanumérico), separados por la secuencia de caracteres ``+-\#-+''.
+
+\subsection{Archivos de resultados globales}
+
+{\bf Nombre:} rglobales.ID\_PATRON
+
+{\bf Directorio:} \$PROCDIR
+
+{\bf Estructura:} registros de la forma CICLO\_BUSQUEDA (numérico), NOMBRE\_ARCHIVO (alfanumérico), EXPR\_REG (caracteres), CONTEXTO (linea ó caracter), DESDE (numerico), HASTA (numerico), CANT\_HALLAZGOS (numérico) separados por comas.
+
+\subsection{Archivos de posibles mensajes de logueo}
+
+No especificado en el enunciado. Desarrollado por el equipo para almacenar los mensajes de logueo que usan los módulos, y su formato.
+
+{\bf Nombre:} ListaErrores
+
+{\bf Tipo de archivo:} permanente.
+
+{\bf Directorio:} \$BINDIR
+
+{\bf Justificación:} este archivo contiene los posibles mensajes de logueo, de forma que el log sea coherente al registrar mensajes con el mismo propósito provenientes de distintos módulos. Para usarlo, cada módulo debe referenciar el mensaje segun un identificador. Si el mensaje llevara nombres o variables, se debe escribir ``\%s'' en los lugares del mensaje que correspondan, y luego pasar esas variables como parámetros extra al usar el módulo de logueo.
+
+Por ejemplo, para el mensaje:
+
+{\tt 401 Inicio BuscarV5 - Ciclo Nro: \%s - Cantidad de archivos: \%s}
+
+se necesitan dos variables: número de ciclo y cantidad de archivos. Entonces, desde el módulo que lo usa, BuscarV5, se debe invocar al log de esta forma:
+
+{\tt \$BINDIR/LoguearV5.sh -c 401 -f BuscarV5 -i I \$CICLO \$CANT\_ARCHIVOS}
+
+{\bf Estructura:} registros de la forma ID\_MENSAJE (numerico), MENSAJE (alfanumérico), separados por un espacio.
+
+\end{document}
