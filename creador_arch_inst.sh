@@ -1,4 +1,4 @@
-#!/bin/bash/
+#!/bin/bash
 
 
 NOM_ARCH_INST="arch-sistema.dat"
