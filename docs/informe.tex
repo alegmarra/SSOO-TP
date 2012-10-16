@@ -35,7 +35,7 @@
   \hline
 	Sebastián Bogado  &	\\
   \hline
-	Ariel Barreiro  &	\\
+	Ariel Barreiro  & 78648	\\
   \hline
 	Ignacio Garay  &	\\
   \hline
@@ -69,12 +69,16 @@ Según el formato del archivo de patrones, la expresión regular a aplicar se ub
 
 Otro problema relevante fue la lectura de los registros del archivo de patrones. Es necesario usar el comanod read con el flag “-r” para que no interpretara caracteres de escape en las expresiones regulres.
 
+\subsection{ListarV5: Filtros para la consulta de archivos de resulatdo}
+
+El enunciado requería la opción de poder filtrar los resultados seleccionando los distintos patrones, ciclos y archivos. Quisimos mantener una forma flexible de filtrado pero sin requerír cargar todos los archivos en memoria en el script. Tomando eso en cuanto, se hace una primera iteración sobre los archivos de resultado para obtener las diferentes opciones de filtrados, que pueden ser combinadas de cualquier manera, y luego una segunda iteración para mostrar los resultados aplicando los filtros seleccionados.
+
 \section{Archivo README}
 
 Este es el README del trabajo práctico correspondiente al segundo cuatrimestre del año 2012 de la materia 75.08 Sistemas Operativos, grupo 7.
- 
+
 ARCHIVOS DEL PROYECTO
- 
+
 El proyecto consiste en un software para procesar archivos que contienen información de logueo provenientes de diferentes sistemas. El programa valida los archivos, aplica patrones de busqueda y genera archivos de resultados con las coincidencias. Tambien mueve los archivos procesados a otras carpetas de almacenamiento de archivos procesados con éxito. Permite efectuar consultas sobre lo procesado, y generar reportes.
 
 Los archivos correspondientes al proyecto son los siguientes:
@@ -126,109 +130,138 @@ Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubica
 \$BINDIR/BuscarV5.sh
 
 
-
 \subsection{ DetectaV5.sh }
 
-{\bf Archivos de input:} 
+{\bf Archivos de input:}
 
-{\bf Archivos intermedios:} 
+{\bf Archivos intermedios:}
 
-{\bf Archivos de output:} 
+{\bf Archivos de output:}
 
-{\bf Parámetros y opciones:} 
+{\bf Parámetros y opciones:}
 
-{\bf Ejemplo de invocación:} 
+{\bf Ejemplo de invocación:}
 
 
 \subsection{ InstalaV5.sh }
 
-{\bf Archivos de input:} 
+{\bf Archivos de input:}
 
-{\bf Archivos intermedios:} 
+{\bf Archivos intermedios:}
 
-{\bf Archivos de output:} 
+{\bf Archivos de output:}
 
-{\bf Parámetros y opciones:} 
+{\bf Parámetros y opciones:}
 
-{\bf Ejemplo de invocación:} 
+{\bf Ejemplo de invocación:}
 
 
 \subsection{  MirarV5.sh }
 
-{\bf Archivos de input:} 
+{\bf Archivos de input:}
 
-{\bf Archivos intermedios:} 
+{\bf Archivos intermedios:}
 
-{\bf Archivos de output:} 
+{\bf Archivos de output:}
 
-{\bf Parámetros y opciones:} 
+{\bf Parámetros y opciones:}
 
-{\bf Ejemplo de invocación:} 
+{\bf Ejemplo de invocación:}
 
 
 \subsection{ StartD.sh }
 
-{\bf Archivos de input:} 
+{\bf Archivos de input:}
 
-{\bf Archivos intermedios:} 
+{\bf Archivos intermedios:}
 
-{\bf Archivos de output:} 
+{\bf Archivos de output:}
 
-{\bf Parámetros y opciones:} 
+{\bf Parámetros y opciones:}
 
-{\bf Ejemplo de invocación:} 
+{\bf Ejemplo de invocación:}
 
 
 \subsection{ StopD.sh }
 
-{\bf Archivos de input:} 
+{\bf Archivos de input:}
 
-{\bf Archivos intermedios:} 
+{\bf Archivos intermedios:}
 
-{\bf Archivos de output:} 
+{\bf Archivos de output:}
 
-{\bf Parámetros y opciones:} 
+{\bf Parámetros y opciones:}
 
-{\bf Ejemplo de invocación:} 
+{\bf Ejemplo de invocación:}
 
 
 \subsection{ LoguearV5.sh }
 
-{\bf Archivos de input:} 
+{\bf Archivos de input:}
 
-{\bf Archivos intermedios:} 
+{\bf Archivos intermedios:}
 
-{\bf Archivos de output:} 
+{\bf Archivos de output:}
 
-{\bf Parámetros y opciones:} 
+{\bf Parámetros y opciones:}
 
-{\bf Ejemplo de invocación:} 
+{\bf Ejemplo de invocación:}
 
 
 \subsection { MoverV5.sh }
 
-{\bf Archivos de input:} 
+{\bf Archivos de input:}
 
-{\bf Archivos intermedios:} 
+{\bf Archivos intermedios:}
 
-{\bf Archivos de output:} 
+{\bf Archivos de output:}
 
-{\bf Parámetros y opciones:} 
+{\bf Parámetros y opciones:}
 
-{\bf Ejemplo de invocación:} 
+{\bf Ejemplo de invocación:}
 
 
 \subsection{  IniciarV5.sh }
 
-{\bf Archivos de input:} 
+{\bf Archivos de input:}
 
-{\bf Archivos intermedios:} 
+{\bf Archivos intermedios:}
 
-{\bf Archivos de output:} 
+{\bf Archivos de output:}
 
-{\bf Parámetros y opciones:} 
+{\bf Parámetros y opciones:}
 
-{\bf Ejemplo de invocación:} 
+{\bf Ejemplo de invocación:}
+
+
+\subsection{  ListarV5.pl }
+
+{\bf Archivos de input:} Los archivos de resultados detallados y globales generados por el comando BuscarV5.sh que se encuentran en el directorio de procesados.
+
+{\bf Archivos intermedios:} No Produce
+
+{\bf Archivos de output:} Dependiendo de un parametro (-x), genera el informe de los archivos de resultado aplicando los filtros seleccionados en un archivo de salida en el directorio de reportes.
+
+{\bf Parámetros y opciones:}
+
+Sin parámetros, la apliación muestra información y filtros sobre los resultados globales.
+
+\begin{verbatim}
+# $BINDIR/ListarV5.pl -h
+
+Uso: ListarV5 [opciones]
+        -g, -global          (default) Consultar los resultados globales.
+        -r, -resultado       Consultar los resultados detallados.
+                             Implica no global.
+        -x, -salida          Grabar el informe en un archivo en lugar de
+                             imprimirlo en pantalla.
+\end{verbatim}
+
+{\bf Ejemplo de invocación:}
+
+\begin{verbatim}
+# $BINDIR/ListarV5.pl -r
+\end{verbatim}
 
 \section{Archivos}
 
@@ -255,6 +288,14 @@ Para frenar la ejecución del demonio, se debe ejecutar el script StopD.sh ubica
 {\bf Directorio:} \$PROCDIR
 
 {\bf Estructura:} registros de la forma CICLO\_BUSQUEDA (numérico), NOMBRE\_ARCHIVO (alfanumérico), EXPR\_REG (caracteres), CONTEXTO (linea ó caracter), DESDE (numerico), HASTA (numerico), CANT\_HALLAZGOS (numérico) separados por comas.
+
+\subsection{Archivos de reporte}
+
+{\bf Nombre:} salida\_YYYYMMDDHHMMSS
+
+{\bf Directorio:} \$REPODIR
+
+{\bf Estructura:} Es un archivo de texto libre, en donde la salida está dividida por patrón y los filtros aplicados en cada patrón. Por cada patrón hay un listado de 3 columnas de campo fijo, donde la primera es el ciclo (10 caracteres), la segunda es el archivo (25 caracteres) y la tercera es el registro RESULTADO del archivo de resultados detallados (sin límite).
 
 \subsection{Archivos de posibles mensajes de logueo}
 
