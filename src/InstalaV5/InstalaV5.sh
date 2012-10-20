@@ -81,9 +81,20 @@ StartD=8
 DetenerV5=11
 
 NOM_COM=(IniciarV5 DetectaV5 BuscarV5 ListarV5 MoverV5 LoguearV5 MirarV5 StopD StartD DetenerV5)
+<<<<<<< HEAD
 declare -a COM_INSTALADOS=( [${!NOM_COM[0]}]=false [${!NOM_COM[1]}]=false [${!NOM_COM[2]}]=false [${!NOM_COM[3]}]=false \
 	[${!NOM_COM[3]}]=false [${!NOM_COM[4]}]=false [${!NOM_COM[5]}]=false [${!NOM_COM[6]}]=false \
 	[${!NOM_COM[7]}]=false [${!NOM_COM[8]}]=false [${!NOM_COM[9]}]=false)
+=======
+#declare -a COM_INSTALADOS=( [${!NOM_COM[0]}]=false [${!NOM_COM[1]}]=false [${!NOM_COM[2]}]=false [${!NOM_COM[3]}]=false \
+	#[${!NOM_COM[3]}]=false [${!NOM_COM[4]}]=false [${!NOM_COM[5]}]=false [${!NOM_COM[6]}]=false \
+	#[${!NOM_COM[7]}]=false [${!NOM_COM[8]}]=false [${!NOM_COM[9]}]=false)
+
+declare -a COM_INSTALADOS=( [0]=false [1]=false [2]=false [3]=false \
+	[3]=false [4]=false [5]=false [6]=false \
+	[7]=false [8]=false [11]=false)
+
+>>>>>>> 166d09053fcff876d65c648a5ce22f9e699ac05c
 
 
 # Variables agregadas para que funcione con bash 3.0
@@ -91,7 +102,11 @@ patrones=9
 sistemas=10
 
 ARCH_MAESTROS=( patrones sistemas )
+<<<<<<< HEAD
 declare -a ARCH_MAE_INSTALADOS=( [${!ARCH_MAESTROS[0]}]=false [${!ARCH_MAESTROS[1]}]=false )
+=======
+declare -a ARCH_MAE_INSTALADOS=( [9]=false [10]=false )
+>>>>>>> 166d09053fcff876d65c648a5ce22f9e699ac05c
 
 ## Variables utilizadas para los valores de retorno de una funcion
 RETORNO=""
@@ -724,6 +739,10 @@ function instalar_sistema {
 	
 	echo "Instalando Archivos Maestros..."
 	mostrar_y_registrar "Se inicia la instalacion de los archivos maestros." -nm
+<<<<<<< HEAD
+=======
+
+>>>>>>> 166d09053fcff876d65c648a5ce22f9e699ac05c
 	for comp_a_inst in "${ARCH_MAESTROS[@]}"; do
 		instalar_componente "$comp_a_inst"
 	done
@@ -732,6 +751,10 @@ function instalar_sistema {
 	echo "Instalando Programas y Funciones..."
 	
 	mostrar_y_registrar "Se inicia la instalacion de los comandos." -nm
+<<<<<<< HEAD
+=======
+
+>>>>>>> 166d09053fcff876d65c648a5ce22f9e699ac05c
 	for comp_a_inst in "${NOM_COM[@]}"; do
 		instalar_componente "$comp_a_inst"
 	done
@@ -794,8 +817,6 @@ function existe_componente {
 	declare local existe=false
 	declare local componente=$1
 	declare local i=0
-	
-	
 	while [ $existe == false ] && [ $i -lt ${#NOM_COM[@]} ]; do
 		if [ "${NOM_COM[$i]}" == "$componente" ]; then
 			existe=true;
@@ -827,8 +848,12 @@ function existe_componente {
 function instalar_componente {
 	declare local comp_a_inst=$1
 	declare local dir="$DIR_ARCH_DE_INSTALACION"
+<<<<<<< HEAD
 
 	if [ -n "${COM_INSTALADOS[${!comp_a_inst}]}" ]; then
+=======
+	if [ -n "$COM_INSTALADOS[${!comp_a_inst}]" ]; then
+>>>>>>> 166d09053fcff876d65c648a5ce22f9e699ac05c
 		if [ -d "${VARIABLES[$BINDIR]}" ]; then
 			if [ "${COM_INSTALADOS[${!comp_a_inst}]}" == false ]; then
 				## Copiar el desde la fuente el archivo orignal a la carpeta de maestros
@@ -841,11 +866,17 @@ function instalar_componente {
 				RETORNO="Comando \"${comp_a_inst}\" instalado correctamente."
 			else
 				RETORNO="Comando \"${comp_a_inst}\" ya se encuentra instalado."
+				
 			fi
 		else
 			RETORNO="Falta la carpeta de los ejecutables para instalar el comando \"${comp_a_inst}\"."
 		fi
+<<<<<<< HEAD
 
+=======
+	
+	
+>>>>>>> 166d09053fcff876d65c648a5ce22f9e699ac05c
 	elif [ -n "${ARCH_MAE_INSTALADOS[${!comp_a_inst}]}" ]; then
 		if [ -d "${VARIABLES[$MAEDIR]}" ]; then
 			if [ "${ARCH_MAE_INSTALADOS[${!comp_a_inst}]}" == false ]; then
