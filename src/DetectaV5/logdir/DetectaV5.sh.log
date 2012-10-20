@@ -1,0 +1,41 @@
+10/16/12;alemarra;I;DetectaV5.sh;301 Inicio DetectaV5
+10/16/12;alemarra;I;DetectaV5.sh;302 Cantidad de Arribos 10
+10/16/12;alemarra;I;DetectaV5.sh;303 Archivo ./tests/arribos/sa2sapp_1990-05-10 válido: Aceptado
+10/16/12;alemarra;I;DetectaV5.sh;303 Archivo ./tests/arribos/sasapp_2012-09-30 válido: Aceptado
+10/16/12;alemarra;I;DetectaV5.sh;303 Archivo ./tests/arribos/soapp1_2004-10-10 válido: Aceptado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/sa2sapp_2012-09-30 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/testapp_2013-01-01 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/sa2sapp_1900-09-30 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;304 Archivo ./tests/arribos/pepe_2004-10-10_1_ inválido - Formato Invalido: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;304 Archivo ./tests/arribos/pepe inválido - Formato Invalido: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/sasapp_2012-10-10 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/soapp1_2000-10-10 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;006 Llamado a BuscarV5.sh, Process ID 15370
+10/16/12;alemarra;I;DetectaV5.sh;301 Inicio DetectaV5
+10/16/12;alemarra;I;DetectaV5.sh;302 Cantidad de Arribos 11
+10/16/12;alemarra;I;DetectaV5.sh;303 Archivo ./tests/arribos/sa2sapp_1990-05-10 válido: Aceptado
+10/16/12;alemarra;I;DetectaV5.sh;303 Archivo ./tests/arribos/sasapp_2012-09-30 válido: Aceptado
+10/16/12;alemarra;I;DetectaV5.sh;303 Archivo ./tests/arribos/soapp1_2004-10-10 válido: Aceptado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/sa2sapp_2012-09-30 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/testapp_2013-01-01 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;305 Archivo ./tests/arribos/pepe_2004-10-10 inválido - SIS-ID Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/sa2sapp_1900-09-30 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;304 Archivo ./tests/arribos/pepe inválido - Formato Invalido: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;304 Archivo ./tests/arribos/pepe_2004-10-10_1 inválido - Formato Invalido: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/sasapp_2012-10-10 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/soapp1_2000-10-10 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;006 Llamado a BuscarV5.sh, Process ID 16065
+10/16/12;alemarra;I;DetectaV5.sh;301 Inicio DetectaV5
+10/16/12;alemarra;I;DetectaV5.sh;302 Cantidad de Arribos 11
+10/16/12;alemarra;I;DetectaV5.sh;303 Archivo ./tests/arribos/sa2sapp_1990-05-10 válido: Aceptado
+10/16/12;alemarra;I;DetectaV5.sh;303 Archivo ./tests/arribos/sasapp_2012-09-30 válido: Aceptado
+10/16/12;alemarra;I;DetectaV5.sh;303 Archivo ./tests/arribos/soapp1_2004-10-10 válido: Aceptado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/sa2sapp_2012-09-30 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/testapp_2013-01-01 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;305 Archivo ./tests/arribos/pepe_2004-10-10 inválido - SIS-ID Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/sa2sapp_1900-09-30 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;304 Archivo ./tests/arribos/pepe inválido - Formato Invalido: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;304 Archivo ./tests/arribos/pepe_2004-10-10_1 inválido - Formato Invalido: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/sasapp_2012-10-10 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;306 Archivo ./tests/arribos/soapp1_2000-10-10 inválido - Fecha Invalida: Rechazado
+10/16/12;alemarra;I;DetectaV5.sh;006 Llamado a BuscarV5.sh, Process ID 16800

@@ -75,7 +75,7 @@ argumentosValidos () {
 		        if $loguear ; then
 	
         			$BINDIR/LoguearV5.sh -c "604" -i "I" -f "MoverV5.sh" \
-							"$origen"
+							"$1"
                		fi
 			return 1
 		fi	
@@ -94,52 +94,7 @@ argumentosValidos () {
 	# Argumentos válidos
 	return 0
 }
-
-###############################################################################
-# obtenerSecuenciador ()
-#
-# @brief  En caso de que el archivo origen ya exista en el directorio destino
-#	  se busca el siguiente numero de copia correspondiente a dicho archivo
-#	  en ese directorio particular.
-#
-# @arg1   Archivo origen
-# @arg2   Ruta destino
-#
-# @return Siguiente numero de secuencia
-###############################################################################
-
-obtenerSecuenciador () {
-
-	archivo=${1##*/}	
-	archivo=${archivo%_${archivo#*_}}
-	
-	dirDestino=${2%/}/
-
-	max=0
-	
-	##
-	# Para cada archivo en el destino, que cumpla con el nombre de archivo 
-	# de origen, se busca el máximo de los secuenciadores
-	##
-	for var in `find "$dirDestino" -maxdepth 1 -type f \
-		    -regex "$dirDestino$archivo""_\([0-9]*\)_"`
-	do
-		# Separa unicamente el numero de secuencia
-		var=${var#*_}
-		var=${var%_*}
-		
-		if [[ "$var" -gt "$max" ]]; then
-			max="$var"
-		fi
-	done
-			
-	siguiente=$[$max+1]
-	
-	return "$siguiente"
-}
-
-
-
+ 
 ###############################################################################
 # MAIN
 ###############################################################################
@@ -152,7 +107,7 @@ loguear=false
 ##
 # Argumentos obligatorios
 ##
-if [[ "$#" -lt 3 ]]; then
+if [ "$#" -lt 3 ]; then
 	echo "Cantidad de argumentos inválida"
 	ayuda 
 
@@ -164,10 +119,13 @@ fi
 ##
 # Argumento de log opcional
 ##
-if [[ $4 == "-l" ]]; then
 
-	loguear=true
-fi
+case $4 in
+	-l) loguear=true;
+	;;
+	-h) ayuda ; exit 1;
+	;;
+esac
 
 # Asignacion de rutas
 origen="$1"
@@ -179,46 +137,16 @@ caller="$3"
 argumentosValidos "$origen" "$destino"
 sonValidos="$?" 
 
-if [[ "$sonValidos" -eq 0 ]]; then
+if [ "$sonValidos" -eq 0 ]; then
 	
 	##
 	# Intenta mover el archivo
 	# -n impide el movimiento si existe el archivo en el destino
 	## 
-	mv -n "$origen" "$destino"
-
-	if [ -e "$origen" ]; then
-		
-		# si no se pudo mover el archivo, busca el siguiente
-		# numero de en la secuencia
-		obtenerSecuenciador "$origen" "$destino"
-		numCopia="$?"
-		origenNext="$origen""_""$numCopia"_
-
-		# renombra el archivo
-		mv "$origen" "$origenNext"
-
-		if $loguear ; then 
-
-			$BINDIR/LoguearV5.sh -c "606" -i "I" -f "MoverV5.sh" "$origen" "$origenNext"
-		fi
-
-		# realiza el movimiento
-		mv "$origenNext" "$destino"
-	fi
+	mv --backup=t "$origen" "$destino"
 	
-	if [[ -e "$origen" || -e "$origenNext" ]]; then
-		# no pudo mover el archivo, retorna con codigo de error
-		if $loguear ; then 
-
-			$BINDIR/LoguearV5.sh -c "603" -i "SE" -f "MoverV5.sh" "$origen"
-		fi
-		exit 1
-	else
-		if $loguear ; then 
-
-			$BINDIR/LoguearV5.sh -c "602" -i "I" -f "MoverV5.sh" "$origen"
-		fi
+	if $loguear ; then 
+		$BINDIR/LoguearV5.sh -c "602" -i "I" -f "MoverV5.sh" "$origen"
 	fi	
 else
 	# Rutas de origen y/o destino inválidas

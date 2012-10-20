@@ -1,0 +1,654 @@
+
+Patrón: BEA-
+Ciclos: Todos
+Archivos: Todos
+
+29        soapp1_2012-09-07         ####<Sep 7, 2012 9:33:33 AM ART> <Error> <Kernel> <soapp1.corp.corporacion.com.ar> <osb_server3> <[ACTIVE] ExecuteThread: '11' for queue: 'weblogic.kernel.Default (self-tuning)'> <<WLS Kernel>> <> <> <1346999352000> <BEA-000802> <ExecuteRequest failed
+29        soapp1_2012-09-07         ####<Sep 7, 2012 9:33:33 AM ART> <Notice> <Diagnostics> <soapp1.corp.corporacion.com.ar> <osb_server3> <[ACTIVE] ExecuteThread: '3' for queue: 'weblogic.kernel.Default (self-tuning)'> <<WLS Kernel>> <> <> <1346999352024> <BEA-320068> <Watch 'UncheckedException' with severity 'Notice' on server 'osb_server3' has triggered at Sep 7, 2012 9:33:33 AM ART. Notification details: 
+29        soapp1_2012-09-07         WatchRule: (SEVERITY = 'Error') AND ((MSGID = 'BEA-101020') OR (MSGID = 'BEA-101017') OR (MSGID = 'BEA-000802')) 
+29        soapp1_2012-09-07          SUBSYSTEM = Kernel USERID = <WLS Kernel> SEVERITY = Error THREAD = [ACTIVE] ExecuteThread: '11' for queue: 'weblogic.kernel.Default (self-tuning)' MSGID = BEA-000802 MACHINE = soapp1.corp.corporacion.com.ar TXID =  CONTEXTID =  TIMESTAMP = 1346999352000  
+29        soapp1_2012-09-07         ####<Sep 7, 2012 11:03:20 AM ART> <Error> <WliSbTransports> <soapp1.corp.corporacion.com.ar> <osb_server3> <[ACTIVE] ExecuteThread: '42' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <> <1347026600874> <BEA-381304> <Exception in HttpOutboundMessageContext.RetrieveHttpResponseWork.run: java.net.SocketTimeoutException
+29        soapp1_2012-09-07         ####<Sep 7, 2012 11:03:55 AM ART> <Error> <WliSbTransports> <soapp1.corp.corporacion.com.ar> <osb_server3> <[ACTIVE] ExecuteThread: '35' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <> <1347026635870> <BEA-381304> <Exception in HttpOutboundMessageContext.RetrieveHttpResponseWork.run: java.net.SocketTimeoutException
+29        soapp1_2012-09-16         ####<Sep 16, 2012 1:09:01 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '12' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-27F3D1A1AB5AC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-00000000000174fa> <1346947741522> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/EquipoCATV/ABCS/V1/Adapter/SAA_OS_ACTIVA_EQUIPO_CATV [ SAA_OS_ACTIVA_EQUIPO_CATV_ptt::SAA_OS_ACTIVA_EQUIPO_CATV(InputParameters,OutputParameters) ] - Could not invoke operation 'SAA_OS_ACTIVA_EQUIPO_CATV' due to: 
+29        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:52 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-3856EC603F3FC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492116> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/SAA_OS_EVENTSDISPATCH [ SAA_OS_EVENTSDISPATCH_ptt::SAA_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - Could not invoke operation 'SAA_OS_EVENTSDISPATCH' due to: 
+29        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:52 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-3856EC603F3FC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492117> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/SAA_OS_EVENTSDISPATCH [ SAA_OS_EVENTSDISPATCH_ptt::SAA_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - Rolling back JCA LocalTransaction> 
+29        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:52 PM ART> <Error> <JDBC> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492119> <BEA-001112> <Test "SELECT 1 FROM DUAL" set up for pool "jdbc_cvfmw_optes" failed with exception: "oracle.jdbc.xa.OracleXAException".> 
+29        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:52 PM ART> <Info> <JDBC> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492120> <BEA-001128> <Connection for pool "jdbc_cvfmw_optes" closed.> 
+29        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:57 PM ART> <Error> <JCATransport> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956497243> <BEA-381971> <Invoke JCA outbound service failed with connection error, exception: com.bea.wli.sb.transports.jca.JCATransportException: oracle.tip.adapter.sa.api.JCABindingException: oracle.tip.adapter.sa.impl.fw.ext.org.collaxa.thirdparty.apache.wsif.WSIFException: servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/SAA_OS_EVENTSDISPATCH [ SAA_OS_EVENTSDISPATCH_ptt::SAA_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - WSIF JCA Execute of operation 'SAA_OS_EVENTSDISPATCH' failed due to: Stored procedure invocation error.
+29        soapp1_2012-09-06         ####<Sep 6, 2012 1:09:01 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '12' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-27F3D1A1AB5AC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-00000000000174fa> <1346947741522> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/EquipoCATV/ABCS/V1/Adapter/XXM_OS_ACTIVA_EQUIPO_CATV [ XXM_OS_ACTIVA_EQUIPO_CATV_ptt::XXM_OS_ACTIVA_EQUIPO_CATV(InputParameters,OutputParameters) ] - Could not invoke operation 'XXM_OS_ACTIVA_EQUIPO_CATV' due to: 
+29        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:52 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-3856EC603F3FC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492116> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/XXM_OS_EVENTSDISPATCH [ XXM_OS_EVENTSDISPATCH_ptt::XXM_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - Could not invoke operation 'XXM_OS_EVENTSDISPATCH' due to: 
+29        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:52 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-3856EC603F3FC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492117> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/XXM_OS_EVENTSDISPATCH [ XXM_OS_EVENTSDISPATCH_ptt::XXM_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - Rolling back JCA LocalTransaction> 
+29        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:52 PM ART> <Error> <JDBC> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492119> <BEA-001112> <Test "SELECT 1 FROM DUAL" set up for pool "jdbc_cvfmw_optes" failed with exception: "oracle.jdbc.xa.OracleXAException".> 
+29        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:52 PM ART> <Info> <JDBC> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492120> <BEA-001128> <Connection for pool "jdbc_cvfmw_optes" closed.> 
+29        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:57 PM ART> <Error> <JCATransport> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956497243> <BEA-381971> <Invoke JCA outbound service failed with connection error, exception: com.bea.wli.sb.transports.jca.JCATransportException: oracle.tip.adapter.sa.api.JCABindingException: oracle.tip.adapter.sa.impl.fw.ext.org.collaxa.thirdparty.apache.wsif.WSIFException: servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/XXM_OS_EVENTSDISPATCH [ XXM_OS_EVENTSDISPATCH_ptt::XXM_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - WSIF JCA Execute of operation 'XXM_OS_EVENTSDISPATCH' failed due to: Stored procedure invocation error.
+30        soapp1_2012-09-07         ####<Sep 7, 2012 9:33:33 AM ART> <Error> <Kernel> <soapp1.corp.corporacion.com.ar> <osb_server3> <[ACTIVE] ExecuteThread: '11' for queue: 'weblogic.kernel.Default (self-tuning)'> <<WLS Kernel>> <> <> <1346999352000> <BEA-000802> <ExecuteRequest failed
+30        soapp1_2012-09-07         ####<Sep 7, 2012 9:33:33 AM ART> <Notice> <Diagnostics> <soapp1.corp.corporacion.com.ar> <osb_server3> <[ACTIVE] ExecuteThread: '3' for queue: 'weblogic.kernel.Default (self-tuning)'> <<WLS Kernel>> <> <> <1346999352024> <BEA-320068> <Watch 'UncheckedException' with severity 'Notice' on server 'osb_server3' has triggered at Sep 7, 2012 9:33:33 AM ART. Notification details: 
+30        soapp1_2012-09-07         WatchRule: (SEVERITY = 'Error') AND ((MSGID = 'BEA-101020') OR (MSGID = 'BEA-101017') OR (MSGID = 'BEA-000802')) 
+30        soapp1_2012-09-07          SUBSYSTEM = Kernel USERID = <WLS Kernel> SEVERITY = Error THREAD = [ACTIVE] ExecuteThread: '11' for queue: 'weblogic.kernel.Default (self-tuning)' MSGID = BEA-000802 MACHINE = soapp1.corp.corporacion.com.ar TXID =  CONTEXTID =  TIMESTAMP = 1346999352000  
+30        soapp1_2012-09-07         ####<Sep 7, 2012 11:03:20 AM ART> <Error> <WliSbTransports> <soapp1.corp.corporacion.com.ar> <osb_server3> <[ACTIVE] ExecuteThread: '42' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <> <1347026600874> <BEA-381304> <Exception in HttpOutboundMessageContext.RetrieveHttpResponseWork.run: java.net.SocketTimeoutException
+30        soapp1_2012-09-07         ####<Sep 7, 2012 11:03:55 AM ART> <Error> <WliSbTransports> <soapp1.corp.corporacion.com.ar> <osb_server3> <[ACTIVE] ExecuteThread: '35' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <> <1347026635870> <BEA-381304> <Exception in HttpOutboundMessageContext.RetrieveHttpResponseWork.run: java.net.SocketTimeoutException
+30        soapp1_2012-09-16         ####<Sep 16, 2012 1:09:01 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '12' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-27F3D1A1AB5AC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-00000000000174fa> <1346947741522> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/EquipoCATV/ABCS/V1/Adapter/SAA_OS_ACTIVA_EQUIPO_CATV [ SAA_OS_ACTIVA_EQUIPO_CATV_ptt::SAA_OS_ACTIVA_EQUIPO_CATV(InputParameters,OutputParameters) ] - Could not invoke operation 'SAA_OS_ACTIVA_EQUIPO_CATV' due to: 
+30        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:52 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-3856EC603F3FC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492116> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/SAA_OS_EVENTSDISPATCH [ SAA_OS_EVENTSDISPATCH_ptt::SAA_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - Could not invoke operation 'SAA_OS_EVENTSDISPATCH' due to: 
+30        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:52 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-3856EC603F3FC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492117> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/SAA_OS_EVENTSDISPATCH [ SAA_OS_EVENTSDISPATCH_ptt::SAA_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - Rolling back JCA LocalTransaction> 
+30        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:52 PM ART> <Error> <JDBC> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492119> <BEA-001112> <Test "SELECT 1 FROM DUAL" set up for pool "jdbc_cvfmw_optes" failed with exception: "oracle.jdbc.xa.OracleXAException".> 
+30        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:52 PM ART> <Info> <JDBC> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492120> <BEA-001128> <Connection for pool "jdbc_cvfmw_optes" closed.> 
+30        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:57 PM ART> <Error> <JCATransport> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956497243> <BEA-381971> <Invoke JCA outbound service failed with connection error, exception: com.bea.wli.sb.transports.jca.JCATransportException: oracle.tip.adapter.sa.api.JCABindingException: oracle.tip.adapter.sa.impl.fw.ext.org.collaxa.thirdparty.apache.wsif.WSIFException: servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/SAA_OS_EVENTSDISPATCH [ SAA_OS_EVENTSDISPATCH_ptt::SAA_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - WSIF JCA Execute of operation 'SAA_OS_EVENTSDISPATCH' failed due to: Stored procedure invocation error.
+30        soapp1_2012-09-06         ####<Sep 6, 2012 1:09:01 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '12' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-27F3D1A1AB5AC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-00000000000174fa> <1346947741522> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/EquipoCATV/ABCS/V1/Adapter/XXM_OS_ACTIVA_EQUIPO_CATV [ XXM_OS_ACTIVA_EQUIPO_CATV_ptt::XXM_OS_ACTIVA_EQUIPO_CATV(InputParameters,OutputParameters) ] - Could not invoke operation 'XXM_OS_ACTIVA_EQUIPO_CATV' due to: 
+30        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:52 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-3856EC603F3FC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492116> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/XXM_OS_EVENTSDISPATCH [ XXM_OS_EVENTSDISPATCH_ptt::XXM_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - Could not invoke operation 'XXM_OS_EVENTSDISPATCH' due to: 
+30        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:52 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-3856EC603F3FC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492117> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/XXM_OS_EVENTSDISPATCH [ XXM_OS_EVENTSDISPATCH_ptt::XXM_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - Rolling back JCA LocalTransaction> 
+30        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:52 PM ART> <Error> <JDBC> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492119> <BEA-001112> <Test "SELECT 1 FROM DUAL" set up for pool "jdbc_cvfmw_optes" failed with exception: "oracle.jdbc.xa.OracleXAException".> 
+30        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:52 PM ART> <Info> <JDBC> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492120> <BEA-001128> <Connection for pool "jdbc_cvfmw_optes" closed.> 
+30        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:57 PM ART> <Error> <JCATransport> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956497243> <BEA-381971> <Invoke JCA outbound service failed with connection error, exception: com.bea.wli.sb.transports.jca.JCATransportException: oracle.tip.adapter.sa.api.JCABindingException: oracle.tip.adapter.sa.impl.fw.ext.org.collaxa.thirdparty.apache.wsif.WSIFException: servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/XXM_OS_EVENTSDISPATCH [ XXM_OS_EVENTSDISPATCH_ptt::XXM_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - WSIF JCA Execute of operation 'XXM_OS_EVENTSDISPATCH' failed due to: Stored procedure invocation error.
+31        soapp1_2012-09-07         ####<Sep 7, 2012 9:33:33 AM ART> <Error> <Kernel> <soapp1.corp.corporacion.com.ar> <osb_server3> <[ACTIVE] ExecuteThread: '11' for queue: 'weblogic.kernel.Default (self-tuning)'> <<WLS Kernel>> <> <> <1346999352000> <BEA-000802> <ExecuteRequest failed
+31        soapp1_2012-09-07         ####<Sep 7, 2012 9:33:33 AM ART> <Notice> <Diagnostics> <soapp1.corp.corporacion.com.ar> <osb_server3> <[ACTIVE] ExecuteThread: '3' for queue: 'weblogic.kernel.Default (self-tuning)'> <<WLS Kernel>> <> <> <1346999352024> <BEA-320068> <Watch 'UncheckedException' with severity 'Notice' on server 'osb_server3' has triggered at Sep 7, 2012 9:33:33 AM ART. Notification details: 
+31        soapp1_2012-09-07         WatchRule: (SEVERITY = 'Error') AND ((MSGID = 'BEA-101020') OR (MSGID = 'BEA-101017') OR (MSGID = 'BEA-000802')) 
+31        soapp1_2012-09-07          SUBSYSTEM = Kernel USERID = <WLS Kernel> SEVERITY = Error THREAD = [ACTIVE] ExecuteThread: '11' for queue: 'weblogic.kernel.Default (self-tuning)' MSGID = BEA-000802 MACHINE = soapp1.corp.corporacion.com.ar TXID =  CONTEXTID =  TIMESTAMP = 1346999352000  
+31        soapp1_2012-09-07         ####<Sep 7, 2012 11:03:20 AM ART> <Error> <WliSbTransports> <soapp1.corp.corporacion.com.ar> <osb_server3> <[ACTIVE] ExecuteThread: '42' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <> <1347026600874> <BEA-381304> <Exception in HttpOutboundMessageContext.RetrieveHttpResponseWork.run: java.net.SocketTimeoutException
+31        soapp1_2012-09-07         ####<Sep 7, 2012 11:03:55 AM ART> <Error> <WliSbTransports> <soapp1.corp.corporacion.com.ar> <osb_server3> <[ACTIVE] ExecuteThread: '35' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <> <1347026635870> <BEA-381304> <Exception in HttpOutboundMessageContext.RetrieveHttpResponseWork.run: java.net.SocketTimeoutException
+31        soapp1_2012-09-16         ####<Sep 16, 2012 1:09:01 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '12' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-27F3D1A1AB5AC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-00000000000174fa> <1346947741522> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/EquipoCATV/ABCS/V1/Adapter/SAA_OS_ACTIVA_EQUIPO_CATV [ SAA_OS_ACTIVA_EQUIPO_CATV_ptt::SAA_OS_ACTIVA_EQUIPO_CATV(InputParameters,OutputParameters) ] - Could not invoke operation 'SAA_OS_ACTIVA_EQUIPO_CATV' due to: 
+31        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:52 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-3856EC603F3FC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492116> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/SAA_OS_EVENTSDISPATCH [ SAA_OS_EVENTSDISPATCH_ptt::SAA_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - Could not invoke operation 'SAA_OS_EVENTSDISPATCH' due to: 
+31        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:52 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-3856EC603F3FC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492117> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/SAA_OS_EVENTSDISPATCH [ SAA_OS_EVENTSDISPATCH_ptt::SAA_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - Rolling back JCA LocalTransaction> 
+31        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:52 PM ART> <Error> <JDBC> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492119> <BEA-001112> <Test "SELECT 1 FROM DUAL" set up for pool "jdbc_cvfmw_optes" failed with exception: "oracle.jdbc.xa.OracleXAException".> 
+31        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:52 PM ART> <Info> <JDBC> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492120> <BEA-001128> <Connection for pool "jdbc_cvfmw_optes" closed.> 
+31        soapp1_2012-09-16         ####<Sep 16, 2012 3:34:57 PM ART> <Error> <JCATransport> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956497243> <BEA-381971> <Invoke JCA outbound service failed with connection error, exception: com.bea.wli.sb.transports.jca.JCATransportException: oracle.tip.adapter.sa.api.JCABindingException: oracle.tip.adapter.sa.impl.fw.ext.org.collaxa.thirdparty.apache.wsif.WSIFException: servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/SAA_OS_EVENTSDISPATCH [ SAA_OS_EVENTSDISPATCH_ptt::SAA_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - WSIF JCA Execute of operation 'SAA_OS_EVENTSDISPATCH' failed due to: Stored procedure invocation error.
+31        soapp1_2012-09-06         ####<Sep 6, 2012 1:09:01 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '12' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-27F3D1A1AB5AC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-00000000000174fa> <1346947741522> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/EquipoCATV/ABCS/V1/Adapter/XXM_OS_ACTIVA_EQUIPO_CATV [ XXM_OS_ACTIVA_EQUIPO_CATV_ptt::XXM_OS_ACTIVA_EQUIPO_CATV(InputParameters,OutputParameters) ] - Could not invoke operation 'XXM_OS_ACTIVA_EQUIPO_CATV' due to: 
+31        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:52 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-3856EC603F3FC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492116> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/XXM_OS_EVENTSDISPATCH [ XXM_OS_EVENTSDISPATCH_ptt::XXM_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - Could not invoke operation 'XXM_OS_EVENTSDISPATCH' due to: 
+31        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:52 PM ART> <Error> <JCA_FRAMEWORK_AND_ADAPTER> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <BEA1-3856EC603F3FC32922D0> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492117> <BEA-000000> <servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/XXM_OS_EVENTSDISPATCH [ XXM_OS_EVENTSDISPATCH_ptt::XXM_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - Rolling back JCA LocalTransaction> 
+31        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:52 PM ART> <Error> <JDBC> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492119> <BEA-001112> <Test "SELECT 1 FROM DUAL" set up for pool "jdbc_cvfmw_optes" failed with exception: "oracle.jdbc.xa.OracleXAException".> 
+31        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:52 PM ART> <Info> <JDBC> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956492120> <BEA-001128> <Connection for pool "jdbc_cvfmw_optes" closed.> 
+31        soapp1_2012-09-06         ####<Sep 6, 2012 3:34:57 PM ART> <Error> <JCATransport> <soapp1.corp.corporacion.com.ar> <osb_server1> <[ACTIVE] ExecuteThread: '0' for queue: 'weblogic.kernel.Default (self-tuning)'> <<anonymous>> <> <cb738a74133f67cb:-452d66c:139954e7a4c:-7fe3-0000000000019b50> <1346956497243> <BEA-381971> <Invoke JCA outbound service failed with connection error, exception: com.bea.wli.sb.transports.jca.JCATransportException: oracle.tip.adapter.sa.api.JCABindingException: oracle.tip.adapter.sa.impl.fw.ext.org.collaxa.thirdparty.apache.wsif.WSIFException: servicebus:/WSDL/corporacionOracleFMW/OpenSmartFlex/Common/EVENTSDISPATCH/ABCS/V1/Adapter/XXM_OS_EVENTSDISPATCH [ XXM_OS_EVENTSDISPATCH_ptt::XXM_OS_EVENTSDISPATCH(InputParameters,OutputParameters) ] - WSIF JCA Execute of operation 'XXM_OS_EVENTSDISPATCH' failed due to: Stored procedure invocation error.
+
+Total de resultados para este patrón con los filtros seleccionados.: 54
+
+Patrón: Caused by
+Ciclos: Todos
+Archivos: Todos
+
+29        soapp1_2012-09-16         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+29        soapp1_2012-09-16         Caused by: oracle.net.ns.NetException: Socket read timed out
+29        soapp1_2012-09-16         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+29        soapp1_2012-09-16         Caused by: oracle.net.ns.NetException: Socket read timed out
+29        soapp1_2012-09-16         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+29        soapp1_2012-09-16         Caused by: oracle.net.ns.NetException: Socket read timed out
+29        soapp1_2012-09-06         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+29        soapp1_2012-09-06         Caused by: oracle.net.ns.NetException: Socket read timed out
+29        soapp1_2012-09-06         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+29        soapp1_2012-09-06         Caused by: oracle.net.ns.NetException: Socket read timed out
+30        soapp1_2012-09-16         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+30        soapp1_2012-09-16         Caused by: oracle.net.ns.NetException: Socket read timed out
+30        soapp1_2012-09-16         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+30        soapp1_2012-09-16         Caused by: oracle.net.ns.NetException: Socket read timed out
+30        soapp1_2012-09-16         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+30        soapp1_2012-09-16         Caused by: oracle.net.ns.NetException: Socket read timed out
+30        soapp1_2012-09-06         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+30        soapp1_2012-09-06         Caused by: oracle.net.ns.NetException: Socket read timed out
+30        soapp1_2012-09-06         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+30        soapp1_2012-09-06         Caused by: oracle.net.ns.NetException: Socket read timed out
+31        soapp1_2012-09-16         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+31        soapp1_2012-09-16         Caused by: oracle.net.ns.NetException: Socket read timed out
+31        soapp1_2012-09-16         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+31        soapp1_2012-09-16         Caused by: oracle.net.ns.NetException: Socket read timed out
+31        soapp1_2012-09-16         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+31        soapp1_2012-09-16         Caused by: oracle.net.ns.NetException: Socket read timed out
+31        soapp1_2012-09-06         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+31        soapp1_2012-09-06         Caused by: oracle.net.ns.NetException: Socket read timed out
+31        soapp1_2012-09-06         Caused by: java.sql.SQLRecoverableException: Io exception: Socket read timed out
+31        soapp1_2012-09-06         Caused by: oracle.net.ns.NetException: Socket read timed out
+
+Total de resultados para este patrón con los filtros seleccionados.: 30
+
+Patrón: ^####<\.
+Ciclos: Todos
+Archivos: Todos
+
+29        soapp1_2012-09-07         Sep 7, 2012 9:33:33 AM ART>
+29        soapp1_2012-09-07         Sep 7, 2012 9:33:33 AM ART>
+29        soapp1_2012-09-07         Sep 7, 2012 11:03:20 AM ART
+29        soapp1_2012-09-07         Sep 7, 2012 11:03:55 AM ART
+29        soapp1_2012-09-16         Sep 16, 2012 1:09:01 PM ART
+29        soapp1_2012-09-16         Sep 16, 2012 3:34:52 PM ART
+29        soapp1_2012-09-16         Sep 16, 2012 3:34:52 PM ART
+29        soapp1_2012-09-16         Sep 16, 2012 3:34:52 PM ART
+29        soapp1_2012-09-16         Sep 16, 2012 3:34:52 PM ART
+29        soapp1_2012-09-16         Sep 16, 2012 3:34:57 PM ART
+29        soapp1_2012-09-06         Sep 6, 2012 1:09:01 PM ART>
+29        soapp1_2012-09-06         Sep 6, 2012 3:34:52 PM ART>
+29        soapp1_2012-09-06         Sep 6, 2012 3:34:52 PM ART>
+29        soapp1_2012-09-06         Sep 6, 2012 3:34:52 PM ART>
+29        soapp1_2012-09-06         Sep 6, 2012 3:34:52 PM ART>
+29        soapp1_2012-09-06         Sep 6, 2012 3:34:57 PM ART>
+30        soapp1_2012-09-07         Sep 7, 2012 9:33:33 AM ART>
+30        soapp1_2012-09-07         Sep 7, 2012 9:33:33 AM ART>
+30        soapp1_2012-09-07         Sep 7, 2012 11:03:20 AM ART
+30        soapp1_2012-09-07         Sep 7, 2012 11:03:55 AM ART
+30        soapp1_2012-09-16         Sep 16, 2012 1:09:01 PM ART
+30        soapp1_2012-09-16         Sep 16, 2012 3:34:52 PM ART
+30        soapp1_2012-09-16         Sep 16, 2012 3:34:52 PM ART
+30        soapp1_2012-09-16         Sep 16, 2012 3:34:52 PM ART
+30        soapp1_2012-09-16         Sep 16, 2012 3:34:52 PM ART
+30        soapp1_2012-09-16         Sep 16, 2012 3:34:57 PM ART
+30        soapp1_2012-09-06         Sep 6, 2012 1:09:01 PM ART>
+30        soapp1_2012-09-06         Sep 6, 2012 3:34:52 PM ART>
+30        soapp1_2012-09-06         Sep 6, 2012 3:34:52 PM ART>
+30        soapp1_2012-09-06         Sep 6, 2012 3:34:52 PM ART>
+30        soapp1_2012-09-06         Sep 6, 2012 3:34:52 PM ART>
+30        soapp1_2012-09-06         Sep 6, 2012 3:34:57 PM ART>
+31        soapp1_2012-09-07         Sep 7, 2012 9:33:33 AM ART>
+31        soapp1_2012-09-07         Sep 7, 2012 9:33:33 AM ART>
+31        soapp1_2012-09-07         Sep 7, 2012 11:03:20 AM ART
+31        soapp1_2012-09-07         Sep 7, 2012 11:03:55 AM ART
+31        soapp1_2012-09-16         Sep 16, 2012 1:09:01 PM ART
+31        soapp1_2012-09-16         Sep 16, 2012 3:34:52 PM ART
+31        soapp1_2012-09-16         Sep 16, 2012 3:34:52 PM ART
+31        soapp1_2012-09-16         Sep 16, 2012 3:34:52 PM ART
+31        soapp1_2012-09-16         Sep 16, 2012 3:34:52 PM ART
+31        soapp1_2012-09-16         Sep 16, 2012 3:34:57 PM ART
+31        soapp1_2012-09-06         Sep 6, 2012 1:09:01 PM ART>
+31        soapp1_2012-09-06         Sep 6, 2012 3:34:52 PM ART>
+31        soapp1_2012-09-06         Sep 6, 2012 3:34:52 PM ART>
+31        soapp1_2012-09-06         Sep 6, 2012 3:34:52 PM ART>
+31        soapp1_2012-09-06         Sep 6, 2012 3:34:52 PM ART>
+31        soapp1_2012-09-06         Sep 6, 2012 3:34:57 PM ART>
+
+Total de resultados para este patrón con los filtros seleccionados.: 48
+
+Patrón: ^BINDING.JCA-11811\.
+Ciclos: Todos
+Archivos: Todos
+
+29        soapp1_2012-09-07         	BINDING.JCA-11811
+29        soapp1_2012-09-16         BINDING.JCA-11811
+29        soapp1_2012-09-16         BINDING.JCA-11811
+29        soapp1_2012-09-16         BINDING.JCA-11811
+29        soapp1_2012-09-16         	BINDING.JCA-11811
+29        soapp1_2012-09-16         	BINDING.JCA-11811
+29        soapp1_2012-09-06         BINDING.JCA-11811
+29        soapp1_2012-09-06         BINDING.JCA-11811
+29        soapp1_2012-09-06         	BINDING.JCA-11811
+29        soapp1_2012-09-06         	BINDING.JCA-11811
+30        soapp1_2012-09-07         	BINDING.JCA-11811
+30        soapp1_2012-09-16         BINDING.JCA-11811
+30        soapp1_2012-09-16         BINDING.JCA-11811
+30        soapp1_2012-09-16         BINDING.JCA-11811
+30        soapp1_2012-09-16         	BINDING.JCA-11811
+30        soapp1_2012-09-16         	BINDING.JCA-11811
+30        soapp1_2012-09-06         BINDING.JCA-11811
+30        soapp1_2012-09-06         BINDING.JCA-11811
+30        soapp1_2012-09-06         	BINDING.JCA-11811
+30        soapp1_2012-09-06         	BINDING.JCA-11811
+31        soapp1_2012-09-07         	BINDING.JCA-11811
+31        soapp1_2012-09-16         BINDING.JCA-11811
+31        soapp1_2012-09-16         BINDING.JCA-11811
+31        soapp1_2012-09-16         BINDING.JCA-11811
+31        soapp1_2012-09-16         	BINDING.JCA-11811
+31        soapp1_2012-09-16         	BINDING.JCA-11811
+31        soapp1_2012-09-06         BINDING.JCA-11811
+31        soapp1_2012-09-06         BINDING.JCA-11811
+31        soapp1_2012-09-06         	BINDING.JCA-11811
+31        soapp1_2012-09-06         	BINDING.JCA-11811
+
+Total de resultados para este patrón con los filtros seleccionados.: 30
+
+Patrón: ^Stored procedure invocation error\.
+Ciclos: Todos
+Archivos: Todos
+
+29        soapp1_2012-09-07         Stored procedure invocation error.
+29        soapp1_2012-09-07         Error while trying to prepare and execute the XXM_OS_EVENTSDISPATCH API.
+29        soapp1_2012-09-16         Stored procedure invocation error.
+29        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_ACTIVA_EQUIPO_CATV API.
+29        soapp1_2012-09-16         Stored procedure invocation error.
+29        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_EVENTSDISPATCH API.
+29        soapp1_2012-09-16         Stored procedure invocation error.
+29        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_EVENTSDISPATCH API.
+29        soapp1_2012-09-16         Stored procedure invocation error.
+29        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_EVENTSDISPATCH API.
+29        soapp1_2012-09-16         Stored procedure invocation error.
+29        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_EVENTSDISPATCH API.
+29        soapp1_2012-09-06         Stored procedure invocation error.
+29        soapp1_2012-09-06         Error while trying to prepare and execute the XXM_OS_ACTIVA_EQUIPO_CATV API.
+29        soapp1_2012-09-06         Stored procedure invocation error.
+29        soapp1_2012-09-06         Error while trying to prepare and execute the XXM_OS_EVENTSDISPATCH API.
+29        soapp1_2012-09-06         Stored procedure invocation error.
+29        soapp1_2012-09-06         Error while trying to prepare and execute the XXM_OS_EVENTSDISPATCH API.
+29        soapp1_2012-09-06         Stored procedure invocation error.
+29        soapp1_2012-09-06         Error while trying to prepare and execute the XXM_OS_EVENTSDISPATCH API.
+30        soapp1_2012-09-07         Stored procedure invocation error.
+30        soapp1_2012-09-07         Error while trying to prepare and execute the XXM_OS_EVENTSDISPATCH API.
+30        soapp1_2012-09-16         Stored procedure invocation error.
+30        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_ACTIVA_EQUIPO_CATV API.
+30        soapp1_2012-09-16         Stored procedure invocation error.
+30        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_EVENTSDISPATCH API.
+30        soapp1_2012-09-16         Stored procedure invocation error.
+30        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_EVENTSDISPATCH API.
+30        soapp1_2012-09-16         Stored procedure invocation error.
+30        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_EVENTSDISPATCH API.
+30        soapp1_2012-09-16         Stored procedure invocation error.
+30        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_EVENTSDISPATCH API.
+30        soapp1_2012-09-06         Stored procedure invocation error.
+30        soapp1_2012-09-06         Error while trying to prepare and execute the XXM_OS_ACTIVA_EQUIPO_CATV API.
+30        soapp1_2012-09-06         Stored procedure invocation error.
+30        soapp1_2012-09-06         Error while trying to prepare and execute the XXM_OS_EVENTSDISPATCH API.
+30        soapp1_2012-09-06         Stored procedure invocation error.
+30        soapp1_2012-09-06         Error while trying to prepare and execute the XXM_OS_EVENTSDISPATCH API.
+30        soapp1_2012-09-06         Stored procedure invocation error.
+30        soapp1_2012-09-06         Error while trying to prepare and execute the XXM_OS_EVENTSDISPATCH API.
+31        soapp1_2012-09-07         Stored procedure invocation error.
+31        soapp1_2012-09-07         Error while trying to prepare and execute the XXM_OS_EVENTSDISPATCH API.
+31        soapp1_2012-09-16         Stored procedure invocation error.
+31        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_ACTIVA_EQUIPO_CATV API.
+31        soapp1_2012-09-16         Stored procedure invocation error.
+31        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_EVENTSDISPATCH API.
+31        soapp1_2012-09-16         Stored procedure invocation error.
+31        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_EVENTSDISPATCH API.
+31        soapp1_2012-09-16         Stored procedure invocation error.
+31        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_EVENTSDISPATCH API.
+31        soapp1_2012-09-16         Stored procedure invocation error.
+31        soapp1_2012-09-16         Error while trying to prepare and execute the SAA_OS_EVENTSDISPATCH API.
+31        soapp1_2012-09-06         Stored procedure invocation error.
+31        soapp1_2012-09-06         Error while trying to prepare and execute the XXM_OS_ACTIVA_EQUIPO_CATV API.
+31        soapp1_2012-09-06         Stored procedure invocation error.
+31        soapp1_2012-09-06         Error while trying to prepare and execute the XXM_OS_EVENTSDISPATCH API.
+31        soapp1_2012-09-06         Stored procedure invocation error.
+31        soapp1_2012-09-06         Error while trying to prepare and execute the XXM_OS_EVENTSDISPATCH API.
+31        soapp1_2012-09-06         Stored procedure invocation error.
+31        soapp1_2012-09-06         Error while trying to prepare and execute the XXM_OS_EVENTSDISPATCH API.
+
+Total de resultados para este patrón con los filtros seleccionados.: 60
+
+Patrón: real time
+Ciclos: Todos
+Archivos: Todos
+
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.40 seconds 
+29        sasapp_2012-08-01         0.20 seconds 
+29        sasapp_2012-08-01         0.19 seconds 
+29        sasapp_2012-08-01         0.14 seconds 
+29        sasapp_2012-08-01         0.11 seconds 
+29        sasapp_2012-08-01         0.34 seconds 
+29        sasapp_2012-08-01         0.11 seconds 
+29        sasapp_2012-08-01         0.19 seconds 
+29        sasapp_2012-08-01         0.17 seconds 
+29        sasapp_2012-08-01         0.16 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.25 seconds 
+29        sasapp_2012-08-01         0.17 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.44 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.04 seconds 
+29        sasapp_2012-08-01         0.16 seconds 
+29        sasapp_2012-08-01         0.34 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.74 seconds 
+29        sasapp_2012-08-01         0.69 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.77 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.90 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.64 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.73 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.69 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.64 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.24 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.61 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.26 seconds 
+29        sasapp_2012-08-01         0.13 seconds 
+29        sasapp_2012-08-01         0.03 seconds 
+29        sasapp_2012-08-01         0.16 seconds 
+29        sasapp_2012-08-01         0.12 seconds 
+29        sasapp_2012-08-01         0.13 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.23 seconds 
+29        sasapp_2012-08-01         0.28 seconds 
+29        sasapp_2012-08-01         0.14 seconds 
+29        sasapp_2012-08-01         0.14 seconds 
+29        sasapp_2012-08-01         0.13 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.16 seconds 
+29        sasapp_2012-08-01         0.14 seconds 
+29        sasapp_2012-08-01         0.20 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+29        sasapp_2012-08-01         0.36 seconds 
+29        sasapp_2012-08-01         0.13 seconds 
+29        sasapp_2012-08-01         0.15 seconds 
+29        sasapp_2012-08-01         0.13 seconds 
+29        sasapp_2012-08-01         0.13 seconds 
+29        sasapp_2012-08-01         0.17 seconds 
+29        sasapp_2012-08-01         0.14 seconds 
+29        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.40 seconds 
+30        sasapp_2012-08-01         0.20 seconds 
+30        sasapp_2012-08-01         0.19 seconds 
+30        sasapp_2012-08-01         0.14 seconds 
+30        sasapp_2012-08-01         0.11 seconds 
+30        sasapp_2012-08-01         0.34 seconds 
+30        sasapp_2012-08-01         0.11 seconds 
+30        sasapp_2012-08-01         0.19 seconds 
+30        sasapp_2012-08-01         0.17 seconds 
+30        sasapp_2012-08-01         0.16 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.25 seconds 
+30        sasapp_2012-08-01         0.17 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.44 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.04 seconds 
+30        sasapp_2012-08-01         0.16 seconds 
+30        sasapp_2012-08-01         0.34 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.74 seconds 
+30        sasapp_2012-08-01         0.69 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.77 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.90 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.64 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.73 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.69 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.64 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.24 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.61 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.26 seconds 
+30        sasapp_2012-08-01         0.13 seconds 
+30        sasapp_2012-08-01         0.03 seconds 
+30        sasapp_2012-08-01         0.16 seconds 
+30        sasapp_2012-08-01         0.12 seconds 
+30        sasapp_2012-08-01         0.13 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.23 seconds 
+30        sasapp_2012-08-01         0.28 seconds 
+30        sasapp_2012-08-01         0.14 seconds 
+30        sasapp_2012-08-01         0.14 seconds 
+30        sasapp_2012-08-01         0.13 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.16 seconds 
+30        sasapp_2012-08-01         0.14 seconds 
+30        sasapp_2012-08-01         0.20 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+30        sasapp_2012-08-01         0.36 seconds 
+30        sasapp_2012-08-01         0.13 seconds 
+30        sasapp_2012-08-01         0.15 seconds 
+30        sasapp_2012-08-01         0.13 seconds 
+30        sasapp_2012-08-01         0.13 seconds 
+30        sasapp_2012-08-01         0.17 seconds 
+30        sasapp_2012-08-01         0.14 seconds 
+30        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.40 seconds 
+31        sasapp_2012-08-01         0.20 seconds 
+31        sasapp_2012-08-01         0.19 seconds 
+31        sasapp_2012-08-01         0.14 seconds 
+31        sasapp_2012-08-01         0.11 seconds 
+31        sasapp_2012-08-01         0.34 seconds 
+31        sasapp_2012-08-01         0.11 seconds 
+31        sasapp_2012-08-01         0.19 seconds 
+31        sasapp_2012-08-01         0.17 seconds 
+31        sasapp_2012-08-01         0.16 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.25 seconds 
+31        sasapp_2012-08-01         0.17 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.44 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.04 seconds 
+31        sasapp_2012-08-01         0.16 seconds 
+31        sasapp_2012-08-01         0.34 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.74 seconds 
+31        sasapp_2012-08-01         0.69 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.77 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.90 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.64 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.73 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.69 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.64 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.24 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.61 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.26 seconds 
+31        sasapp_2012-08-01         0.13 seconds 
+31        sasapp_2012-08-01         0.03 seconds 
+31        sasapp_2012-08-01         0.16 seconds 
+31        sasapp_2012-08-01         0.12 seconds 
+31        sasapp_2012-08-01         0.13 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.23 seconds 
+31        sasapp_2012-08-01         0.28 seconds 
+31        sasapp_2012-08-01         0.14 seconds 
+31        sasapp_2012-08-01         0.14 seconds 
+31        sasapp_2012-08-01         0.13 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.16 seconds 
+31        sasapp_2012-08-01         0.14 seconds 
+31        sasapp_2012-08-01         0.20 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+31        sasapp_2012-08-01         0.36 seconds 
+31        sasapp_2012-08-01         0.13 seconds 
+31        sasapp_2012-08-01         0.15 seconds 
+31        sasapp_2012-08-01         0.13 seconds 
+31        sasapp_2012-08-01         0.13 seconds 
+31        sasapp_2012-08-01         0.17 seconds 
+31        sasapp_2012-08-01         0.14 seconds 
+31        sasapp_2012-08-01         0.00 seconds 
+
+Total de resultados para este patrón con los filtros seleccionados.: 390

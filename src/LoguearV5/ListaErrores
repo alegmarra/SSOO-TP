@@ -18,6 +18,8 @@
 007 Proceso %s ya en ejecución, Process ID %s
 
 101 Inicio InstalaV5
+102 Demonio corriendo bajo el Nro: %s
+103 Proceso de Inicialización Concluido
 
 201 Inicio IniciarV5
 

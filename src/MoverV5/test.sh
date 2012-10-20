@@ -16,7 +16,6 @@ resultado (){
 }
 
 limpiar () {
-	
 	rm -f ./*.test
 	find "./tests" -maxdepth 1 -type f -not -name "*.result" -exec rm -f {} \;
 }
@@ -134,7 +133,7 @@ test_moverArchivo_OrigenDuplicado_DestinoValido () {
 		falla=true
 	fi
 	
-	if [ ! -e ./tests/4.test_1_ ]; then
+	if [ ! -e ./tests/4.test.~1~ ]; then
 		echo "Falla: No movido origen con primer cambio de secuenciador" \
 		>> ./tests/4.result
 		falla=true
@@ -145,7 +144,7 @@ test_moverArchivo_OrigenDuplicado_DestinoValido () {
 	fi
 
 		
-	if [ ! -e ./tests/4.test_2_ ]; then
+	if [ ! -e ./tests/4.test.~2~ ]; then
 		echo "Falla: No movido origen con segundo cambio de secuenciador" \
 		>> ./tests/4.result
 		falla=true
@@ -157,7 +156,7 @@ test_moverArchivo_OrigenDuplicado_DestinoValido () {
 
 	# Evaluacion
 		
-	if [ ! -e ./tests/4.test_3_ ]; then
+	if [ ! -e ./tests/4.test.~3~ ]; then
 		echo "Falla: No movido origen con tercer cambio de secuenciador" \
 		>> ./tests/4.result
 		falla=true

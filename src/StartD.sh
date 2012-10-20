@@ -1,6 +1,5 @@
 #!/bin/bash
 
-BINDIR="./testBin"
 
 # Dispara el proceso @arg1 con las condiciones indicadas en @arg2
 
@@ -52,12 +51,12 @@ pName="$2"
 # Desplazo lista de argumentos, obtengo parametros del proceso
 shift 2
 
-if [[ `ps -C "$pName" | wc -l` -gt 1 ]]; then
+if [ `ps -C "$pName" | wc -l` -gt 1 ]; then
 	exit 1
 fi
 
 
-if [[ ! -z "$opcion" ]]; then 
+if [ ! -z "$opcion" ]; then 
 	
 	case "$opcion" in
 		-h) ayuda; exit 1
