@@ -13,13 +13,12 @@ BINDIR="./tests"
 
 rm ${BINDIR}/*    # .sh y ListaErrores
 rm ${BINDIR}/*/*  # arribos, maestros, aceptados, rechazados
-rm DetectaV5.sh
 # COPIAR: binarios, maestros, ListaErrores
 
-for script in `find ../ -type f -regex "../\.*/\.*.sh"`
+for script in `find "../" -maxdepth 2 -type f -regex "../"[A-Za-z0-9]*"/"[A-Za-z0-9]+"V5.sh"`
 do
-	cp ${script} "${BINDIR}/"
-	echo "${BINDIR}/${script##*/}"
+	cp -n ${script} "${BINDIR}/"
+	chmod +x "${BINDIR}/${script##*/}"
 done
 
 # CREAR: arribos, dummys: Iniciar y Buscar 
