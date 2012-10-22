@@ -7,7 +7,7 @@ ARCHIVOS_MAE=(patrones sistemas)
 # Variables para informar al usuario
 HEADER="TP SO7508 Segundo Cuatrimestre 2012. Tema V Copyright © Grupo 07"
 DESCRIPCIONES=()
-DESCRIPCIONES[0]=$HEADER
+DESCRIPCIONES[0]="$HEADER"
 DESCRIPCIONES[1]="Librería del Sistema: "
 DESCRIPCIONES[2]="Ejecutables: "
 DESCRIPCIONES[3]="Archivos maestros: "
@@ -20,8 +20,8 @@ DESCRIPCIONES[9]="Logs de auditoría del sistema: "
 ###
 
 mostrarDescripcionYListarArchivos () {
-	echo ${DESCRIPCIONES[$1]} ${!VARIABLES[${i}]}
-	ls -l ${!VARIABLES[${1}]} | awk '{ print $8 }' | grep --color=never '..*' # grep para evitar líneas vacías
+	echo "${DESCRIPCIONES[$1]}" "${!VARIABLES[${i}]}"
+	ls -l "${!VARIABLES[${1}]}" | awk '{ print $8 }' | grep --color=never '..*' # grep para evitar líneas vacías
 }
 
 # Verifica que un proceso de nombre $1 esté corriendo, y guarda en $2 el PID
@@ -37,19 +37,19 @@ verificarProceso () {
 }
 
 mostrarVariables () {
-	echo $HEADER
+	echo "$HEADER"
 
 	for i in {1..3}
 	do
-		mostrarDescripcionYListarArchivos ${i}
+		mostrarDescripcionYListarArchivos "${i}"
 	done
 
-	for ((i = 4; i < ${#VARIABLES[@]} - 2; ++i))
+	for ((i = 4; i < "${#VARIABLES[@]}" - 2; ++i))
 	do
-		echo ${DESCRIPCIONES[${i}]} ${VARIABLES[$i]}
+		echo "${DESCRIPCIONES[${i}]}" "${VARIABLES[$i]}"
 	done
 
-	echo ${DESCRIPCIONES[9]} "$LOGDIR/<comando>.$LOGEXT"
+	echo "${DESCRIPCIONES[9]}" "$LOGDIR/<comando>.$LOGEXT"
 }
 
 # Verifica si todas las variables de ambiente están seteadas.
@@ -61,7 +61,7 @@ verificarSiYaSeInicioElEntorno () {
 	local CANT_INICIALIZADAS=0
 	for i in "${VARIABLES[@]}"
 	do
-		if [ ${!i} ]
+		if [ "${!i}" ]
 		then
 			((++CANT_INICIALIZADAS))
 		fi
@@ -91,7 +91,7 @@ init () {
 setearVariablesDeEntorno () {
 	for i in "${VARIABLES[@]}"
 	do
-		TEMP=`grep "^${i}" ${CONFIG_FILE} | awk 'BEGIN { FS="="; } { print $2 }'`
+		TEMP=`grep "^${i}" "${CONFIG_FILE}" | awk 'BEGIN { FS="="; } { print $2 }'`
 				if [ $? -eq 1]
 		then
 			echo "Archivo de configuración corrupto: variable ${i} no encontrada"
@@ -101,7 +101,7 @@ setearVariablesDeEntorno () {
 			echo "Archivo de configuración no encontrado"
 			return $?
 		fi
-		export `echo ${i}`=${TEMP}
+		export `echo ${i}`="${TEMP}"
 	done
 }
 
@@ -109,34 +109,34 @@ verificarSiLaInstalacionEstaCompleta () {
 	local FALTANTES=()
 	local i=0
 
-	for CMD in ${COMANDOS[@]}
+	for CMD in "${COMANDOS[@]}"
 	do
-		ls ${BINDIR} | grep ${CMD} > /dev/null
+		ls "${BINDIR}" | grep "${CMD}" > /dev/null
 		if [ $? -eq 1 ]
 		then
-			FALTANTES[((i++))]=${CMD}
+			FALTANTES[((i++))]="${CMD}"
 		fi
 	done
 
-	for ARCH in ${ARCHIVOS_MAE[@]}
+	for ARCH in "${ARCHIVOS_MAE[@]}"
 	do
-		ls ${MAEDIR} | grep ${ARCH} > /dev/null
+		ls "${MAEDIR}" | grep "${ARCH}" > /dev/null
 		if [ $? -eq 1 ]
 		then
-			FALTANTES[((i++))]=${ARCH}
+			FALTANTES[((i++))]="${ARCH}"
 		fi
 	done
 
-	if [ ${#FALTANTES[@]} -gt 0 ]
+	if [ "${#FALTANTES[@]}" -gt 0 ]
 	then
-		echo $HEADER
+		echo "$HEADER"
 		echo "Componentes Existentes:"
 		mostrarDescripcionYListarArchivos 2
 		mostrarDescripcionYListarArchivos 3
 		echo "Componentes faltantes:"
-		for i in ${FALTANTES[@]}
+		for i in "${FALTANTES[@]}"
 		do
-			echo ${i}
+			echo "${i}"
 		done
 		echo "Estado de la instalación: INCOMPLETA"
 		echo "Proceso de Inicialización Cancelado"
@@ -145,17 +145,17 @@ verificarSiLaInstalacionEstaCompleta () {
 }
 
 invocarDetecta () {
-	${BINDIR}/StartD.sh -D DetectaV5.sh
+	"${BINDIR}"/StartD.sh -D DetectaV5.sh
 	if [ $? -eq 0 ]
 	then
 		PID=0
-		verificarProceso "DetectaV5.sh" ${PID}
-		${BINDIR}/LoguearV5.sh -c 102 -f IniciarV5 -i A ${PID}
+		verificarProceso "DetectaV5.sh" "${PID}"
+		"${BINDIR}"/LoguearV5.sh -c 102 -f IniciarV5 -i A "${PID}"
 	fi
 }
 
 fin () {
-	${BINDIR}/LoguearV5.sh -c 103 -f IniciarV5 -i I
+	"${BINDIR}"/LoguearV5.sh -c 103 -f IniciarV5 -i I
 }
 
 ### MAIN ###
@@ -171,9 +171,9 @@ then
 	then
 		echo "Proceso de Inicialización Cancelado"
 	else
-		${BINDIR}/LoguearV5.sh -c 101 -f IniciarV5 -i I
+		"${BINDIR}"/LoguearV5.sh -c 101 -f IniciarV5 -i I
 
-		export PATH=${PATH}:${BINDIR}
+		export PATH=${PATH}:"${BINDIR}"
 
 		verificarSiLaInstalacionEstaCompleta
 
@@ -185,9 +185,9 @@ then
 
 			fin
 		else
-			if [ ! -z ${BINDIR} ]
+			if [ ! -z "${BINDIR}" ]
 			then
-        			PATH=`echo ${PATH} | sed "s_\:${BINDIR}__g"`
+        			PATH=`echo "${PATH}" | sed "s_\:${BINDIR}__g"`
 			fi
 
 			for i in "${VARIABLES[@]}"
