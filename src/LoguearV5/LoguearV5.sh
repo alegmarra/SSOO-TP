@@ -68,7 +68,7 @@ if [ -r "$LOGDIR/$output" ] && [ `stat -c%s "$LOGDIR/$output"` -gt $LOGSIZE ]; t
 	sh LoguearV5.sh -c 702 -f "$cmdname" -i A "$cmdname"
 fi
 
-mensaje=$(printf "$(grep "$errcode" $BINDIR/ListaErrores)" "$@")
+mensaje=$(printf "$(grep "$errcode" "$BINDIR/ListaErrores")" "$@")
 ret=$?
 if [ $ret -ne 0 ]; then
 	echo "faltan argumentos para el mensaje\n"
