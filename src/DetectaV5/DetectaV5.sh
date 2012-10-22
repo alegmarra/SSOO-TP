@@ -51,7 +51,7 @@ validarSIS_ID () {
 
 	id=${1##*/}
 
-	num=`grep "^${id%_*},[^,]\+,[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\},*" ${MAEDIR}/sistemas | wc -l`
+	num=`grep "^${id%_*},[^,]\+,[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\},*" "${MAEDIR}"/sistemas | wc -l`
 
 	if [ $num  -gt 0 ];then
 		return 0
@@ -84,7 +84,7 @@ validarFecha () {
 		if [ "${fecha}" -le `date +"%Y%m%d"` ]
 		then
 
-			reg=`grep "^${id%_*},[^,]\+,[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\},*" ${MAEDIR}/sistemas`
+			reg=`grep "^${id%_*},[^,]\+,[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\},*" "${MAEDIR}"/sistemas`
 
 			regFechas=${reg#*,*,}
 			alta=${regFechas%,*}
@@ -96,8 +96,9 @@ validarFecha () {
 			then
 				# quita cualquier caracter basura al final de la lectura
 				baja=$(echo "$baja" | sed s/[^0-9]//g)
-				if [ ! -z $baja ];
+				if [ ! -z "$baja" ];
 				then
+					# Si es menor a la fecha de baja del sistema
 					if [ ${fecha} -le ${baja} ];
 					then
 						# Fecha valida
@@ -107,7 +108,7 @@ validarFecha () {
 						return 1
 					fi
 				else
-					# El sistema no tiene fecha de baja, es valida
+				# El sistema no tiene fecha de baja, es valida
 					return 0
 				fi
 			fi
@@ -125,16 +126,16 @@ procesarArribos () {
 
 
 	# Si hay archivos en la carpeta de arribos
-	arribos=`find "$ARRIDIR" -maxdepth 1 -type f -regex ${ARRIDIR%/}"/.*" | wc -l`
+	arribos=`find "${ARRIDIR}" -maxdepth 1 -type f -regex "${ARRIDIR%/}""/.*" | wc -l`
 
 	if [ $arribos -gt 0 ]; then
 
 		# Log inicio procesado de archivos
-		$BINDIR/LoguearV5.sh -c "302" -i "I" -f "$pName" "$arribos"
+		"${BINDIR}"/LoguearV5.sh -c "302" -i "I" -f "$pName" "$arribos"
 
 
 		# Por cada uno de los archivos en el directorio de arribos
-		for file in `find "$ARRIDIR" -maxdepth 1 -type f -regex ${ARRIDIR%/}"/.*"`
+		for file in `find "$ARRIDIR" -maxdepth 1 -type f -regex "${ARRIDIR%/}""/.*"`
 		do
 			validarFormato "$file"
 			if [ "$?" -eq 0  ];then
@@ -145,32 +146,31 @@ procesarArribos () {
 					validarFecha "$file"
 					if [ "$?" -eq 0  ]; then
 					# Archivo válido, pasa a carpeta de aceptados
-
-						$BINDIR/MoverV5.sh "$file" "$ACEPDIR" "$pName" "-l"
+						"${BINDIR}"/MoverV5.sh "$file" "$ACEPDIR" "$pName" "-l"
+						
 						# Log de exito
-						$BINDIR/LoguearV5.sh -c "303" -i "I" -f "$pName" "$file"
+						"${BINDIR}"/LoguearV5.sh -c "303" -i "I" -f "$pName" "$file"
 
 					else
 					# Fecha invalida
-						$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
-
+						"${BINDIR}"/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
+						
 						# Log de rechazo. Fecha incorrecta
-						$BINDIR/LoguearV5.sh -c "306" -i "I" -f "$pName" "$file"
+						"${BINDIR}"/LoguearV5.sh -c "306" -i "I" -f "$pName" "$file"
 					fi
-
 				else
 				# SIS_ID invalido
-					$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
+					"${BINDIR}"/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
 
 					# Log de rechazo. SIS_ID Inválido
-					$BINDIR/LoguearV5.sh -c "305" -i "I" -f "$pName" "$file"
+					"${BINDIR}"/LoguearV5.sh -c "305" -i "I" -f "$pName" "$file"
 				fi
 			else
 			# Formato invalido
-				$BINDIR/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
+				"${BINDIR}"/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
 
 				# Log de rechazo. Formato de archivo Inválido
-				$BINDIR/LoguearV5.sh -c "304" -i "I" -f "$pName" "$file"
+				"${BINDIR}"/LoguearV5.sh -c "304" -i "I" -f "$pName" "$file"
 			fi
 		done
 	fi
@@ -194,19 +194,17 @@ procesarAceptados () {
 
 		# Si BuscarV5 no se encuentra en ejecución
 		if [ -z ${pID} ]; then
-			$BINDIR/$pCallName &
+			"${BINDIR}"/$pCallName &
 
 			pID=`ps -C "$pCallName" -o "pid="`
 			# Log llamado a BuscarV5
-			$BINDIR/LoguearV5.sh -c "006" -i "I" -f "$pName" "$pCallName" "$pID"
+			"${BINDIR}"/LoguearV5.sh -c "006" -i "I" -f "$pName" "$pCallName" "$pID"
 
 		else
-
-			$BINDIR/LoguearV5.sh -c "007" -i "E" -f "$pName" "$pCallName" "${pID/$'\n'}"
+			"${BINDIR}"/LoguearV5.sh -c "007" -i "E" -f "$pName" "$pCallName" "${pID/$'\n'}"
 
 			echo ""$pCallName" ya se encuentra en ejecucion. Proceso ${pID/$'\n'}"
 		fi
-
 	fi
 }
 
@@ -225,36 +223,34 @@ if [ "$1" = "-h" ]; then
 fi
 
 ##
-# Coloco paths DE PRUEBA
-# @TODO usar el path correcto
+# Coloco paths para casos DE PRUEBA
 ##
-#export ARRIDIR="./tests/arribos"
-#export MAEDIR="./tests/maestros"
-#export RECHDIR="./tests/rechazados"
-#export ACEPDIR="./tests/aceptados"
-#export BINDIR="./tests"
-export SLEEPTIME="2" #segundos
-export pName="DetectaV5.sh"
+#ARRIDIR="./tests/arribos"
+#MAEDIR="./tests/maestros"
+#RECHDIR="./tests/rechazados"
+#ACEPDIR="./tests/aceptados"
+#BINDIR="./tests"
+SLEEPTIME="2" #segundos
+pName="DetectaV5.sh"
 
 ##
 
 
 # Log inicio Demonio
-$BINDIR/LoguearV5.sh -c "301" -i "I" -f "$pName"
+"${BINDIR}"/LoguearV5.sh -c "301" -i "I" -f "$pName"
 
 
 # Verificar si la inicializacion de ambiente
 # se realizo anteriormente:
 ##
-$GRUPO/IniciarV5.sh "-inicializado" > /dev/null
+"${GRUPO}"/IniciarV5.sh "-inicializado" > /dev/null
 INICIALIZADO=$? # atrapo el codigo de retorno de IniciarV5
 if [ $INICIALIZADO -eq 0 ]; then
 
-
-	$BINDIR/LoguearV5.sh -c "001" -i "SE" -f "$pName"
+	"${BINDIR}"/LoguearV5.sh -c "001" -i "SE" -f "$pName"
 
 	echo "El sistema no fue inicializado.
-	      Debe inicializarlo antes con el comando $GRUPO/IniciarV5."
+	      Debe inicializarlo antes con el comando ""${GRUPO}""/IniciarV5."
         exit 1
 fi
 
@@ -267,12 +263,11 @@ if [ `ps -C "$pName" -o "pid=" | wc -l` -gt 2 ]; then
 	prevID=` ps -C "$pName" -o "pid=" `
 	prevID=${prevID%[^0-9]*}
 
-	$BINDIR/LoguearV5.sh -c "007" -i "SE" -f "$pName" "$pName" "$prevID"
+	"${BINDIR}"/LoguearV5.sh -c "007" -i "SE" -f "$pName" "$pName" "$prevID"
 
 	echo "DetectaV5 ya se encuentra en ejecucion. Proceso $prevID "
 
 	exit 1
-
 fi
 
 
@@ -288,7 +283,7 @@ while true; do
 
 	else
 		# Log Maestro no encontrado
-		$BINDIR/LoguearV5.sh -c "003" -i "E" -f "$pName" "$ARRIDIR"
+		"${BINDIR}"/LoguearV5.sh -c "003" -i "E" -f "$pName" "$ARRIDIR"
 	fi
 
 	# Verifica existencia de ACEPDIR
@@ -298,7 +293,7 @@ while true; do
 	else
 
 		# Log Maestro no encontrado
-		$BINDIR/LoguearV5.sh -c "003" -i "E" -f "$pName" "$ACEPDIR"
+		"${BINDIR}"/LoguearV5.sh -c "003" -i "E" -f "$pName" "$ACEPDIR"
 	fi
 
 	##

@@ -28,7 +28,7 @@ mostrarDescripcionYListarArchivos () {
 # $1 nombre de proceso
 # $2 variable para almacenar el PID
 verificarProceso () {
-	if [[ `ps -C "$1" -o "pid=" | wc -l` -gt 2 ]]; then
+	if [ `ps -C "$1" -o "pid=" | wc -l` -gt 2 ]; then
 
 		local prevID=` ps -C "$1" -o "pid=" `
 		$2=${prevID/[^0-9]*$$}
@@ -68,6 +68,7 @@ verificarSiYaSeInicioElEntorno () {
 	done
 	if [ `expr ${#VARIABLES[@]} - ${CANT_INICIALIZADAS}` -eq 0 ]
 	then
+		#Todas las variables inicializadas
 		if [ $# -eq 0 ]
 		then
 			mostrarVariables

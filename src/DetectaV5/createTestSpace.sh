@@ -27,6 +27,10 @@ if [ ! -d "${BINDIR}/arribos" ]; then mkdir "${BINDIR}/arribos"; fi
 if [ ! -d "${BINDIR}/rechazados" ]; then mkdir "${BINDIR}/rechazados"; fi
 if [ ! -d "${BINDIR}/maestros" ]; then mkdir "${BINDIR}/maestros"; fi
 if [ ! -d "${BINDIR}/aceptados" ]; then mkdir "${BINDIR}/aceptados"; fi
+
+
+
+
 # CORRER: Detecta
 
 # ANALIZAR: resultados
