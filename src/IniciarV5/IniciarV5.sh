@@ -92,6 +92,15 @@ setearVariablesDeEntorno () {
 	for i in "${VARIABLES[@]}"
 	do
 		TEMP=`grep "^${i}" ${CONFIG_FILE} | awk 'BEGIN { FS="="; } { print $2 }'`
+				if [ $? -eq 1]
+		then
+			echo "Archivo de configuración corrupto: variable ${i} no encontrada"
+			return $?
+		elif [ $? -eq 2 ]
+		then
+			echo "Archivo de configuración no encontrado"
+			return $?
+		fi
 		export `echo ${i}`=${TEMP}
 	done
 }
@@ -158,31 +167,34 @@ verificarSiYaSeInicioElEntorno
 if [ $? -ne 1 ]
 then
 	setearVariablesDeEntorno
-	${BINDIR}/LoguearV5.sh -c 101 -f IniciarV5 -i I
-
-	export PATH=${PATH}:${BINDIR}
-
-	verificarSiLaInstalacionEstaCompleta
-
-	if [ $? -ne 1 ]
+	if [ $? -ne 0 ]
 	then
-		mostrarVariables
-
-		invocarDetecta
-
-		fin
+		echo "Proceso de Inicialización Cancelado"
 	else
-		if [ ! -z ${BINDIR} ]
+		${BINDIR}/LoguearV5.sh -c 101 -f IniciarV5 -i I
+
+		export PATH=${PATH}:${BINDIR}
+
+		verificarSiLaInstalacionEstaCompleta
+
+		if [ $? -ne 1 ]
 		then
-        		PATH=`echo ${PATH} | sed "s_\:${BINDIR}__g"`
+			mostrarVariables
+	
+			invocarDetecta
+
+			fin
+		else
+			if [ ! -z ${BINDIR} ]
+			then
+        			PATH=`echo ${PATH} | sed "s_\:${BINDIR}__g"`
+			fi
+
+			for i in "${VARIABLES[@]}"
+			do      
+			        unset `echo ${i}`
+			done
 		fi
-
-		VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE)
-
-		for i in "${VARIABLES[@]}"
-		do      
-		        unset `echo ${i}`
-		done
 	fi
 fi
 
