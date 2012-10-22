@@ -23,45 +23,49 @@ do
 		h)
 			uso; exit 1;;
 		c)
-			errcode=$OPTARG
+			errcode="$OPTARG"
 			;;
 		f)
-			cmdname=$OPTARG
+			cmdname="$OPTARG"
 			;;
 		i)
-			errstat=$OPTARG
+			errstat="$OPTARG"
 			;;
 		s)
-			sep=$OPTARG
+			sep="$OPTARG"
 			;;	
 		\?)
 			uso; exit 1
 	esac
 done
 shift $(($OPTIND - 1))
-if  [ -z $errcode ] || [ -z $cmdname ] || [ -z $errstat ]; then
+if  [ -z "$errcode" ] || [ -z "$cmdname" ] || [ -z "$errstat" ]; then
 	echo error en los parametros
 	exit 1
 fi
-if [ -z $LOGDIR ]; then
-	LOGDIR=$GRUPO/logdir
-fi
-if [ -z $LOGEXT ]; then
-	LOGEXT="log"
-fi
-if [ ! -d $LOGDIR ]; then
-	mkdir $LOGDIR
+if [ -z "$GRUPO" ]; then
+	GRUPO=.
 fi
 
-if [ ! -z $LOGSIZE ]; then
+if [ -z "$LOGDIR" ]; then
+	LOGDIR="$GRUPO"/logdir
+fi
+if [ -z "$LOGEXT" ]; then
+	LOGEXT="log"
+fi
+if [ ! -d "$LOGDIR" ]; then
+	mkdir "$LOGDIR"
+fi
+
+if [ -z "$LOGSIZE" ]; then
 	LOGSIZE=100000
 fi
 
 output="$cmdname.$LOGEXT"
 
-if [ -r $LOGDIR/$output ] && [ `stat -c%s $LOGDIR/$output` -gt $LOGSIZE ]; then
-	tail -n `expr `wc -l $LOGDIR/$output`/2` > $LOGDIR/$output
-	sh LoguearV5.sh -c 1 -f $cmdname -i A
+if [ -r "$LOGDIR/$output" ] && [ `stat -c%s "$LOGDIR/$output"` -gt $LOGSIZE ]; then
+	tail -n `expr `wc -l "$LOGDIR/$output"`/2` > "$LOGDIR/$output"
+	sh LoguearV5.sh -c 702 -f "$cmdname" -i A "$cmdname"
 fi
 
 mensaje=$(printf "$(grep "$errcode" $BINDIR/ListaErrores)" "$@")
@@ -73,6 +77,4 @@ fi
 fecha=`date +"%D"`
 usr=`who | awk '{print $1}' FS=" " | head -1`
 usr=${usr%%\\*}
-printf "%s$sep%s$sep%s$sep%s$sep%s\n" "$fecha" "$usr" "$errstat" "$cmdname" "$mensaje" >>$LOGDIR/$output
-
-exit 0
+printf "%s$sep%s$sep%s$sep%s$sep%s\n" "$fecha" "$usr" "$errstat" "$cmdname" "$mensaje" >>"$LOGDIR/$output"
