@@ -81,7 +81,7 @@ validarFecha () {
 		fecha=${fecha//-/}
 
 		# Si es una fecha menor al dia de hoy
-		if [ ${fecha} -le `date +"%Y%m%d"` ]
+		if [ "${fecha}" -le `date +"%Y%m%d"` ]
 		then
 
 			reg=`grep "^${id%_*},[^,]\+,[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\},*" ${MAEDIR}/sistemas`
@@ -92,8 +92,9 @@ validarFecha () {
 
 			# Si es mayor a la fecha de alta del sistema
 			alta=$(echo "$alta" | sed s/[^0-9]//g)
-			if [ ${fecha} -ge ${alta} ];
+			if [ "${fecha}" -ge "${alta}" ];
 			then
+				# quita cualquier caracter basura al final de la lectura
 				baja=$(echo "$baja" | sed s/[^0-9]//g)
 				if [ ! -z $baja ];
 				then

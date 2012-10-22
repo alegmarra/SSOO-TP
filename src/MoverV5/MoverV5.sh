@@ -39,7 +39,7 @@ ayuda () {
 argumentosValidos () {
  
 	# Normalizacion, elimina '/' final del nombre
-	if [[ "$1" == */ ]]; then origenDir=${1%/}
+	if [ "$1" = */ ]; then origenDir=${1%/}
 	else origenDir=${1%/*}
 	fi
 	
@@ -55,7 +55,7 @@ argumentosValidos () {
 		# Inválido
                 if $loguear ; then
 
-                        $BINDIR/LoguearV5.sh -c "605" -i "E" -f "MoverV5.sh" "$destino"
+                        LoguearV5.sh -c "605" -i "E" -f "MoverV5.sh" "$destino"
                 fi
 
 		return 1 
@@ -65,8 +65,7 @@ argumentosValidos () {
 				# No existe directorio de origen
 		                if $loguear ; then
 	
-        		                $BINDIR/LoguearV5.sh -c "604" -i "I" -f "MoverV5.sh" \
-							"$origen"
+        		                LoguearV5.sh -c "604" -i "I" -f "MoverV5.sh" "$origen"
                 		fi
 				return 1
 			fi
@@ -74,8 +73,7 @@ argumentosValidos () {
 			# No existe archivo de origen
 		        if $loguear ; then
 	
-        			$BINDIR/LoguearV5.sh -c "604" -i "I" -f "MoverV5.sh" \
-							"$1"
+        			LoguearV5.sh -c "604" -i "I" -f "MoverV5.sh" "$1"
                		fi
 			return 1
 		fi	
@@ -83,8 +81,7 @@ argumentosValidos () {
 		if [ ! -d "$destinoDir" ]; then
 		        if $loguear ; then
 	
-        			$BINDIR/LoguearV5.sh -c "604" -i "I" -f "MoverV5.sh" \
-							"$destino"
+        			LoguearV5.sh -c "604" -i "I" -f "MoverV5.sh" "$destino"
                		fi
 			# No existe directorio de destino
 			return 1
@@ -111,7 +108,7 @@ if [ "$#" -lt 3 ]; then
 	echo "Cantidad de argumentos inválida"
 	ayuda 
 
-        $BINDIR/LoguearV5.sh -c "004" -i "SE" -f "MoverV5.sh" "3" "$#"
+       	LoguearV5.sh -c "004" -i "SE" -f "MoverV5.sh" "3" "$#"
 
 	exit 1
 fi
@@ -140,18 +137,21 @@ sonValidos="$?"
 if [ "$sonValidos" -eq 0 ]; then
 	
 	##
-	# Intenta mover el archivo
-	# -n impide el movimiento si existe el archivo en el destino
+	# Opciones de mv utilizadas:
+	#
+	# --backup: make a backup of each existing destination file
+	# =t	  : make numbered backups 
+	# sufijo  : por defecto, ~
 	## 
 	mv --backup=t "$origen" "$destino"
 	
 	if $loguear ; then 
-		$BINDIR/LoguearV5.sh -c "602" -i "I" -f "MoverV5.sh" "$origen"
+		LoguearV5.sh -c "602" -i "I" -f "MoverV5.sh" "$origen"
 	fi	
 else
 	# Rutas de origen y/o destino inválidas
 	if $loguear ; then 
-		$BINDIR/LoguearV5.sh -c "005" -i "SE" -f "MoverV5.sh"
+		LoguearV5.sh -c "005" -i "SE" -f "MoverV5.sh"
 	fi
 	exit 1
 fi
