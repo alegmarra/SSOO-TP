@@ -31,9 +31,16 @@ ayuda () {
 
 validarFormato () {
 
-	if echo "${1##*/}" | grep "[a-zA-Z0-9]*_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$" > /dev/null
-	then
-		return 0
+	# Verifica que sea de texto y legible
+	if [ ! -x "${1}" ] && [ -r "${1}" ]; then
+
+		# Valida formato de archivo
+		if echo "${1##*/}" | grep "[a-zA-Z0-9]*_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$" > /dev/null
+		then
+			return 0
+		else
+			return 1
+		fi
 	else
 		return 1
 	fi
