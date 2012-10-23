@@ -227,7 +227,7 @@ function leer_entrada {
 	echo "${1} (${2}):"; 
 	read nom_dir;
 	
-	if [ -z $nom_dir ]
+	if [ -z "$nom_dir" ]
 	then	
 		nom_dir=$2;
 	fi
@@ -525,7 +525,8 @@ function cargar_configuracion {
 ## 
 
 function establecer_variables {
-	declare local mensaje=""	
+	declare local mensaje=""
+	declare local continuar_leyendo=true
 
 	mostrar_y_registrar "Se inicia el proceso de definir las variables globales del sistema." -nm
 
@@ -537,11 +538,22 @@ function establecer_variables {
 		then
 			
 			mensaje="Definir el "${mensaje}
-				
-			leer_entrada "$mensaje" "${VARIABLES[${!nom_var}]}"
-			VARIABLES[$nom_var]=$RETORNO
-			mostrar_y_registrar "Definido el valor \"$RETORNO\" para variable \"${nom_var}\"" -nm
+			
+			while [ "$continuar_leyendo" == "true" ]; do
+				leer_entrada "$mensaje" "${VARIABLES[${!nom_var}]}"
+			
+				echo "$RETORNO" | grep "=" > /dev/null
 
+				if [ "$?" != "0" ]; then				
+					VARIABLES[$nom_var]=$RETORNO
+					mostrar_y_registrar "Definido el valor \"$RETORNO\" para variable \"${nom_var}\"" -nm
+					continuar_leyendo=false
+				else
+					echo
+					echo " * El nombre del directorio no puede contener el caracter \"=\""
+				fi
+			done
+			continuar_leyendo=true
 		fi
 	done;
 	
@@ -568,10 +580,10 @@ function hay_espacio_suficiente {
 	## ...
 	## compara si se esta en otra particion
 	
-	tam_actual=`df --block-size 1000000 | grep "$particion_disco" | awk '{ print $4 }' | head -1`
+	tam_actual=`df -B 1000000 2> /dev/null | grep "$particion_disco" | awk '{ print $4 }' | head -1`
 	
 	
-	if [ $tam_a_comp -le $tam_actual ];then
+	if [ $tam_a_comp -le $tam_actual ] && [ $tam_a_comp -gt 0 ]; then
 		RETORNO=true
 	else
 		RETORNO=false
@@ -603,39 +615,68 @@ function establecer_variables_num {
 		leer_entrada "$msj" "${VARIABLES[$DATASIZE]}"
 		valor=$RETORNO
 		
-		hay_espacio_suficiente $valor
+		echo "$valor" | grep "[^0-9]" > /dev/null
+
+		if [ "$?" != "0" ] || [ -z "$valor" ] ; then
 		
-		if [ "$RETORNO" == "true" ]; then
-			espacio_suficiente=true
-			VARIABLES[$DATASIZE]=$valor	
-			mostrar_y_registrar "Definido $valor Mb para espacio de arch de arribo." -nm	
-		else
-						
-			echo "Insuficiente Espacio en Disco."
-			echo "Espacio Disponible: $RETORNO_2 Mb"
-			echo "Espacio Requerido: $valor Mb"
-			echo "Cancela Instalación e intentelo mas tarde o vuelva intentarlo con otro valor."
+			hay_espacio_suficiente $valor
+		
+			if [ "$RETORNO" == "true" ]; then
+				espacio_suficiente=true
+				VARIABLES[$DATASIZE]=$valor	
+				mostrar_y_registrar "Definido $valor Mb para espacio de arch de arribo." -nm	
+			else
 			
-			mostrar_y_registrar "Tam Ingresado para disco, insuficiente. Tam actual: $RETORNO_2 Mb. Ingresado: $valor Mb." -nm
+				if [ $valor -eq 0 ]; then
+					echo "Ingrese un valor mayor que cero."
+				else
+					echo "Insuficiente Espacio en Disco."
+				fi
+
+				echo "Espacio Disponible: $RETORNO_2 Mb"
+
+				if [ "$valor" != "0" ]; then
+					echo "Espacio Requerido: $valor Mb"
+				fi
+
+				echo "Cancela Instalación e intentelo mas tarde o vuelva intentarlo con otro valor."
 			
-			confirmar_respuesta "¿Ingresar otro valor?"
+				mostrar_y_registrar "Tam Ingresado para disco, insuficiente. Tam actual: $RETORNO_2 Mb. Ingresado: $valor Mb." -nm
 			
-			if [ "$RETORNO" == "false" ]; then
-				finalizar_instalacion 1			
+				confirmar_respuesta "¿Ingresar otro valor?"
+			
+				if [ "$RETORNO" == "false" ]; then
+					finalizar_instalacion 1			
+				fi
+			
 			fi
-			
+		else
+			echo
+			echo " * Solo se permite el ingreso de caracteres numericos"
 		fi
-		
 	done
 	
 	
 	msj="Defina el tamaño maximo para los archivos de log, en Kb"
-	leer_entrada "$msj" "${VARIABLES[$LOGSIZE]}"
-	VARIABLES["$LOGSIZE"]=$RETORNO
-	mostrar_y_registrar "Definido $RETORNO Kb para tamaño max de archivos de log." -nm
 	
+	espacio_suficiente=false
+
+	while [ "$espacio_suficiente" == false ]; do
+		leer_entrada "$msj" "${VARIABLES[$LOGSIZE]}"
+	
+		echo "$RETORNO" | grep "[^0-9]" > /dev/null
+
+		if [ "$?" != "0" ] || [ -z "$RETORNO" ]; then				
+			VARIABLES["$LOGSIZE"]=$RETORNO
+			mostrar_y_registrar "Definido $RETORNO Kb para tamaño max de archivos de log." -nm
+			espacio_suficiente=true
+		else
+			echo
+			echo " * Solo se permite el ingreso de caracteres numericos"
+		fi
+	done
+
 	mostrar_y_registrar "Se finalizo el proceso de definir las variables globales de tipo numerico del sistema." -nm
-	
 	return 0
 }
 
@@ -648,7 +689,7 @@ function confirmar_respuesta {
 	declare local msj
 	declare local resp_correcta=false
 	declare local resp
-	msj="${1} (S/N)"
+	msj="${1} ( S(s) / N(n) )"
 	
 	while [ "$resp_correcta" == false ]; do 
 	
@@ -662,7 +703,7 @@ function confirmar_respuesta {
 			RETORNO=false
 			resp_correcta=true
 		else
-			echo "Respuesta incorrecta, ingrese \"S\" o \"N\""
+			echo "Respuesta incorrecta, ingrese \"S(s)\" o \"N(n)\""
 		fi
 
 	done
@@ -1173,10 +1214,11 @@ if [ -n "$RETORNO" ]; then
 						if [ "$RETORNO" == true ]; then
 							instalar_componente "$COM"
 						fi
+
+						echo "$RETORNO"
 					else
 						mostrar_y_registrar "El componente \"$COM\" no es parte de sistema"
 					fi
-					echo "$RETORNO"
 				done
 			fi
 
