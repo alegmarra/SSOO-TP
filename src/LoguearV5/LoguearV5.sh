@@ -64,7 +64,10 @@ fi
 output="$cmdname.$LOGEXT"
 
 if [ -r "$LOGDIR/$output" ] && [ `stat -c%s "$LOGDIR/$output"` -gt $LOGSIZE ]; then
-	tail -n `expr `wc -l "$LOGDIR/$output"`/2` > "$LOGDIR/$output"
+	LINEAS=$( wc -l < "$LOGDIR/$output" )
+	LINEAS=$(expr $LINEAS / 2) 
+	tail -n $LINEAS < "$LOGDIR/$output" > a.out
+	mv a.out "$LOGDIR/$output"
 	sh LoguearV5.sh -c 702 -f "$cmdname" -i A "$cmdname"
 fi
 
