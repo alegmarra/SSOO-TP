@@ -20,7 +20,7 @@ iniciarForeground () {
 	local pName="$1"
 	shift 1
 	
-	"$BINDIR"/"$pName" "$@"
+	"${BINDIR}"/"$pName" "$@"
 }
 
 iniciarBackground () {
@@ -28,14 +28,14 @@ iniciarBackground () {
 	local pName="$1"
 	shift 1
 	
-	"$BINDIR"/"$pName" "$@" &
+	"${BINDIR}"/"$pName" "$@" &
 }
 
 iniciarDemonio () {
 	local pName="$1"
 	shift 1
 	
-	nohup "$BINDIR"/"$pName" "$@" 0<&- 1>/dev/null 2>&1 & 
+	nohup "${BINDIR}"/"$pName" "$@" 0<&- 1>/dev/null 2>&1 & 
 }
 
 
