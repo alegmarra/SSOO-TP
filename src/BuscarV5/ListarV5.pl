@@ -1,4 +1,4 @@
-#!/usr/bin/perl 
+#!/usr/bin/perl
 use Getopt::Long;
 use Term::ANSIColor;
 use Data::Dumper;
@@ -54,7 +54,7 @@ sub str_seleccion {
 #
 sub hash_vacio {
 	my %hash = @_;
-	return (eval(join('+', values %hash)) =~ /^0$/ ? 1 : 0);
+	return (@hash == 0 or eval(join('+', values %hash)) =~ /^0$/ ? 1 : 0);
 }
 
 #
@@ -68,6 +68,9 @@ sub hash_selection {
 	while( ! $finish ) {
 		print "\n";
 		my $i = 1;
+		if ( @keys == 0 ) {
+			print "No hay elementos para seleccionar.\n";
+		}
 		foreach my $key ( @keys ) {
 		  	print(($hashref->{$key} == 1 ? '*' : ' ') . " $i: $key\n");
 		  	$i++;
