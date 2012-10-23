@@ -28,7 +28,7 @@ mostrarDescripcionYListarArchivos () {
 # $1 nombre de proceso
 # $2 variable para almacenar el PID
 verificarProceso () {
-	if [ `ps -C "$1" -o "pid=" | wc -l` -gt 2 ]
+	if [ `ps -C "$1" -o "pid=" | wc -l` -gt 0 ]
 	then
 		local prevID=` ps -C "$1" -o "pid=" `
 		$2=${prevID/[^0-9]*$$}
