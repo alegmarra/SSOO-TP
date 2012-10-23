@@ -123,7 +123,7 @@ encontrar_numero_de_linea () {
 
 # Verificar si la inicializacion de ambiente
 # se realizo anteriormente:
-$GRUPO/IniciarV5.sh -inicializado > /dev/null
+"$GRUPO"/IniciarV5.sh -inicializado > /dev/null
 INICIALIZADO=$? # atrapo el codigo de retorno de IniciarV5
 if [ $INICIALIZADO -eq 0 ]; then
 	echo "El sistema no fue inicializado.
@@ -147,7 +147,7 @@ CANT_ARCHIVOS=`find "$ACEPDIR" -type f | wc -l`
 CICLO=`grep -e "SECUENCIA2" < "$CONFDIR/InstalaV5.conf" | cut -d= -f2`
 CICLO=`expr $CICLO + 1`
 
-$BINDIR/LoguearV5.sh -c "401" -f "BuscarV5" -i "I" "$CICLO" "$CANT_ARCHIVOS"
+"$BINDIR"/LoguearV5.sh -c "401" -f "BuscarV5" -i "I" "$CICLO" "$CANT_ARCHIVOS"
 
 # COMIENZO A PROCESAR LOS ARCHIVOS
 TOTAL_ARCHIVOS=`find "$ACEPDIR" -type f -print | wc -l`
@@ -155,7 +155,7 @@ CANT_ARCHS_CON_HALLAZGOS="0"
 ARCHS_SIN_PATRON="0"
 for archivo in `find "$ACEPDIR" -type f -print`
 do
-	$BINDIR/LoguearV5.sh -c "402" -f "BuscarV5" -i "I" "$archivo"
+	"$BINDIR"/LoguearV5.sh -c "402" -f "BuscarV5" -i "I" "$archivo"
 
 	# Analizar si el archivo esta duplicado en PROCDIR,
 	# en tal caso rechazarlo.
@@ -166,8 +166,8 @@ do
 	# Comprobar si el archivo esta en la carpeta de procesados
 	if [ -e "$PROCDIR/$NOMBRE" ]; then
 		# El archivo esta duplicado
-		$BINDIR/LoguearV5.sh -c "403" -f "BuscarV5" -i "E" "$NOMBRE"
-		$BINDIR/MoverV5.sh "$archivo" "$RECHDIR" "BuscarV5"
+		"$BINDIR"/LoguearV5.sh -c "403" -f "BuscarV5" -i "E" "$NOMBRE"
+		"$BINDIR"/MoverV5.sh "$archivo" "$RECHDIR" "BuscarV5"
 	else
 		# El archivo no fue procesado. Determinar el codigo de sistema:
 		COD_SIS=`echo "$NOMBRE" | cut -d_ -f1`
@@ -180,7 +180,7 @@ do
 		CANT_PATRONES=`grep -c -e "$COD_SIS" < "$MAEDIR/patrones"`  # | wc -l`
 		if [ $CANT_PATRONES -eq 0 ]; then
 			# No hay patrones aplicables al archivo
-			$BINDIR/LoguearV5.sh -c "404" -f "BuscarV5" -i "E"
+			"$BINDIR"/LoguearV5.sh -c "404" -f "BuscarV5" -i "E"
 			ARCHS_SIN_PATRON=`expr $ARCHS_SIN_PATRON + 1`
 		else
 			# Si se encontraron patrones, los proceso:
@@ -273,15 +273,15 @@ do
 		if [ $TOTAL_HALLAZGOS -gt 0 ]; then
 			CANT_ARCHS_CON_HALLAZGOS=`expr $CANT_ARCHS_CON_HALLAZGOS + 1`
 		fi
-		$BINDIR/MoverV5.sh "$archivo" "$PROCDIR" "BuscarV5"
+		"$BINDIR"/MoverV5.sh "$archivo" "$PROCDIR" "BuscarV5"
 	fi
 done
 # FIN DE TODOS LOS ARCHIVOS
 ARCHS_SIN_HALLAZGOS=`expr $TOTAL_ARCHIVOS - $CANT_ARCHS_CON_HALLAZGOS`
-$BINDIR/LoguearV5.sh -c "405" -f "BuscarV5" -i "I" $CICLO
-$BINDIR/LoguearV5.sh -c "406" -f "BuscarV5" -i "I" $CANT_ARCHS_CON_HALLAZGOS
-$BINDIR/LoguearV5.sh -c "407" -f "BuscarV5" -i "I" $ARCHS_SIN_HALLAZGOS
-$BINDIR/LoguearV5.sh -c "408" -f "BuscarV5" -i "I" $ARCHS_SIN_PATRON
+"$BINDIR"/LoguearV5.sh -c "405" -f "BuscarV5" -i "I" $CICLO
+"$BINDIR"/LoguearV5.sh -c "406" -f "BuscarV5" -i "I" $CANT_ARCHS_CON_HALLAZGOS
+"$BINDIR"/LoguearV5.sh -c "407" -f "BuscarV5" -i "I" $ARCHS_SIN_HALLAZGOS
+"$BINDIR"/LoguearV5.sh -c "408" -f "BuscarV5" -i "I" $ARCHS_SIN_PATRON
 
 # Actualizo el numero de ciclo el en archivo de configuracion
 LINEA_CICLO=`grep -e "SECUENCIA2" < "$CONFDIR/InstalaV5.conf"`

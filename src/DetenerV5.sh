@@ -11,16 +11,17 @@ if [ ! -z $1 ]; then
 	exit 1
 fi
 
-
-for comando in `find "${BINDIR}" -maxdepth 1 -type f -regex ${BINDIR%/}"/.*"`
-do
-	if [ ! ${comando##*/} = "StopD.sh" ]; then
-		$BINDIR/StopD.sh ${comando##*/}
-	fi
+if [ ! -z "$BINDIR" ]
+then
+	for comando in `find "${BINDIR}" -maxdepth 1 -type f -regex "${BINDIR%/}""/.*"`
+	do
+		if [ ! ${comando##*/} = "StopD.sh" ]; then
+			"$BINDIR"/StopD.sh ${comando##*/}
+		fi
+	done
 	
-done
-
-PATH=`echo ${PATH} | sed "s_\:${BINDIR}__g"`
+	PATH=`echo ${PATH} | sed "s_\:${BINDIR}__g"`
+fi
 
 VARIABLES=(GRUPO CONFDIR BINDIR MAEDIR ARRIDIR ACEPDIR RECHDIR PROCDIR REPODIR LOGDIR LOGEXT LOGSIZE)
 
