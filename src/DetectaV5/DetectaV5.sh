@@ -135,7 +135,7 @@ procesarArribos () {
 
 
 		# Por cada uno de los archivos en el directorio de arribos
-		for file in `find "$ARRIDIR" -maxdepth 1 -type f -regex "${ARRIDIR%/}""/.*"`
+		for file in `find "${ARRIDIR}" -maxdepth 1 -type f -regex "${ARRIDIR%/}""/.*"`
 		do
 			validarFormato "$file"
 			if [ "$?" -eq 0  ];then
@@ -146,28 +146,28 @@ procesarArribos () {
 					validarFecha "$file"
 					if [ "$?" -eq 0  ]; then
 					# Archivo válido, pasa a carpeta de aceptados
-						"${BINDIR}"/MoverV5.sh "$file" "$ACEPDIR" "$pName" "-l"
+						"${BINDIR}"/MoverV5.sh "$file" "${ACEPDIR}" "$pName" "-l"
 						
 						# Log de exito
 						"${BINDIR}"/LoguearV5.sh -c "303" -i "I" -f "$pName" "$file"
 
 					else
 					# Fecha invalida
-						"${BINDIR}"/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
+						"${BINDIR}"/MoverV5.sh "$file" "${RECHDIR}" "$pName" "-l"
 						
 						# Log de rechazo. Fecha incorrecta
 						"${BINDIR}"/LoguearV5.sh -c "306" -i "I" -f "$pName" "$file"
 					fi
 				else
 				# SIS_ID invalido
-					"${BINDIR}"/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
+					"${BINDIR}"/MoverV5.sh "$file" "${RECHDIR}" "$pName" "-l"
 
 					# Log de rechazo. SIS_ID Inválido
 					"${BINDIR}"/LoguearV5.sh -c "305" -i "I" -f "$pName" "$file"
 				fi
 			else
 			# Formato invalido
-				"${BINDIR}"/MoverV5.sh "$file" "$RECHDIR" "$pName" "-l"
+				"${BINDIR}"/MoverV5.sh "$file" "${RECHDIR}" "$pName" "-l"
 
 				# Log de rechazo. Formato de archivo Inválido
 				"${BINDIR}"/LoguearV5.sh -c "304" -i "I" -f "$pName" "$file"
@@ -257,8 +257,8 @@ fi
 ##
 # Chequeo de ejecución única del proceso.
 ##
-
 if [ `ps -C "$pName" -o "pid=" | wc -l` -gt 2 ]; then
+
 
 	prevID=` ps -C "$pName" -o "pid=" `
 	prevID=${prevID%[^0-9]*}
@@ -277,23 +277,23 @@ fi
 while true; do
 
 	# Verifica existencia de ARRIDIR
-	if [ -d "$ARRIDIR" ]; then
+	if [ -d "${ARRIDIR}" ]; then
 
 		procesarArribos
 
 	else
 		# Log Maestro no encontrado
-		"${BINDIR}"/LoguearV5.sh -c "003" -i "E" -f "$pName" "$ARRIDIR"
+		"${BINDIR}"/LoguearV5.sh -c "003" -i "E" -f "$pName" "${ARRIDIR}"
 	fi
 
 	# Verifica existencia de ACEPDIR
-	if [ -d "$ACEPDIR" ]; then
+	if [ -d "${ACEPDIR}" ]; then
 
 		procesarAceptados
 	else
 
 		# Log Maestro no encontrado
-		"${BINDIR}"/LoguearV5.sh -c "003" -i "E" -f "$pName" "$ACEPDIR"
+		"${BINDIR}"/LoguearV5.sh -c "003" -i "E" -f "$pName" "${ACEPDIR}"
 	fi
 
 	##
