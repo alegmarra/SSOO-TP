@@ -62,13 +62,16 @@ if [ -z "$LOGSIZE" ]; then
 fi
 
 output="$cmdname.$LOGEXT"
-
-if [ -r "$LOGDIR/$output" ] && [ `stat -c%s "$LOGDIR/$output"` -gt $LOGSIZE ]; then
-	LINEAS=$( wc -l < "$LOGDIR/$output" )
-	LINEAS=$(expr $LINEAS / 2) 
-	tail -n $LINEAS < "$LOGDIR/$output" > a.out
-	mv a.out "$LOGDIR/$output"
-	sh LoguearV5.sh -c 702 -f "$cmdname" -i A "$cmdname"
+if [ -r "$LOGDIR/$output" ]; then
+	TAMANIO_LOG=`stat -c%s "$LOGDIR/$output"`
+	TAMANIO_LOG=`echo "$TAMANIO_LOG / 1024" | bc`
+	if [ $TAMANIO_LOG -gt $LOGSIZE ]; then
+		LINEAS=$( wc -l < "$LOGDIR/$output" )
+		LINEAS=$(expr $LINEAS / 2) 
+		tail -n $LINEAS < "$LOGDIR/$output" > a.out
+		mv a.out "$LOGDIR/$output"
+		sh LoguearV5.sh -c 702 -f "$cmdname" -i A "$cmdname"
+	fi
 fi
 
 mensaje=$(printf "$(grep "$errcode" "$BINDIR/ListaErrores")" "$@")
