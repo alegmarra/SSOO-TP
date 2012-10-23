@@ -31,7 +31,8 @@ verificarProceso () {
 	if [ `ps -C "$1" -o "pid=" | wc -l` -gt 0 ]
 	then
 		local prevID=` ps -C "$1" -o "pid=" `
-		$2=${prevID/[^0-9]*$$}
+		local PID=${prevID/[^0-9]*$$}
+		echo "$PID"
 	fi
 }
 
@@ -81,8 +82,7 @@ verificarSiYaSeSeteoPath () {
 }
 
 verificarSiYaEstaCorriendoElDemonio () {
-	INI=
-	verificarProceso "DetectaV5.sh" $INI
+	INI=$(verificarProceso "DetectaV5.sh")
 	if [ ! -z "${INI}" ]
 	then
 		return 1
@@ -175,8 +175,7 @@ invocarDetecta () {
 	"${BINDIR}"/StartD.sh -D DetectaV5.sh
 	if [ $? -eq 0 ]
 	then
-		PID=0
-		verificarProceso "DetectaV5.sh" "${PID}"
+		PID=$(verificarProceso "DetectaV5.sh")
 		"${BINDIR}"/LoguearV5.sh -c 102 -f IniciarV5 -i A "${PID}"
 	fi
 }
