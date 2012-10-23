@@ -21,7 +21,7 @@ DESCRIPCIONES[9]="Logs de auditoría del sistema: "
 
 mostrarDescripcionYListarArchivos () {
 	echo "${DESCRIPCIONES[$1]}" "${!VARIABLES[${i}]}"
-	ls -l "${!VARIABLES[${1}]}" | awk '{ print $8 }' | grep --color=never '..*' # grep para evitar líneas vacías
+	ls -1 "${!VARIABLES[${1}]}" | grep --color=never '..*' # grep para evitar líneas vacías
 }
 
 # Verifica que un proceso de nombre $1 esté corriendo, y guarda en $2 el PID
