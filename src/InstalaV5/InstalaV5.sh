@@ -551,7 +551,7 @@ function establecer_variables {
 		if [ -n "${mensaje}" ] && [ "${!nom_var}" != "$LOGDIR" ] && [ "${!nom_var}" != "$CONFDIR" ]
 		then
 			
-			mensaje="Definir el "${mensaje}
+			mensaje="Definir el ${mensaje}"
 			
 			while [ "$continuar_leyendo" == "true" ]; do
 				leer_entrada "$mensaje" "${VARIABLES[${!nom_var}]}"
@@ -594,6 +594,7 @@ function hay_espacio_suficiente {
 	## ...
 	## compara si se esta en otra particion
 	
+	
 	tam_actual=`df -B 1000000 2> /dev/null | grep "$particion_disco" | awk '{ print $4 }' | head -1`
 	
 	
@@ -602,7 +603,6 @@ function hay_espacio_suficiente {
 	else
 		RETORNO=false
 	fi
-
 
 	RETORNO_2=$tam_actual
 
