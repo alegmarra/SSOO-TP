@@ -462,7 +462,9 @@ function cargar_configuracion {
 			if [ "${!nom_var}" != "$GRUPO" ] && [ -n "${DESCRIP_DIR[${!nom_var}]}" ]
 			then
 				VARIABLES[${!nom_var}]="${dir_instalado/${grupo}\/}"
-
+				if [ ! -d "${dir_instalado}" ]; then
+					mkdir -p "${dir_instalado}"
+				fi
 			else
 				VARIABLES[${!nom_var}]="${dir_instalado}"
 			fi
