@@ -464,6 +464,7 @@ function cargar_configuracion {
 				VARIABLES[${!nom_var}]="${dir_instalado/${grupo}\/}"
 				if [ ! -d "${dir_instalado}" ]; then
 					mkdir -p "${dir_instalado}"
+					mostrar_y_registrar "Se creo nuevamente el directorio \"$dir_instalado\"" -nm
 				fi
 			else
 				VARIABLES[${!nom_var}]="${dir_instalado}"
@@ -641,7 +642,7 @@ function establecer_variables_num {
 			else
 			
 				if [ $valor -eq 0 ]; then
-					echo "Ingrese un valor mayor que cero."
+					echo "Ingrese un valor mayor a 0(cero)."
 				else
 					echo "Insuficiente Espacio en Disco."
 				fi
@@ -665,7 +666,7 @@ function establecer_variables_num {
 			fi
 		else
 			echo
-			echo " * Solo se permite el ingreso de caracteres numericos"
+			echo " * Solo se permite el ingreso de valores numericos enteros positivos"
 		fi
 	done
 	
@@ -680,12 +681,17 @@ function establecer_variables_num {
 		echo "$RETORNO" | grep "[^0-9]" > /dev/null
 
 		if [ "$?" != "0" ] || [ -z "$RETORNO" ]; then				
-			VARIABLES["$LOGSIZE"]=$RETORNO
-			mostrar_y_registrar "Definido $RETORNO Kb para tamaño max de archivos de log." -nm
-			espacio_suficiente=true
+			if [ $RETORNO -gt 0 ]; then
+				VARIABLES["$LOGSIZE"]=$RETORNO
+				mostrar_y_registrar "Definido $RETORNO Kb para tamaño max de archivos de log." -nm
+				espacio_suficiente=true
+			else
+				echo
+				echo " * Ingrese un valor mayor a 0(cero)."
+			fi
 		else
 			echo
-			echo " * Solo se permite el ingreso de caracteres numericos"
+			echo " * Solo se permite el ingreso de valores numericos enteros positivos"
 		fi
 	done
 
@@ -1263,10 +1269,10 @@ else
 	echo
 	echo "Defina los Directorios del Sistema."
 	echo
+			
+	cagar_valores_defecto # Se almacenan los nombres por defecto de los directorios principales
 	
 	while [ "$CONFIRMACION" == false ]; do
-
-		cagar_valores_defecto # Se almacenan los nombres por defecto de los directorios principales
 	
 		establecer_variables # Se establecen todos los nombres de carpetas y algunos datos importantes
 		establecer_variables_num # Se establecen las variables de tipo numerico
@@ -1274,8 +1280,14 @@ else
 	
 		mostrar_valores_ingresados
 		
-		confirmar_respuesta "Los datos ingresados son correctos?"
+		confirmar_respuesta "¿Los datos ingresados son correctos?"
 		CONFIRMACION=$RETORNO
+		
+		if [ "$CONFIRMACION" == "false" ]; then
+			limpiar_pantalla
+			echo "Vuelva a ingresar los valores:"
+			echo
+		fi
 
 	done
 	
