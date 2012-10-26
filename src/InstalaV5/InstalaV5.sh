@@ -45,8 +45,8 @@ declare -a DESCRIP_DIR=( [$CONFDIR]="Directorio donde se encuentran los archivos
 	[$BINDIR]="directorio de archivos ejecutables" \
 	[$MAEDIR]="directorio de archivos Maestros" \
 	[$ARRIDIR]="directorio de arribo de archivos externos" \
-	[$ACEPDIR]="directorio de grabacion de archivos rechazados" \
-	[$RECHDIR]="directorio de grabacion de los archivos externos aceptados" \
+	[$ACEPDIR]="directorio de grabacion de los archivos externos aceptados" \
+	[$RECHDIR]="directorio de grabacion de archivos rechazados" \
 	[$PROCDIR]="directorio de grabacion de los archivos procesados" \
 	[$REPODIR]="directorio de grabacion de los reportes de salida" \
 	[$LOGDIR]="directorio de grabacion de los logs del sistema" \
@@ -459,15 +459,16 @@ function cargar_configuracion {
 			dir_instalado=`grep "^${nom_var}.*" "$ruta_arch" | cut -d "=" -f 2`
 			
 
-			
 			if [ "${!nom_var}" != "$GRUPO" ] && [ -n "${DESCRIP_DIR[${!nom_var}]}" ]
 			then
 				VARIABLES[${!nom_var}]="${dir_instalado/${grupo}\/}"
-
+				if [ ! -d "${dir_instalado}" ]; then
+					mkdir -p "${dir_instalado}"
+					mostrar_y_registrar "Se creo nuevamente el directorio \"$dir_instalado\"" -nm
+				fi
 			else
 				VARIABLES[${!nom_var}]="${dir_instalado}"
 			fi
-			
 
 		done
 		
@@ -480,7 +481,10 @@ function cargar_configuracion {
 			read com_instalado < aux2
 
 
-			if [ "${com_instalado}" == "INSTALADO" ]; then
+			if [ "${com_instalado}" == "INSTALADO" ] && \
+			[ -f "${VARIABLES[$GRUPO]}/${VARIABLES[$BINDIR]}/${nom_com}"* ] || \
+			[ -f "${VARIABLES[$GRUPO]}/${nom_com}"* ]
+			then
 				COM_INSTALADOS[${!nom_com}]=true
 			else
 				COM_INSTALADOS[${!nom_com}]=false
@@ -495,8 +499,12 @@ function cargar_configuracion {
 			cut -d "=" -f 3 aux > aux2
 			read arch_instalado < aux2
 
-			if [ "${arch_instalado}" == "INSTALADO" ]; then
+			if [ "${arch_instalado}" == "INSTALADO" ] && \
+			[ -f "${VARIABLES[$GRUPO]}/${VARIABLES[$MAEDIR]}/${nom_arch}" ]
+			then
 				ARCH_MAE_INSTALADOS[${!nom_arch}]=true
+			else
+				ARCH_MAE_INSTALADOS[${!nom_arch}]=false
 			fi
 		done
 		
@@ -510,6 +518,12 @@ function cargar_configuracion {
 		rm archivos.dat		
 		rm aux
 		rm aux2
+		
+		if [ -d "${VARIABLES[$BINDIR]}" ]; then
+			if [ ! -f "${VARIABLES[$BINDIR]}"/ListaErrores ]; then
+				cp "$DIR_ARCH_DE_INSTALACION"/ListaErrores "${VARIABLES[$BINDIR]}"
+			fi
+		fi
 
 	else
 		echo_depuracion "Archivo de configuracion no existe" 0
@@ -537,7 +551,7 @@ function establecer_variables {
 		if [ -n "${mensaje}" ] && [ "${!nom_var}" != "$LOGDIR" ] && [ "${!nom_var}" != "$CONFDIR" ]
 		then
 			
-			mensaje="Definir el "${mensaje}
+			mensaje="Definir el ${mensaje}"
 			
 			while [ "$continuar_leyendo" == "true" ]; do
 				leer_entrada "$mensaje" "${VARIABLES[${!nom_var}]}"
@@ -580,6 +594,7 @@ function hay_espacio_suficiente {
 	## ...
 	## compara si se esta en otra particion
 	
+	
 	tam_actual=`df -B 1000000 2> /dev/null | grep "$particion_disco" | awk '{ print $4 }' | head -1`
 	
 	
@@ -588,7 +603,6 @@ function hay_espacio_suficiente {
 	else
 		RETORNO=false
 	fi
-
 
 	RETORNO_2=$tam_actual
 
@@ -628,7 +642,7 @@ function establecer_variables_num {
 			else
 			
 				if [ $valor -eq 0 ]; then
-					echo "Ingrese un valor mayor que cero."
+					echo "Ingrese un valor mayor a 0(cero)."
 				else
 					echo "Insuficiente Espacio en Disco."
 				fi
@@ -652,7 +666,7 @@ function establecer_variables_num {
 			fi
 		else
 			echo
-			echo " * Solo se permite el ingreso de caracteres numericos"
+			echo " * Solo se permite el ingreso de valores numericos enteros positivos"
 		fi
 	done
 	
@@ -667,12 +681,17 @@ function establecer_variables_num {
 		echo "$RETORNO" | grep "[^0-9]" > /dev/null
 
 		if [ "$?" != "0" ] || [ -z "$RETORNO" ]; then				
-			VARIABLES["$LOGSIZE"]=$RETORNO
-			mostrar_y_registrar "Definido $RETORNO Kb para tamaño max de archivos de log." -nm
-			espacio_suficiente=true
+			if [ $RETORNO -gt 0 ]; then
+				VARIABLES["$LOGSIZE"]=$RETORNO
+				mostrar_y_registrar "Definido $RETORNO Kb para tamaño max de archivos de log." -nm
+				espacio_suficiente=true
+			else
+				echo
+				echo " * Ingrese un valor mayor a 0(cero)."
+			fi
 		else
 			echo
-			echo " * Solo se permite el ingreso de caracteres numericos"
+			echo " * Solo se permite el ingreso de valores numericos enteros positivos"
 		fi
 	done
 
@@ -1040,11 +1059,11 @@ function verificar_estado_de_instalacion {
 	done
 	
 	
-	for i in "${!ARCH_MAESTROS[@]}"; do
+	for i in "${ARCH_MAESTROS[@]}"; do
 	
-		if [ "${ARCH_MAE_INSTALADOS[$i]}" == "false" ];then
+		if [ "${ARCH_MAE_INSTALADOS[${!i}]}" == "false" ];then
 			faltan_componentes=true
-		elif [ "${ARCH_MAE_INSTALADOS[$i]}" == "true" ];then
+		elif [ "${ARCH_MAE_INSTALADOS[${!i}]}" == "true" ];then
 			hay_componentes=true
 		fi
 	done
@@ -1250,10 +1269,10 @@ else
 	echo
 	echo "Defina los Directorios del Sistema."
 	echo
+			
+	cagar_valores_defecto # Se almacenan los nombres por defecto de los directorios principales
 	
 	while [ "$CONFIRMACION" == false ]; do
-
-		cagar_valores_defecto # Se almacenan los nombres por defecto de los directorios principales
 	
 		establecer_variables # Se establecen todos los nombres de carpetas y algunos datos importantes
 		establecer_variables_num # Se establecen las variables de tipo numerico
@@ -1261,8 +1280,14 @@ else
 	
 		mostrar_valores_ingresados
 		
-		confirmar_respuesta "Los datos ingresados son correctos?"
+		confirmar_respuesta "¿Los datos ingresados son correctos?"
 		CONFIRMACION=$RETORNO
+		
+		if [ "$CONFIRMACION" == "false" ]; then
+			limpiar_pantalla
+			echo "Vuelva a ingresar los valores:"
+			echo
+		fi
 
 	done
 	
