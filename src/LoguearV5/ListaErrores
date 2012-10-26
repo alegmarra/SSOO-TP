@@ -16,6 +16,7 @@
 005 Argumentos inválidos
 006 Llamado a %s, Process ID %s
 007 Proceso %s ya en ejecución, Process ID %s
+008 Directorio Maestro %s no encontrado
 
 101 Inicio InstalaV5
 102 Demonio corriendo bajo el Nro: %s

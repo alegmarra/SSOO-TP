@@ -144,40 +144,40 @@ procesarArribos () {
 		# Por cada uno de los archivos en el directorio de arribos
 		for file in `find "${ARRIDIR}" -maxdepth 1 -type f -regex "${ARRIDIR%/}""/.*"`
 		do
-			validarFormato "$file"
+			validarFormato "${file}"
 			if [ "$?" -eq 0  ];then
 
-				validarSIS_ID "$file"
+				validarSIS_ID "${file}"
 				if [ "$?" -eq 0  ]; then
 
-					validarFecha "$file"
+					validarFecha "${file}"
 					if [ "$?" -eq 0  ]; then
 					# Archivo válido, pasa a carpeta de aceptados
-						"${BINDIR}"/MoverV5.sh "$file" "${ACEPDIR}" "$pName" "-l"
+						"${BINDIR}"/MoverV5.sh "${file}" "${ACEPDIR}" "$pName" "-l"
 						
 						# Log de exito
-						"${BINDIR}"/LoguearV5.sh -c "303" -i "I" -f "$pName" "$file"
+						"${BINDIR}"/LoguearV5.sh -c "303" -i "I" -f "$pName" "${file}"
 
 					else
 					# Fecha invalida
-						"${BINDIR}"/MoverV5.sh "$file" "${RECHDIR}" "$pName" "-l"
+						"${BINDIR}"/MoverV5.sh "${file}" "${RECHDIR}" "$pName" "-l"
 						
 						# Log de rechazo. Fecha incorrecta
-						"${BINDIR}"/LoguearV5.sh -c "306" -i "I" -f "$pName" "$file"
+						"${BINDIR}"/LoguearV5.sh -c "306" -i "I" -f "$pName" "${file}"
 					fi
 				else
 				# SIS_ID invalido
-					"${BINDIR}"/MoverV5.sh "$file" "${RECHDIR}" "$pName" "-l"
+					"${BINDIR}"/MoverV5.sh "${file}" "${RECHDIR}" "$pName" "-l"
 
 					# Log de rechazo. SIS_ID Inválido
-					"${BINDIR}"/LoguearV5.sh -c "305" -i "I" -f "$pName" "$file"
+					"${BINDIR}"/LoguearV5.sh -c "305" -i "I" -f "$pName" "${file}"
 				fi
 			else
 			# Formato invalido
-				"${BINDIR}"/MoverV5.sh "$file" "${RECHDIR}" "$pName" "-l"
+				"${BINDIR}"/MoverV5.sh "${file}" "${RECHDIR}" "$pName" "-l"
 
 				# Log de rechazo. Formato de archivo Inválido
-				"${BINDIR}"/LoguearV5.sh -c "304" -i "I" -f "$pName" "$file"
+				"${BINDIR}"/LoguearV5.sh -c "304" -i "I" -f "$pName" "${file}"
 			fi
 		done
 	fi
@@ -192,7 +192,7 @@ procesarArribos () {
 
 procesarAceptados () {
 
-	aceptados=`find "$ACEPDIR" -maxdepth 1 -type f -regex ${ACEPDIR%/}"/.*" | wc -l`
+	aceptados=`find "${ACEPDIR}" -maxdepth 1 -type f -regex ${ACEPDIR%/}"/.*" | wc -l`
 
 	if [ $aceptados -gt 0 ]; then
 
@@ -214,6 +214,7 @@ procesarAceptados () {
 		fi
 	fi
 }
+
 
 
 
@@ -283,24 +284,32 @@ fi
 ##
 while true; do
 
-	# Verifica existencia de ARRIDIR
-	if [ -d "${ARRIDIR}" ]; then
+	if [ -d "${ARRIDIR}" ] && [ -d "${RECHDIR}" ] && [ -d "${ACEPDIR}" ]; then
 
-		procesarArribos
+		if  [ -f "${MAEDIR}/sistemas" ]; then
+	
+			procesarArribos
+
+			procesarAceptados
+		else
+			# Lof Archivo Maestro no encontrado
+			"${BINDIR}"/LoguearV5.sh -c "003" -i "E" -f "$pName" "${MAEDIR}/sistemas"
+		fi
 
 	else
-		# Log Maestro no encontrado
-		"${BINDIR}"/LoguearV5.sh -c "003" -i "E" -f "$pName" "${ARRIDIR}"
-	fi
-
-	# Verifica existencia de ACEPDIR
-	if [ -d "${ACEPDIR}" ]; then
-
-		procesarAceptados
-	else
-
-		# Log Maestro no encontrado
-		"${BINDIR}"/LoguearV5.sh -c "003" -i "E" -f "$pName" "${ACEPDIR}"
+		noEncontrado=
+		# Log Directorio Maestro no encontrado
+		if [ -d "${ARRIDIR}" ]; then
+			if [ -d "${ACEPDIR}" ]; then
+				noEncontrado="${RECHDIR}"
+			else
+				noEncontrado="${ACEPDIR}"
+			fi
+		else
+			noEncontrado="${ARRIDIR}"
+		fi
+		
+		"${BINDIR}"/LoguearV5.sh -c "008" -i "E" -f "$pName" "${noEncontrado}"
 	fi
 
 	##

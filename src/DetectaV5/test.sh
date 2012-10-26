@@ -43,6 +43,8 @@ echo "Fecha Invalida: Previo ALTA" > $arribos/soapp1_2000-10-10
 echo "Valido" > $arribos/soapp1_2004-10-10
 
 echo "Fecha Invalida: Mayor que hoy" > $arribos/testapp_2013-01-01
+
+echo "Invalido espacio" > $arribos/"soa pp1_2004-10-10"
 }
 
 
