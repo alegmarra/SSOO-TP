@@ -26,10 +26,14 @@
 
 301 Inicio DetectaV5
 302 Cantidad de Arribos %s
-303 Archivo %s válido: Aceptado
-304 Archivo %s inválido - Formato Invalido: Rechazado
-305 Archivo %s inválido - SIS-ID Invalida: Rechazado
-306 Archivo %s inválido - Fecha Invalida: Rechazado
+303 Archivo %s válido						: Aceptado
+304 Archivo %s inválido - Formato Invalido			: Rechazado
+305 Archivo %s inválido - SIS-ID Invalida			: Rechazado
+306 Archivo %s inválido - Fomato de Fecha Inválido		: Rechazado
+307 Archivo %s inválido - Fecha Posterior a la Actual		: Rechazado
+308 Archivo %s inválido - Fecha Previa a la Alta del Sistema	: Rechazado
+309 Archivo %s inválido - Fecha Posterior a la Baja del Sistema : Rechazado
+
 
 
 401 Inicio BuscarV5 - Ciclo Nro: %s - Cantidad de archivos: %s

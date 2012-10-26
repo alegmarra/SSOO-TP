@@ -78,6 +78,8 @@ validarSIS_ID () {
 
 validarFecha () {
 
+	local codigoError=
+
 	local file=${1##*/}
 	id=${file%_*}
 	fecha=${file#*_}
@@ -111,17 +113,27 @@ validarFecha () {
 						# Fecha valida
 						return 0
 					else
-						# Fecha Invalida
-						return 1
+						# Mayor a la fecha de baja
+						codigoError=309
 					fi
 				else
 				# El sistema no tiene fecha de baja, es valida
 					return 0
 				fi
+			else
+				# Menor a la fecha de alta
+				codigoError=308
 			fi
+		else
+			# Mayor al dia de hoy
+			codigoError=307
 		fi
+	else
+		# Formato Invalido 
+		codigoError=306
 	fi
 
+	"${BINDIR}"/LoguearV5.sh -c "$codigoError" -i "I" -f "$pName" "${file}"
 	return 1
 }
 
@@ -149,7 +161,7 @@ procesarArribos () {
 
 				validarSIS_ID "${file}"
 				if [ "$?" -eq 0  ]; then
-
+					
 					validarFecha "${file}"
 					if [ "$?" -eq 0  ]; then
 					# Archivo válido, pasa a carpeta de aceptados
@@ -161,9 +173,8 @@ procesarArribos () {
 					else
 					# Fecha invalida
 						"${BINDIR}"/MoverV5.sh "${file}" "${RECHDIR}" "$pName" "-l"
-						
-						# Log de rechazo. Fecha incorrecta
-						"${BINDIR}"/LoguearV5.sh -c "306" -i "I" -f "$pName" "${file}"
+					# Logueado en la validación
+
 					fi
 				else
 				# SIS_ID invalido
