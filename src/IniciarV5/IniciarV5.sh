@@ -167,6 +167,14 @@ verificarSiLaInstalacionEstaCompleta () {
 	fi
 	
 
+	for i in {4..9}	
+	do
+		if [ ! -d ${!VARIABLES[$i]} ]
+		then
+			FALTANTES[((i++))]="Directorio: ${DESCRIPCIONES[$i]}"
+		fi
+	done
+
 	if [ "${#FALTANTES[@]}" -gt 0 ]
 	then
 		echo "$HEADER"
