@@ -44,7 +44,7 @@ mostrarVariables () {
 		mostrarDescripcionYListarArchivos "${i}"
 	done
 
-	for ((i = 4; i < "${#VARIABLES[@]}" - 2; ++i))
+	for ((i = 4; i < "${#VARIABLES[@]}" - 3; ++i))
 	do
 		echo "${DESCRIPCIONES[$i]}: " "${!VARIABLES[$i]}"
 	done
@@ -203,38 +203,34 @@ invocarDetecta () {
 	if [ $? -eq 0 ]
 	then
 		PID=$(verificarProceso "DetectaV5.sh")
-		"${BINDIR}"/LoguearV5.sh -c 102 -f IniciarV5 -i A "${PID}"
+		"${BINDIR}"/LoguearV5.sh -c 202 -f IniciarV5 -i I "${PID}"
 	fi
 }
 
 fin () {
-	"${BINDIR}"/LoguearV5.sh -c 103 -f IniciarV5 -i I
+	"${BINDIR}"/LoguearV5.sh -c 203 -f IniciarV5 -i I
 }
 
 
-iniciarSiLaInstalacionEstaCompleta () {
-	verificarSiLaInstalacionEstaCompleta
+iniciar () {
+	mostrarVariables
+	invocarDetecta
+	fin
+}
 
-	if [ $? -ne 1 ]
+cancelarInicializacion () {
+	if [ ! -z "${BINDIR}" ]
 	then
-		mostrarVariables
-
-		invocarDetecta
-
-		fin
-	else
-		if [ ! -z "${BINDIR}" ]
-		then
-       			PATH=`echo "${PATH}" | sed "s_\:${BINDIR}__g"`
-		fi
-
-		for i in "${VARIABLES[@]}"
-		do      
-		        unset `echo ${i}`
-		done
+      		PATH=`echo "${PATH}" | sed "s_\:${BINDIR}__g"`
 	fi
-}
+	
+	for i in "${VARIABLES[@]}"
+	do      
+	        unset `echo ${i}`
+	done
 
+	"${BINDIR}"/LoguearV5.sh -c 204 -f IniciarV5 -i A
+}
 ### MAIN ###
 
 init $1
@@ -246,38 +242,52 @@ then
 	if [ $? -ne 0 ]
 	then
 		echo "Proceso de Inicialización Cancelado"
+		"${BINDIR}"/LoguearV5.sh -c 204 -f IniciarV5 -i A
 	else
-#		"${BINDIR}"/LoguearV5.sh -c 101 -f IniciarV5 -i I > /dev/null
+		verificarSiLaInstalacionEstaCompleta
+		if [ $? -eq 0 ]
+		then
+			"${BINDIR}"/LoguearV5.sh -c 201 -f IniciarV5 -i I
 		
+			verificarSiYaSeSeteoPath
+			if [ $? -eq 0 ]
+			then
+				export PATH="${PATH}:${BINDIR}"
+			fi
+
+			iniciar
+		else
+			cancelarInicializacion
+		fi
+	fi
+else
+	verificarSiLaInstalacionEstaCompleta
+	if [ $? -eq 0 ]
+	then
+		"${BINDIR}"/LoguearV5.sh -c 201 -f IniciarV5 -i I
+	
 		verificarSiYaSeSeteoPath
 		if [ $? -eq 0 ]
 		then
 			export PATH="${PATH}:${BINDIR}"
-		fi
-
-		iniciarSiLaInstalacionEstaCompleta
-	fi
-else
-#	"${BINDIR}"/LoguearV5.sh -c 101 -f IniciarV5 -i I > /dev/null
 	
-	verificarSiYaSeSeteoPath
-	if [ $? -eq 0 ]
-	then
-		export PATH="${PATH}:${BINDIR}"
-
-		iniciarSiLaInstalacionEstaCompleta
-	else
-		verificarSiYaEstaCorriendoElDemonio
-
-		if [ $? -eq 0 ]
-		then
-			iniciarSiLaInstalacionEstaCompleta
+			iniciar
 		else
-			mostrarVariables
-			echo "Estado del Sistema: INICIALIZADO"
-			echo "No es posible efectuar una reinicialización del sistema"
-			echo "Proceso de Inicialización Cancelado"
+			verificarSiYaEstaCorriendoElDemonio
+
+			if [ $? -eq 0 ]
+			then
+				iniciar
+			else
+				mostrarVariables
+				echo "Estado del Sistema: INICIALIZADO"
+				echo "No es posible efectuar una reinicialización del sistema"
+				echo "Proceso de Inicialización Cancelado"
+				"${BINDIR}"/LoguearV5.sh -c 204 -f IniciarV5 -i A
+			fi
 		fi
+	else
+		cancelarInicializacion
 	fi
 fi
 
