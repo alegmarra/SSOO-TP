@@ -8,19 +8,19 @@ ARCHIVOS_MAE=(patrones sistemas)
 HEADER="TP SO7508 Segundo Cuatrimestre 2012. Tema V Copyright © Grupo 07"
 DESCRIPCIONES=()
 DESCRIPCIONES[0]="$HEADER"
-DESCRIPCIONES[1]="Librería del Sistema: "
-DESCRIPCIONES[2]="Ejecutables: "
-DESCRIPCIONES[3]="Archivos maestros: "
-DESCRIPCIONES[4]="Directorio de arribo de archivos externos: "
-DESCRIPCIONES[5]="Archivos externos aceptados: "
-DESCRIPCIONES[6]="Archivos externos rechazados: "
-DESCRIPCIONES[7]="Archivos procesados: "
-DESCRIPCIONES[8]="Reportes de salida: "
-DESCRIPCIONES[9]="Logs de auditoría del sistema: "
+DESCRIPCIONES[1]="Librería del Sistema"
+DESCRIPCIONES[2]="Ejecutables"
+DESCRIPCIONES[3]="Archivos maestros"
+DESCRIPCIONES[4]="Directorio de arribo de archivos externos"
+DESCRIPCIONES[5]="Archivos externos aceptados"
+DESCRIPCIONES[6]="Archivos externos rechazados"
+DESCRIPCIONES[7]="Archivos procesados"
+DESCRIPCIONES[8]="Reportes de salida"
+DESCRIPCIONES[9]="Logs de auditoría del sistema"
 ###
 
 mostrarDescripcionYListarArchivos () {
-	echo "${DESCRIPCIONES[$1]}" "${!VARIABLES[${i}]}"
+	echo "${DESCRIPCIONES[$1]}: " "${!VARIABLES[${1}]}"
 	ls -1 "${!VARIABLES[${1}]}" | grep --color=never '..*' # grep para evitar líneas vacías
 }
 
@@ -46,10 +46,10 @@ mostrarVariables () {
 
 	for ((i = 4; i < "${#VARIABLES[@]}" - 2; ++i))
 	do
-		echo "${DESCRIPCIONES[$i]}" "${!VARIABLES[$i]}"
+		echo "${DESCRIPCIONES[$i]}: " "${!VARIABLES[$i]}"
 	done
 
-	echo "${DESCRIPCIONES[9]}" "$LOGDIR/<comando>.$LOGEXT"
+	echo "${DESCRIPCIONES[9]}: " "$LOGDIR/<comando>.$LOGEXT"
 }
 
 # Verifica si todas las variables de ambiente están seteadas.
@@ -90,8 +90,8 @@ verificarSiYaEstaCorriendoElDemonio () {
 	return 0
 }
 
-# Llama a las tres funciones de verificación de entorno y retorna 1 si
-# las tres retornan 1, 0 de otra forma
+# Llama a las dos funciones de verificación de entorno y retorna 1 si
+# las dos retornan 1, 0 de otra forma
 verificarSiYaSeInicioElEntorno () {
 	verificarSiYaSeIniciaronLasVariables
 	if [ $? -eq 0 ]
@@ -135,31 +135,50 @@ setearVariablesDeEntorno () {
 verificarSiLaInstalacionEstaCompleta () {
 	local FALTANTES=()
 	local i=0
-	
-	for CMD in "${COMANDOS[@]}"
-	do
-		ls "${BINDIR}" | grep "${CMD}" > /dev/null
-		if [ $? -eq 1 ]
-		then
-			FALTANTES[((i++))]="${CMD}"
-		fi
-	done
 
-	for ARCH in "${ARCHIVOS_MAE[@]}"
-	do
-		ls "${MAEDIR}" | grep "${ARCH}" > /dev/null
-		if [ $? -eq 1 ]
-		then
-			FALTANTES[((i++))]="${ARCH}"
-		fi
-	done
+	if [ -d "${BINDIR}" ]
+	then
+		for CMD in "${COMANDOS[@]}"
+		do
+			ls "${BINDIR}" | grep "${CMD}" > /dev/null
+			if [ $? -eq 1 ]
+			then
+				FALTANTES[((i++))]="${CMD}"
+			fi
+		done
+	else
+		FALTANTES[((i++))]="Directorio: ${DESCRIPCIONES[2]}"
+		FALTANTES=( "${FALTANTES[@]}" "${COMANDOS[@]}" )
+	fi
+	
+	if [ -d "${MAEDIR}" ]
+	then
+		for ARCH in "${ARCHIVOS_MAE[@]}"
+		do
+			ls "${MAEDIR}" | grep "${ARCH}" > /dev/null
+			if [ $? -eq 1 ]
+			then
+				FALTANTES[((i++))]="${ARCH}"
+			fi
+		done
+	else
+		FALTANTES[((i++))]="Directorio: ${DESCRIPCIONES[3]}"
+		FALTANTES=( "${FALTANTES[@]}" "${ARCHIVOS_MAE[@]}" )
+	fi
+	
 
 	if [ "${#FALTANTES[@]}" -gt 0 ]
 	then
 		echo "$HEADER"
 		echo "Componentes Existentes:"
-		mostrarDescripcionYListarArchivos 2
-		mostrarDescripcionYListarArchivos 3
+		if [ -d "${BINDIR}" ]
+		then
+			mostrarDescripcionYListarArchivos 2
+		fi
+		if [ -d "${MAEDIR}" ]
+		then
+			mostrarDescripcionYListarArchivos 3
+		fi
 		echo "Componentes faltantes:"
 		for i in "${FALTANTES[@]}"
 		do
@@ -220,7 +239,7 @@ then
 	then
 		echo "Proceso de Inicialización Cancelado"
 	else
-		"${BINDIR}"/LoguearV5.sh -c 101 -f IniciarV5 -i I
+#		"${BINDIR}"/LoguearV5.sh -c 101 -f IniciarV5 -i I > /dev/null
 		
 		verificarSiYaSeSeteoPath
 		if [ $? -eq 0 ]
@@ -231,9 +250,8 @@ then
 		iniciarSiLaInstalacionEstaCompleta
 	fi
 else
-	echo "Previo al log"
-	"${BINDIR}"/LoguearV5.sh -c 101 -f IniciarV5 -i I
-	echo "Después del log"
+#	"${BINDIR}"/LoguearV5.sh -c 101 -f IniciarV5 -i I > /dev/null
+	
 	verificarSiYaSeSeteoPath
 	if [ $? -eq 0 ]
 	then
