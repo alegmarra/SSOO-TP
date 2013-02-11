@@ -54,7 +54,8 @@ sub str_seleccion {
 #
 sub hash_vacio {
 	my %hash = @_;
-	return (@hash == 0 or eval(join('+', values %hash)) =~ /^0$/ ? 1 : 0);
+	my @keys = keys %hash;
+	return (@keys == 0 or eval(join('+', values %hash)) =~ /^0$/ ? 1 : 0);
 }
 
 #
